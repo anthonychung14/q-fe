@@ -22,37 +22,9 @@ const headers = new Headers({
 });
 
 /* eslint-disable react/prefer-stateless-function */
-export default class HomePage extends React.PureComponent {
-  componentWillMount() {
-    if (localStorage.getItem('recipe3')) {
-      console.log(JSON.parse(localStorage.getItem('recipe')), 'stored');
-    } else {
-      fetch(stubbedUrl, {
-        headers,
-      })
-        .then(res => res.json())
-        .then(response => {
-          console.log(response, 'received');
-          localStorage.setItem('recipe3', JSON.stringify(response));
-        })
-        .catch(error => console.error('Error:', error));
-    }
-  }
-
+export default class CycleCards extends React.PureComponent {
   render() {
-    return (
-      <WingBlank size="md">
-        <Flex wrap="wrap" justify="around">
-          {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
-            <div key={i}>
-              <WhiteSpace size="lg" />
-              <MealCard key={i} />
-              <WhiteSpace size="lg" />
-            </div>
-          ))}
-        </Flex>
-      </WingBlank>
-    );
+    return <WingBlank size="md">Cycle Cards</WingBlank>;
   }
 }
 /* 

@@ -10,6 +10,14 @@ module.exports = {
   ],
   plugins: [
     'styled-components',
+    [
+      'import',
+      {
+        libraryName: 'antd-mobile',
+        style: true, // or 'css
+        // style: 'css', // or true
+      },
+    ],
     '@babel/plugin-proposal-class-properties',
     '@babel/plugin-syntax-dynamic-import',
   ],

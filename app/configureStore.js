@@ -1,12 +1,18 @@
 /**
  * Create the store with dynamic reducers
  */
-
 import { createStore, applyMiddleware, compose } from 'redux';
 import { fromJS } from 'immutable';
 import { routerMiddleware } from 'connected-react-router/immutable';
 import createSagaMiddleware from 'redux-saga';
+import { reactReduxFirebase } from 'react-redux-firebase';
+import firebase from 'firebase/app';
 import createReducer from './reducers';
+// make this not bad
+import { config } from './firebase/firebase';
+
+const rrfConfig = {};
+firebase.initializeApp(config);
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -28,7 +34,11 @@ export default function configureStore(initialState = {}, history) {
       : compose;
   /* eslint-enable */
 
-  const store = createStore(
+  const createStoreWithFirebase = compose(
+    reactReduxFirebase(firebase, rrfConfig),
+  )(createStore);
+
+  const store = createStoreWithFirebase(
     createReducer(),
     fromJS(initialState),
     composeEnhancers(...enhancers),

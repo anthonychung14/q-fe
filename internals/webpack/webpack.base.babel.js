@@ -5,6 +5,12 @@
 const path = require('path');
 const webpack = require('webpack');
 
+const themeVariables = {
+  'primary-color': '#1DA57A',
+  'link-color': '#1DA57A',
+  'border-radius-base': '2px',
+};
+
 // Remove this line once the following warning goes away (it was meant for webpack loader authors not users):
 // 'DeprecationWarning: loaderUtils.parseQuery() received a non-string value which can be problematic,
 // see https://github.com/webpack/loader-utils/issues/56 parseQuery() will be replaced with getOptions()
@@ -46,6 +52,21 @@ module.exports = options => ({
         test: /\.css$/,
         include: /node_modules/,
         use: ['style-loader', 'css-loader'],
+      },
+      {
+        test: /\.less$/,
+        include: /node_modules/,
+        use: [
+          'style-loader',
+          'css-loader',
+          {
+            loader: 'less-loader',
+            options: {
+              modifyVars: themeVariables,
+              javascriptEnabled: true,
+            },
+          },
+        ],
       },
       {
         test: /\.(eot|otf|ttf|woff|woff2)$/,

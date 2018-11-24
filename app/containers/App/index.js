@@ -9,17 +9,29 @@
 
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 import HomePage from 'containers/HomePage/Loadable';
+import AddCards from 'containers/AddCards/Loadable';
+import CycleCards from 'containers/CycleCards/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
+// import NavBar from 'components/NavBar';
+import AppBar from 'components/AppBar';
 
 import GlobalStyle from '../../global-styles';
 
 export default function App() {
   return (
     <div>
+      <Helmet titleTemplate="%s - Q" defaultTitle="Q">
+        <meta name="description" content="V2 of Q" />
+      </Helmet>
+      <AppBar />
       <Switch>
         <Route exact path="/" component={HomePage} />
+        <Route exact path="/view" component={HomePage} />
+        <Route exact path="/add" component={AddCards} />
+        <Route exact path="/cycle" component={CycleCards} />
         <Route component={NotFoundPage} />
       </Switch>
       <GlobalStyle />
