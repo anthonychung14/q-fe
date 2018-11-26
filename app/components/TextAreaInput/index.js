@@ -10,7 +10,7 @@ const TextArea = ({
 }) => (
   <WingBlank size="md">
     <label>{label}</label>
-    <TextareaItem {...input} rows={5} count={100} placeholder={placeholder} />
+    <TextareaItem {...input} rows={3} count={100} placeholder={placeholder} />
   </WingBlank>
 );
 

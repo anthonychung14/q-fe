@@ -1,7 +1,3 @@
-// import firebase from 'firebase/app';
-import 'firebase/auth';
-import 'firebase/database';
-
 const prodConfig = {
   apiKey: 'AIzaSyDcV3_wB9_8oQem2fyoA7V71Nzo9oW3X4A',
   authDomain: 'shadow-self.firebaseapp.com',
@@ -13,7 +9,7 @@ const prodConfig = {
 
 const devConfig = {
   apiKey: 'AIzaSyDcV3_wB9_8oQem2fyoA7V71Nzo9oW3X4A',
-  authDomain: 'shadow-self.firebaseapp.com',
+  authDomain: 'localhost',
   databaseURL: 'https://shadow-self.firebaseio.com',
   projectId: 'shadow-self',
   storageBucket: 'shadow-self.appspot.com',

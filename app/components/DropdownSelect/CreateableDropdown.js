@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
 import CreatableSelect from 'react-select/lib/Creatable';
 
-const stubOptions = [
-  { value: 'foo', label: 'foo ' },
-  { value: 'bar', label: 'bar ' },
-];
-
 /*
 * if I have a prop called 'must be unique'
 *   trigger an error if there are results
@@ -13,8 +8,10 @@ const stubOptions = [
 */
 export default class CreateableDropdown extends Component {
   handleChange = (newValue, actionMeta) => {
-    const { value } = newValue;
-    this.props.onChange(value);
+    if (newValue) {
+      const { value } = newValue;
+      this.props.onChange(value);
+    }
   };
 
   // handleInputChange = (inputValue, actionMeta) => {
@@ -25,13 +22,15 @@ export default class CreateableDropdown extends Component {
   // };
 
   render() {
+    const { options, value } = this.props;
     return (
       <CreatableSelect
         isClearable
         isOptionDisabled={option => !option.label.startsWith('Create')}
+        placeholder="Enter a unique value"
         onChange={this.handleChange}
         onInputChange={this.handleInputChange}
-        options={stubOptions}
+        options={options}
       />
     );
   }

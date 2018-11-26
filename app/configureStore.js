@@ -7,11 +7,16 @@ import { routerMiddleware } from 'connected-react-router/immutable';
 import createSagaMiddleware from 'redux-saga';
 import { reactReduxFirebase } from 'react-redux-firebase';
 import firebase from 'firebase/app';
+import 'firebase/auth';
+
 import createReducer from './reducers';
 // make this not bad
 import { config } from './firebase/firebase';
 
-const rrfConfig = {};
+const rrfConfig = {
+  userProfile: 'users',
+};
+
 firebase.initializeApp(config);
 
 const sagaMiddleware = createSagaMiddleware();

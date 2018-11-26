@@ -1,39 +1,35 @@
 import React from 'react';
-import { Field, reduxForm } from 'redux-form/immutable';
+import { connect } from 'react-redux';
+import get from 'lodash.get';
+import { compose } from 'recompose';
+import { reduxForm } from 'redux-form/immutable';
 import { Picker, List, WingBlank } from 'antd-mobile';
+
+import { firebaseConnect } from 'react-redux-firebase';
 
 const { Item } = List;
 
-const renderField = ({ input, label, type, meta: { touched, error } }) => (
-  <div>
-    <label>{label}</label>
-    <div>
-      <input {...input} type={type} placeholder={label} />
-      {touched && error && <span>{error}</span>}
-    </div>
-  </div>
-);
-
-const stub = [
-  { label: 'Stanionis the Turtle', value: 'Stanionis the Turtle' },
-  { label: 'Toney', value: 'Toney' },
-];
-
 const FormHeader = ({ text }) => (
   <WingBlank size="md">
-    <h3>Sequence: A special combination</h3>
+    <h3>Sequence: A short combination of moves</h3>
     <h4>Each style has a set of sequences</h4>
   </WingBlank>
 );
 
 const SequenceForm = props => {
-  const { handleSubmit, pristine, reset, submitting } = props;
+  const {
+    combatStyleOptions,
+    handleSubmit,
+    pristine,
+    reset,
+    submitting,
+  } = props;
   return (
     <form onSubmit={handleSubmit}>
       <FormHeader />
       <Picker
         cols={1}
-        data={stub}
+        data={combatStyleOptions}
         dismissText="Cancel"
         extra="Choose"
         okText="Confirm"
@@ -42,12 +38,35 @@ const SequenceForm = props => {
         onPickerChange={e => console.log('change', e)}
         title="Name"
       >
-        <Item arrow="horizontal">Style</Item>
+        <Item arrow="down">Style</Item>
       </Picker>
     </form>
   );
 };
 
-export default reduxForm({
-  form: 'combatSequence',
-})(SequenceForm);
+const getCombatStylesFromFirebase = state => {
+  const firebase = state.get('firebase');
+  const combatStyles = get(firebase, ['ordered', 'combatStyles'], []);
+
+  return combatStyles.map(style => ({
+    label: get(style, ['value', 'stylename']),
+    value: get(style, 'key'),
+  }));
+};
+
+const mapCombatStylesToOptions = state => ({
+  combatStyleOptions: getCombatStylesFromFirebase(state),
+});
+
+export default compose(
+  firebaseConnect([
+    'combatStyles', // { path: '/todos' } // object notation
+  ]),
+  connect(
+    mapCombatStylesToOptions,
+    {},
+  ),
+  reduxForm({
+    name: 'combatSequence',
+  }),
+)(SequenceForm);

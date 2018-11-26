@@ -15,21 +15,28 @@ import { SegmentedControl, WingBlank, WhiteSpace } from 'antd-mobile';
 import ViewHeader from 'components/ViewHeader';
 import COLORS from 'constants/colors';
 
+// import DynamicForm from './DynamicForm';
 import MoveForm from './MoveForm';
 import SequenceForm from './SequenceForm';
 import StyleForm from './StyleForm';
 
-const CombatSegments = ['Style', 'Move', 'Sequence'];
+const CombatSegments = ['Move', 'Sequence', 'Style'];
 
 const CombatMoveForm = ({ activeForm }) => {
   const componentMap = {
-    Move: MoveForm,
-    Sequence: SequenceForm,
-    Style: StyleForm,
+    Move: { dynamicName: 'combatMove', DynamicFormComponent: MoveForm },
+    Sequence: {
+      dynamicName: 'combatSequence',
+      DynamicFormComponent: SequenceForm,
+    },
+    Style: { dynamicName: 'combatStyle', DynamicFormComponent: StyleForm },
   };
-  const ComponentToRender = componentMap[activeForm];
 
-  return <ComponentToRender />;
+  const componentProps = componentMap[activeForm];
+  const FormComponent = componentProps.DynamicFormComponent;
+  const formName = componentProps.dynamicName;
+
+  return <FormComponent form={formName} />;
 };
 
 /* eslint-disable react/prefer-stateless-function */

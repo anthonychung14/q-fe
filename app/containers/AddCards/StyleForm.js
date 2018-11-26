@@ -1,9 +1,13 @@
 import React from 'react';
 import { Field, reduxForm } from 'redux-form/immutable';
+import { compose } from 'recompose';
+import { withFirebase } from 'react-redux-firebase';
+
 import { Button, WhiteSpace, WingBlank } from 'antd-mobile';
 
 import TextInput from 'components/TextInput';
 import TextAreaInput from 'components/TextAreaInput';
+import { withOnSubmit } from './formEnhancers';
 
 const FormHeader = ({ text }) => (
   <WingBlank size="md">
@@ -13,9 +17,10 @@ const FormHeader = ({ text }) => (
 );
 
 const StyleForm = props => {
-  const { handleSubmit, pristine, reset, submitting } = props;
+  // const { handleSubmit, pristine, reset, submitting, onSubmit } = props;
+  const { handleSubmit, onSubmit } = props;
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <FormHeader />
       <WhiteSpace />
       <Field
@@ -33,11 +38,17 @@ const StyleForm = props => {
         placeholder="How the style wins the round"
       />
       <WhiteSpace />
-      <Button icon="check-circle-o">Submit</Button>
+      <button type="submit" style={{ width: '100%' }}>
+        <Button icon="check-circle-o">Submit</Button>
+      </button>
     </form>
   );
 };
 
-export default reduxForm({
-  form: 'combatStyle',
-})(StyleForm);
+export default compose(
+  withFirebase,
+  reduxForm({
+    name: 'combatStyle',
+  }),
+  withOnSubmit,
+)(StyleForm);

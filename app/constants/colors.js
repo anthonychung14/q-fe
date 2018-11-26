@@ -4,4 +4,11 @@ export default Object.freeze({
   secondaryGreen: 'rgba(42,126,210,1)',
   primaryDark: '#48435C',
   primaryLight: '#EDFFEC',
+  orangeAccent: '#F29705',
+  movetype: {
+    ATK: 'red',
+    DEF: 'blue',
+    FNT: 'yellow',
+    MOV: 'green',
+  },
 });

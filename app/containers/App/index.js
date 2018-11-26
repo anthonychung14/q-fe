@@ -13,9 +13,9 @@ import { Helmet } from 'react-helmet';
 
 import HomePage from 'containers/HomePage/Loadable';
 import AddCards from 'containers/AddCards/Loadable';
+import ViewCards from 'containers/ViewCards/Loadable';
 import CycleCards from 'containers/CycleCards/Loadable';
-import NotFoundPage from 'containers/NotFoundPage/Loadable';
-// import NavBar from 'components/NavBar';
+// import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import AppBar from 'components/AppBar';
 
 import GlobalStyle from '../../global-styles';
@@ -29,10 +29,9 @@ export default function App() {
       <AppBar />
       <Switch>
         <Route exact path="/" component={HomePage} />
-        <Route exact path="/view" component={HomePage} />
+        <Route exact path="/view" component={ViewCards} />
         <Route exact path="/add" component={AddCards} />
         <Route exact path="/cycle" component={CycleCards} />
-        <Route component={NotFoundPage} />
       </Switch>
       <GlobalStyle />
     </div>
