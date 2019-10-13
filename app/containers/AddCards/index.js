@@ -10,40 +10,21 @@
 */
 
 import React from 'react';
-import { SegmentedControl, WingBlank, WhiteSpace } from 'antd-mobile';
+import { SegmentedControl, WingBlank } from 'antd-mobile';
 
-import ViewHeader from 'components/ViewHeader';
 import COLORS from 'constants/colors';
 
-// import DynamicForm from './DynamicForm';
-import MoveForm from './MoveForm';
-import SequenceForm from './SequenceForm';
-import StyleForm from './StyleForm';
+import CreateResource from '../CreateResource';
 
-const CombatSegments = ['Move', 'Sequence', 'Style'];
-
-const CombatMoveForm = ({ activeForm }) => {
-  const componentMap = {
-    Move: { dynamicName: 'combatMove', DynamicFormComponent: MoveForm },
-    Sequence: {
-      dynamicName: 'combatSequence',
-      DynamicFormComponent: SequenceForm,
-    },
-    Style: { dynamicName: 'combatStyle', DynamicFormComponent: StyleForm },
-  };
-
-  const componentProps = componentMap[activeForm];
-  const FormComponent = componentProps.DynamicFormComponent;
-  const formName = componentProps.dynamicName;
-
-  return <FormComponent form={formName} />;
-};
+// Updates to mode should trigger this render
+// const CombatSegments = ['sequence', 'move', 'style'];
+const KnowledgeSegments = ['excerpt', 'textSource', 'author'];
 
 /* eslint-disable react/prefer-stateless-function */
 export default class AddCards extends React.PureComponent {
   state = {
-    activeIndex: 0,
-    activeForm: CombatSegments[0],
+    activeIndex: 2,
+    activeForm: KnowledgeSegments[2],
   };
 
   onValueChange = value => {
@@ -58,19 +39,24 @@ export default class AddCards extends React.PureComponent {
   render() {
     const { activeIndex, activeForm } = this.state;
     return (
-      <WingBlank size="md">
-        <WhiteSpace size="mid" />
-        <ViewHeader header="Add New Card" />
-        <SegmentedControl
-          values={CombatSegments}
-          tintColor={COLORS.primaryGreen}
-          onChange={this.onChange}
-          onValueChange={this.onValueChange}
-          selectedIndex={activeIndex}
-        />
-        <WhiteSpace size="lg" />
-        <CombatMoveForm activeForm={activeForm} />
-      </WingBlank>
+      <div
+        style={{
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <WingBlank size="md" style={{ paddingTop: '50px' }}>
+          <SegmentedControl
+            values={KnowledgeSegments}
+            tintColor={COLORS.primaryGreen}
+            onChange={this.onChange}
+            onValueChange={this.onValueChange}
+            selectedIndex={activeIndex}
+          />
+        </WingBlank>
+        <CreateResource resourceType={activeForm} />
+      </div>
     );
   }
 }

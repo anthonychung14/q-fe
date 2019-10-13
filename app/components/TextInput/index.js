@@ -1,15 +1,26 @@
 import React from 'react';
-import { InputItem, WhiteSpace, WingBlank } from 'antd-mobile';
+import { List, InputItem, WhiteSpace, WingBlank } from 'antd-mobile';
 
-const TextInputField = ({ input, label, type, meta: { touched, error } }) => (
+const TextInput = ({
+  input,
+  label,
+  renderHeader,
+  meta = {},
+  forwardedRef,
+  opts = {},
+}) => (
   <WingBlank size="md">
-    <label>{label}</label>
     <WhiteSpace size="md" />
-    <div>
-      <InputItem {...input} placeholder="Enter description" />
-      {touched && error && <span>{error}</span>}
-    </div>
+    <List renderHeader={renderHeader}>
+      <InputItem
+        {...input}
+        {...opts}
+        ref={forwardedRef}
+        placeholder={label}
+        error={meta.touched && meta.error}
+      />
+    </List>
   </WingBlank>
 );
 
-export default TextInputField;
+export default TextInput;

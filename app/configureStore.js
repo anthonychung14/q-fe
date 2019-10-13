@@ -7,8 +7,8 @@ import { routerMiddleware } from 'connected-react-router/immutable';
 import createSagaMiddleware from 'redux-saga';
 import { reactReduxFirebase } from 'react-redux-firebase';
 import firebase from 'firebase/app';
+import 'firebase/database';
 import 'firebase/auth';
-
 import createReducer from './reducers';
 // make this not bad
 import { config } from './firebase/firebase';
@@ -20,6 +20,11 @@ const rrfConfig = {
 firebase.initializeApp(config);
 
 const sagaMiddleware = createSagaMiddleware();
+
+const createStoreWithFirebase = compose(
+  reactReduxFirebase(firebase, rrfConfig),
+)(createStore);
+
 
 export default function configureStore(initialState = {}, history) {
   // Create the store with two middlewares
@@ -38,10 +43,6 @@ export default function configureStore(initialState = {}, history) {
       ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({})
       : compose;
   /* eslint-enable */
-
-  const createStoreWithFirebase = compose(
-    reactReduxFirebase(firebase, rrfConfig),
-  )(createStore);
 
   const store = createStoreWithFirebase(
     createReducer(),

@@ -1,5 +1,5 @@
 import React from 'react';
-import { compose } from 'recompose';
+import { compose, defaultProps } from 'recompose';
 import { ListView, SegmentedControl, WhiteSpace, WingBlank } from 'antd-mobile';
 import { StickyContainer, Sticky } from 'react-sticky';
 import { firebaseConnect } from 'react-redux-firebase';
@@ -11,18 +11,17 @@ import ListRowMove from 'components/List/ListRowMove';
 import { withSegmentState } from 'components/SegmentBar/enhancers';
 
 import COLORS from 'constants/colors';
-import { getIsFirebaseRequesting, getCombatMovesById } from './selectors';
+
+import {
+  mapCombatFirebaseToProps,
+  mapCombatCardsToDataSource,
+} from 'selectors/combat';
 
 const ViewSegments = ['Move', 'Sequence'];
 
-const mapStateToProps = state => ({
-  isLoading: getIsFirebaseRequesting(state),
-  combatMove: getCombatMovesById(state),
-});
-
 const ListFooter = ({ isLoading }) => (
   <div style={{ padding: 10, textAlign: 'center' }}>
-    {isLoading ? 'Loading...' : 'Loaded'}
+    {isLoading ? 'Loading...' : ''}
   </div>
 );
 
@@ -30,14 +29,35 @@ const ListFooter = ({ isLoading }) => (
 class ViewCards extends React.PureComponent {
   constructor(props) {
     super(props);
-    const dataSource = new ListView.DataSource({
+    let dataSource = new ListView.DataSource({
       rowHasChanged: (row1, row2) => row1 !== row2,
     });
 
+    //
+    if (!props.isLoading && Object.keys(props.combatMove)) {
+      dataSource = dataSource.cloneWithRows(props.combatMove);
+    }
+
     this.state = {
       dataSource,
+      // activeForm: ViewSegments[0],
     };
   }
+
+  onValueChange = value => {
+    const ds = this.state.dataSource;
+    const propToGet = {
+      Move: 'combatMove',
+      Sequence: 'combatSequence',
+    };
+
+    const dataProp = propToGet[value];
+
+    this.setState(() => ({
+      // activeForm: value,
+      dataSource: ds.cloneWithRows(this.props[dataProp]),
+    }));
+  };
 
   // If you use redux, the data maybe at props, you need use `componentWillReceiveProps`
   componentWillReceiveProps(nextProps) {
@@ -53,13 +73,18 @@ class ViewCards extends React.PureComponent {
   };
 
   render() {
-    const { activeIndex, isLoading, handleSegmentChange } = this.props;
+    const {
+      activeIndex,
+      dataSource,
+      isLoading,
+      handleSegmentChange,
+    } = this.props;
 
     return (
       <StickyContainer className="sticky-container" style={{ zIndex: 4 }}>
         <WingBlank size="md">
           <ViewHeader header="View Cards" />
-          <Sticky topOffset={60}>
+          <Sticky topOffset={100}>
             {({ style }) => (
               <SegmentedControl
                 onChange={handleSegmentChange}
@@ -74,7 +99,7 @@ class ViewCards extends React.PureComponent {
           <WhiteSpace size="lg" />
           <ListView
             className="am-list"
-            dataSource={this.state.dataSource}
+            dataSource={dataSource}
             onEndReached={this.onEndReached}
             onEndReachedThreshold={10}
             pageSize={4}
@@ -94,10 +119,19 @@ class ViewCards extends React.PureComponent {
 export default compose(
   firebaseConnect([
     'combatMove', // { path: '/todos' } // object notation
+    'combatSequence',
   ]),
   connect(
-    mapStateToProps,
+    mapCombatFirebaseToProps,
     {},
   ),
+  defaultProps({
+    combatMove: {},
+  }),
   withSegmentState,
+  mapCombatCardsToDataSource,
 )(ViewCards);
+
+// export default compose(
+
+// )(ViewCards);

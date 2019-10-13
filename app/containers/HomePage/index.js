@@ -10,26 +10,27 @@
 */
 
 import React from 'react';
-import { Flex, WingBlank } from 'antd-mobile';
-
+import { WingBlank, Steps, WhiteSpace } from 'antd-mobile';
 import ViewHeader from 'components/ViewHeader';
 // import Login from 'components/Login';
-
-// const stubbedUrl =
-//   'https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/mealplans/generate?diet=paleo&exclude=shellfish%2C+olives&targetCalories=2000&timeFrame=day';
-
-// const headers = new Headers({
-//   'Content-Type': 'application/json',
-//   'X-Mashape-Key': 'sk34fGomj4mshbOh7kFaN1UMU6wcp17ZEipjsnmnWMRRh1NlPf',
-// });
 
 /* eslint-disable react/prefer-stateless-function */
 export default class HomePage extends React.PureComponent {
   render() {
     return (
       <WingBlank size="md">
-        <ViewHeader header="Landing" />
-        <Flex wrap="wrap" justify="around" />
+        <ViewHeader header="What is Q?" />
+        <WingBlank size="lg">
+          <h2>Q automates practice</h2>
+          <WhiteSpace />
+          <Steps size="medium" current={0}>
+            <Steps.Step title="Enter moves" />
+            <Steps.Step title="Compose moves into sequences" />
+            <Steps.Step title="Practice sequences in cycles" />
+            <Steps.Step title="Profit" />
+          </Steps>
+        </WingBlank>
+        <WhiteSpace />
       </WingBlank>
     );
   }

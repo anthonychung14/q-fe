@@ -1,5 +1,10 @@
 export default Object.freeze({
   accentGreen: '#37FF8B',
+  buttonTypes: {
+    // primary: '#48435C',
+    primary: '#EDFFEC',
+    secondary: '#EDFFEC',
+  },
   primaryGreen: '#61707D',
   secondaryGreen: 'rgba(42,126,210,1)',
   primaryDark: '#48435C',
@@ -8,7 +13,9 @@ export default Object.freeze({
   movetype: {
     ATK: 'red',
     DEF: 'blue',
-    FNT: 'yellow',
+    TRK: '#9669BF',
     MOV: 'green',
+    POKE: 'green',
   },
+  greenAccent: '#87C38F',
 });

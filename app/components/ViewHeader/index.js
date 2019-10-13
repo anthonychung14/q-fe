@@ -6,7 +6,8 @@ const Wrapper = styled.section`
   background: ${COLORS.primaryLight};
   display: flex;
   justify-content: center;
-  padding-top: 40px;
+  color: black;
+  padding-top: 42px;
 `;
 
 const ViewHeader = props => (

@@ -1,44 +1,35 @@
 import React from 'react';
+import { NavBar, Icon } from 'antd-mobile';
 import { NavLink } from 'react-router-dom';
 
-import { NavBar } from 'antd-mobile';
 import NavPopover from 'components/NavPopover';
-
 import COLORS from 'constants/colors';
 
-// import CustomIcon from 'components/CustomIcon';
-// import BarSvg from 'svgs/menu-icon.svg';
+const NavBarStyle = {
+  backgroundColor: COLORS.primaryDark,
+  borderBottom: `4px solid ${COLORS.accentGreen}`,
+  position: 'fixed',
+  width: '100%',
+  zIndex: 4,
+};
 
-// const MenuDrawer = () => (
-//   <div>
-//     <CustomIcon size="lg" type={BarSvg} style={{ color: 'white' }} />
-//   </div>
-// );
-
-const AppBar = () => (
+const AppBar = ({ handleDrawerToggle, drawerOpen }) => (
   <NavBar
-    style={{
-      backgroundColor: COLORS.primaryDark,
-      borderBottom: `4px solid ${COLORS.accentGreen}`,
-      position: 'fixed',
-      width: '100%',
-      zIndex: 4,
-    }}
+    style={NavBarStyle}
     mode="dark"
-    leftContent={[
-      <NavLink
-        style={{ color: 'white' }}
-        activeStyle={{ fontWeight: 'bold', color: 'white' }}
-        exact
-        key="home"
-        to="/"
-      >
-        Home
-      </NavLink>,
-    ]}
+    icon={<Icon type={drawerOpen ? 'left' : 'right'} />}
+    onLeftClick={() => handleDrawerToggle(!drawerOpen)}
     rightContent={[<NavPopover key="Nav" />]}
   >
-    Q
+    <NavLink
+      style={{ color: 'white' }}
+      activeStyle={{ color: COLORS.greenAccent }}
+      exact
+      key="home"
+      to="/"
+    >
+      Q
+    </NavLink>
   </NavBar>
 );
 

@@ -1,5 +1,7 @@
+// THIS DOESN'T BELONG. REMOVE MEEEEEE
 const prodConfig = {
   apiKey: 'AIzaSyDcV3_wB9_8oQem2fyoA7V71Nzo9oW3X4A',
+  appName: 'q-shadow',
   authDomain: 'shadow-self.firebaseapp.com',
   databaseURL: 'https://shadow-self.firebaseio.com',
   projectId: 'shadow-self',
@@ -9,7 +11,8 @@ const prodConfig = {
 
 const devConfig = {
   apiKey: 'AIzaSyDcV3_wB9_8oQem2fyoA7V71Nzo9oW3X4A',
-  authDomain: 'localhost',
+  appName: 'q-shadow',
+  authDomain: 'shadow-self.firebaseapp.com',
   databaseURL: 'https://shadow-self.firebaseio.com',
   projectId: 'shadow-self',
   storageBucket: 'shadow-self.appspot.com',
@@ -18,12 +21,4 @@ const devConfig = {
 
 const config = process.env.NODE_ENV === 'production' ? prodConfig : devConfig;
 
-// if (!firebase.apps.length) {
-//   firebase.initializeApp(config);
-// }
-
-// const db = firebase.database();
-// const auth = firebase.auth();
-
 export { config };
-// export { db, auth, config };

@@ -1,35 +1,35 @@
-/*
- * HomePage
- *
- * This is the first thing users see of our App, at the '/' route
- *
- * NOTE: while this component should technically be a stateless functional
- * component (SFC), hot reloading does not currently support SFCs. If hot
- * reloading is not a necessity for you then you can refactor it and remove
- * the linting exception.
-*/
-
 import React from 'react';
-import { Flex, WhiteSpace, WingBlank } from 'antd-mobile';
-import MealCard from 'components/CardList/MealCard';
+import { compose } from 'recompose';
+import { WhiteSpace, WingBlank, SegmentedControl } from 'antd-mobile';
 
-const stubbedUrl =
-  'https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/mealplans/generate?diet=paleo&exclude=shellfish%2C+olives&targetCalories=2000&timeFrame=day';
+import ViewHeader from 'components/ViewHeader';
+import COLORS from 'constants/colors';
 
-const headers = new Headers({
-  'Content-Type': 'application/json',
-  'X-Mashape-Key': 'sk34fGomj4mshbOh7kFaN1UMU6wcp17ZEipjsnmnWMRRh1NlPf',
-});
+import { withSegmentState } from 'components/SegmentBar/enhancers';
+// import { withOnSubmit } from '../AddCards/formEnhancers';
+import ExecuteForm from './ExecuteForm';
+
+const CycleSegments = ['Execute', 'React', 'Predict'];
 
 /* eslint-disable react/prefer-stateless-function */
-export default class CycleCards extends React.PureComponent {
+class CycleCards extends React.PureComponent {
   render() {
-    return <WingBlank size="md">Cycle Cards</WingBlank>;
+    const { activeIndex, handleSegmentChange } = this.props;
+    return (
+      <WingBlank size="md">
+        <ViewHeader header="Cycle Cards" />
+        <SegmentedControl
+          onChange={handleSegmentChange}
+          onValueChange={this.onValueChange}
+          selectedIndex={activeIndex}
+          tintColor={COLORS.primaryGreen}
+          values={CycleSegments}
+        />
+        <WhiteSpace size="lg" />
+        <ExecuteForm form="execute" />
+        <WhiteSpace size="lg" />
+      </WingBlank>
+    );
   }
 }
-/* 
-.header("X-Mashape-Host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
-.end(function (result) {
-  console.log(result.status, result.headers, result.body);
-});
-*/
+export default compose(withSegmentState)(CycleCards);

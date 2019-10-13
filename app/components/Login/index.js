@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
-import { withFirebase, isLoaded, isEmpty } from 'react-redux-firebase';
-// import GoogleButton from 'react-google-button' // optional
+import { connect } from 'react-redux';
+import { firebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase';
 
 export const LoginPage = ({ firebase, auth }) => (
   <div>
     <button // <GoogleButton/> button can be used instead
       onClick={() => {
-        firebase.login({ provider: 'google', type: 'redirect' });
+        firebase.login({ provider: 'google', type: 'popup' });
       }}
       type="button"
     >
@@ -21,12 +21,13 @@ export const LoginPage = ({ firebase, auth }) => (
       ) : isEmpty(auth) ? (
         <span>Not Authed</span>
       ) : (
-        <pre>{JSON.stringify(auth, null, 2)}</pre>
+        <span>Authed</span>
       )}
     </div>
   </div>
 );
 
+/* <pre>{JSON.stringify(auth, null, 2)}</pre> */
 LoginPage.propTypes = {
   firebase: PropTypes.shape({
     login: PropTypes.func.isRequired,
@@ -34,4 +35,7 @@ LoginPage.propTypes = {
   auth: PropTypes.object,
 };
 
-export default compose(withFirebase)(LoginPage);
+export default compose(
+  firebaseConnect(),
+  connect(state => ({ auth: state.get('firebase').auth })),
+)(LoginPage);
