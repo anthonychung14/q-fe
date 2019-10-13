@@ -8,6 +8,13 @@
 const RESOURCE_TYPE = 'author';
 const FIELDS = [
   {
+    name: 'charType',
+    type: 'checkbox',
+    values: ['person', 'company'],
+    label: 'Type of character',
+    required: true,
+  },
+  {
     resourceName: 'author',
     name: 'name',
     displayName: 'name',
@@ -15,13 +22,6 @@ const FIELDS = [
     label: 'The name of the author',
     required: true,
     unique: true,
-  },
-  {
-    name: 'charType',
-    type: 'checkbox',
-    values: ['person', 'company'],
-    label: 'Type of character',
-    required: true,
   },
   {
     name: 'notes',

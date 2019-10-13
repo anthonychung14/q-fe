@@ -4,6 +4,7 @@
  * @format
  * @flow
  */
+import Fuse from 'fuse.js';
 
 import * as React from 'react';
 import {
@@ -17,8 +18,12 @@ import {
 } from 'recompose';
 
 import resources from 'resources';
-
 import { WhiteSpace, WingBlank } from 'antd-mobile';
+
+// TODO: changes as a function of the resource
+const options = {
+  keys: ['fields.name', 'fields.title', 'fields.subtitle'],
+};
 
 const withLoading = withState('loading', 'setLoading', false);
 
@@ -42,7 +47,7 @@ export const fetchAirtable = compose(
         .then(r => r.json())
         .catch(e => e);
 
-      setRecords(records, () => {
+      setRecords(new Fuse(records, options), () => {
         setLoading(false);
       });
     },

@@ -73,11 +73,7 @@ const withSearchFilter = compose(
   withState(
     'searchTerm',
     'setSearchTerm',
-    ({ input, unique, ...rest }) =>
-      console.log(input, unique, rest, 'filter') ||
-      (input.value !== '' && unique)
-        ? input.value
-        : '',
+    ({ input, unique }) => (input.value !== '' && unique ? input.value : ''),
   ),
   withHandlers({
     onInputChange: ({ setSearchTerm }) => value => {
@@ -89,23 +85,13 @@ const withSearchFilter = compose(
       onInputChange(event.target.value);
     },
     onBlur: ({ input: formInput, unique, searchTerm }) => e => {
-      console.log(searchTerm, unique, 'wooooottttt');
-
       if (unique) {
         formInput.onChange(searchTerm);
       }
     },
   }),
   withProps(({ searchTerm, records }) => ({
-    searchedRecords:
-      searchTerm !== ''
-        ? records.filter(i =>
-            _.lowerCase(
-            _.get(i, 'fields.title', _.get(i, 'fields.name')),
-              searchTerm,
-            ),
-          )
-        : records,
+    searchedRecords: records.search ? records.search(searchTerm) : records,
   })),
 );
 
@@ -155,10 +141,10 @@ const maybeRenderChosenField = branch(
   props => props.input.value !== '' && !props.unique,
   compose(
     mapProps(props => {
-      const { records, input, } = props;
+      const { records, input } = props;
       const getter = i => i.id === input.value;
 
-      const found = records.find(getter);
+      const found = _.get(records, 'list', []).find(getter);
       return {
         ...props,
         input: {

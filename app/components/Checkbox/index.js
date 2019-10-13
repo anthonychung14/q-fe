@@ -9,10 +9,10 @@ const makeHandleCheck = (handleCheck, item) => () => {
   handleCheck(item);
 };
 
-const Checkbox = ({ checked, checkboxValues, handleCheck, ...rest }) => (
+const Checkbox = ({ checked, checkboxValues, handleCheck, name, ...rest }) => (
   <WingBlank size="md">
     <WhiteSpace size="md" />
-    <List renderHeader={() => 'medium'}>
+    <List renderHeader={() => name}>
       {checkboxValues.map(item => (
         <CheckboxItem
           key={`${item.label}-i`}

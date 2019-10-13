@@ -5,6 +5,12 @@
 const path = require('path');
 const webpack = require('webpack');
 
+const themeVariables = {
+  'primary-color': '#1DA57A',
+  'link-color': '#1DA57A',
+  'border-radius-base': '2px',
+};
+
 module.exports = options => ({
   mode: options.mode,
   entry: options.entry,
@@ -54,6 +60,21 @@ module.exports = options => ({
               // Inline files smaller than 10 kB
               limit: 10 * 1024,
               noquotes: true,
+            },
+          },
+        ],
+      },
+      {
+        test: /\.less$/,
+        include: /node_modules/,
+        use: [
+          'style-loader',
+          'css-loader',
+          {
+            loader: 'less-loader',
+            options: {
+              modifyVars: themeVariables,
+              javascriptEnabled: true,
             },
           },
         ],

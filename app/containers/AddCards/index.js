@@ -23,8 +23,8 @@ const KnowledgeSegments = ['excerpt', 'textSource', 'author'];
 /* eslint-disable react/prefer-stateless-function */
 export default class AddCards extends React.PureComponent {
   state = {
-    activeIndex: 2,
-    activeForm: KnowledgeSegments[2],
+    activeIndex: 0,
+    activeForm: KnowledgeSegments[0],
   };
 
   onValueChange = value => {
