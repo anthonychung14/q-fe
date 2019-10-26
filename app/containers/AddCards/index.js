@@ -8,36 +8,44 @@
  * reloading is not a necessity for you then you can refactor it and remove
  * the linting exception.
 */
-
+import _ from 'lodash';
 import React from 'react';
-import { SegmentedControl, WingBlank } from 'antd-mobile';
+import { compose, withState, branch, withProps, withHandlers } from 'recompose';
+import { connect } from 'react-redux';
 
+import { SegmentedControl, WingBlank } from 'antd-mobile';
 import COLORS from 'constants/colors';
 
 import CreateResource from '../CreateResource';
 
+const withSegmentState = compose(
+  withState('activeForm', 'onValueChange', props => _.first(props.values)),
+  withState('activeIndex', 'onIndexChange', 0),
+  withHandlers({
+    onChange: ({ onIndexChange }) => e => {
+      onIndexChange(e.nativeEvent.selectedSegmentIndex);
+    },
+  }),
+);
+
 // Updates to mode should trigger this render
 // const CombatSegments = ['sequence', 'move', 'style'];
 const KnowledgeSegments = ['excerpt', 'textSource', 'author'];
+const NutritionSegments = ['meal', 'food', 'creator', 'supplier'];
 
-/* eslint-disable react/prefer-stateless-function */
-export default class AddCards extends React.PureComponent {
-  state = {
-    activeIndex: 0,
-    activeForm: KnowledgeSegments[0],
-  };
+const getActiveMode = state =>
+  state.getIn(['skillMode', 'activeMode'], 'knowledge');
 
-  onValueChange = value => {
-    this.setState({ activeForm: value });
-  };
-
-  onChange = e => {
-    const segIndex = e.nativeEvent.selectedSegmentIndex;
-    this.setState({ activeIndex: segIndex });
-  };
-
+class AddCardsComponent extends React.PureComponent {
   render() {
-    const { activeIndex, activeForm } = this.state;
+    const {
+      activeForm,
+      activeIndex,
+      onChange,
+      onValueChange,
+      tintColor,
+      values,
+    } = this.props;
     return (
       <div
         style={{
@@ -48,11 +56,12 @@ export default class AddCards extends React.PureComponent {
       >
         <WingBlank size="md" style={{ paddingTop: '50px' }}>
           <SegmentedControl
-            values={KnowledgeSegments}
-            tintColor={COLORS.primaryGreen}
-            onChange={this.onChange}
-            onValueChange={this.onValueChange}
+            activeForm={activeForm}
+            onChange={onChange}
+            onValueChange={onValueChange}
             selectedIndex={activeIndex}
+            tintColor={tintColor}
+            values={values}
           />
         </WingBlank>
         <CreateResource resourceType={activeForm} />
@@ -60,3 +69,23 @@ export default class AddCards extends React.PureComponent {
     );
   }
 }
+
+const Enhanced = compose(
+  connect(state => ({ activeMode: getActiveMode(state) })),
+  branch(
+    ({ activeMode }) => activeMode !== 'nutrition',
+    withProps({
+      values: KnowledgeSegments,
+      tintColor: COLORS.primaryGreen,
+    }),
+    withProps({
+      values: NutritionSegments,
+      tintColor: COLORS.primaryBlue,
+    }),
+  ),
+  withSegmentState,
+);
+
+const AddCards = Enhanced(AddCardsComponent);
+
+export default AddCards;
