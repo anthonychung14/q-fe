@@ -9,6 +9,17 @@ import { WingBlank, WhiteSpace } from 'antd-mobile';
 import Button from 'components/Button';
 import FormField from './form_field';
 
+const renderField = (form, field, makeHeader) => (
+  <FormField
+    key={field.name}
+    form={form}
+    field={field}
+    renderHeader={makeHeader(field.name)}
+    name={field.name}
+    many={field.many}
+  />
+);
+
 const DynamicForm = ({
   fields,
   form,
@@ -19,24 +30,22 @@ const DynamicForm = ({
   submitLabel,
   processing,
 }) => {
-  const fieldRows = _.map(fields, field => (
-    <FormField
-      key={field.name}
-      form={form}
-      field={field}
-      renderHeader={makeRenderFieldHeader(field.name)}
-      name={field.name}
-      many={field.many}
-    />
-  ));
+  // filter out the ones with type media
+  const [mediaForm, otherFields] = _.partition(fields, ['type', 'media']);
+  const first = _.first(mediaForm);
 
   const onSubmit = handleSubmit(submitForm);
 
   return (
-    <form onSubmit={onSubmit}>
-      <WingBlank size="md">
+    <WingBlank size="md">
+      <form onSubmit={onSubmit}>
         <fieldset disabled={processing}>
-          {fieldRows}
+          <WingBlank size="md">
+            <h3>Content</h3>
+          </WingBlank>
+          {otherFields.map(field =>
+            renderField(form, field, makeRenderFieldHeader),
+          )}
           <WhiteSpace size="lg" />
           <Button
             type="submit"
@@ -46,8 +55,17 @@ const DynamicForm = ({
             disabled={processing || invalid}
           />
         </fieldset>
-      </WingBlank>
-    </form>
+      </form>
+      {first && (
+        <FormField
+          key={first.name}
+          field={first}
+          renderHeader={makeRenderFieldHeader(first.name)}
+          name={first.name}
+          many={first.many}
+        />
+      )}
+    </WingBlank>
   );
 };
 
@@ -92,10 +110,15 @@ class Form extends React.Component<Props> {
   Form = null;
 
   render() {
-    const { Form } = this;
+    const { Form: ClassForm } = this;
+    console.log('trying to render a form?', this.props);
     return (
-      Form && (
-        <Form key={this.props.form} {...this.props} submitForm={this.submit} />
+      ClassForm && (
+        <ClassForm
+          key={this.props.form}
+          {...this.props}
+          submitForm={this.submit}
+        />
       )
     );
   }

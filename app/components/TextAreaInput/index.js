@@ -12,7 +12,7 @@ const TextArea = ({
   <WingBlank size="md">
     <WhiteSpace size="md" />
     <List renderHeader={renderHeader}>
-      <TextareaItem {...input} rows={3} count={100} placeholder={placeholder} />
+      <TextareaItem {...input} rows={3} count={150} placeholder={placeholder} />
     </List>
   </WingBlank>
 );

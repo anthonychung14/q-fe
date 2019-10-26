@@ -137,6 +137,9 @@ module.exports = options => ({
     }),
   ]),
   resolve: {
+    alias: {
+      'react-native$': 'react-native-web',
+    },
     modules: ['node_modules', 'app'],
     extensions: ['.js', '.jsx', '.react.js'],
     mainFields: ['browser', 'jsnext:main', 'main'],

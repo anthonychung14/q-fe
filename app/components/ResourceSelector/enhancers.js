@@ -77,8 +77,6 @@ const postResource = async ({ resourceType, values }) => {
 
   const body = await JSON.stringify({ fields: values.toJS() });
 
-  console.log(resources, '???');
-
   return resources.airtable(resourceType).create([
     {
       fields: values.toJS(),

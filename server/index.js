@@ -1,21 +1,23 @@
 /* eslint consistent-return:0 import/order:0 */
 
 const express = require('express');
-const logger = require('./logger');
+const bodyParser = require('body-parser');
+const multer = require('multer');
 
+const logger = require('./logger');
 const argv = require('./argv');
 const port = require('./port');
+const api = require('./api');
 const setup = require('./middlewares/frontendMiddleware');
-const isDev = process.env.NODE_ENV !== 'production';
+
+const IS_DEV = process.env.NODE_ENV !== 'production';
 const ngrok =
-  (isDev && process.env.ENABLE_TUNNEL) || argv.tunnel
+  (IS_DEV && process.env.ENABLE_TUNNEL) || argv.tunnel
     ? require('ngrok')
     : false;
 const { resolve } = require('path');
-const app = express();
 
-// If you need a backend, e.g. an API, add your custom backend-specific middleware here
-// app.use('/api', myApi);
+const app = express();
 
 // In production we need to pass these values in instead of relying on webpack
 setup(app, {
@@ -34,6 +36,8 @@ app.get('*.js', (req, res, next) => {
   res.set('Content-Encoding', 'gzip');
   next();
 });
+
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Start your app.
 app.listen(port, host, async err => {
@@ -54,3 +58,6 @@ app.listen(port, host, async err => {
     logger.appStarted(port, prettyHost);
   }
 });
+
+// app.use('/', index);
+app.use('/api', api);

@@ -162,7 +162,6 @@ const maybeRenderChosenField = branch(
   // mapProps(
   //   props => {
   //     const {input} = props;
-  //     console.log('hello', 'hi')
   //     // onChange should turn back
   //     return {
   //       ...props,

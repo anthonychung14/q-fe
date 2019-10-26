@@ -10,6 +10,7 @@ export default Object.freeze({
   primaryDark: '#48435C',
   primaryLight: '#EDFFEC',
   orangeAccent: '#F29705',
+  primaryBlue: 'rgb(109, 188, 219)',
   movetype: {
     ATK: 'red',
     DEF: 'blue',

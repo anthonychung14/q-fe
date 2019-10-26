@@ -8,6 +8,7 @@ import { firebaseReducer } from 'react-redux-firebase';
 import { connectRouter } from 'connected-react-router/immutable';
 import { reducer as formReducer } from 'redux-form/immutable';
 
+import skillModeReducer from 'reducers/skill_mode';
 import history from 'utils/history';
 import languageProviderReducer from 'containers/LanguageProvider/reducer';
 
@@ -19,6 +20,7 @@ export default function createReducer(injectedReducers = {}) {
     form: formReducer,
     language: languageProviderReducer,
     firebase: firebaseReducer,
+    skillMode: skillModeReducer,
     ...injectedReducers,
   });
 

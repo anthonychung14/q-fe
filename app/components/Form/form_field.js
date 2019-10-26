@@ -9,6 +9,7 @@ import Checkbox from 'components/Checkbox';
 import TextAreaInput from 'components/TextAreaInput';
 import TextInput from 'components/TextInput';
 import ResourceSelector from 'components/ResourceSelector';
+import MediaUpload from 'containers/MediaUpload';
 
 const FormField = ({ renderHeader, field, form }: Props) => {
   const componentType = COMPONENT_TYPES[field.type];
@@ -70,6 +71,7 @@ const COMPONENT_TYPES = {
     parse: value => _.toNumber(value.replace(/\D/g, '')), // strip non-numeric chars and parse into number
   },
   resource: { component: ResourceSelector },
+  media: {component: MediaUpload},
   url: {
     component: TextInput,
     fullWidth: true,

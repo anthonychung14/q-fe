@@ -27,6 +27,12 @@ const FIELDS = [
     label: 'Contains the warrants and deeper evidence',
     required: true,
   },
+  {
+    name: 'media',
+    type: 'media',
+    label: 'a helpful picture of the palace',
+    required: true,
+  },
 ];
 
 const EXCERPT = {

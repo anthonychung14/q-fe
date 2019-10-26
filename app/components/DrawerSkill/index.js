@@ -1,37 +1,54 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { TouchableOpacity } from 'react-native';
 import { Drawer, List } from 'antd-mobile';
 
-const SKILLS = ['combat', 'nutrition', 'strength', 'knowledge'];
+const MODES = ['combat', 'nutrition', 'strength', 'knowledge'];
 
-const sidebar = (
+const sidebar = ({ makeHandlePress }) => (
   <List style={{ paddingTop: '42px' }}>
-    {SKILLS.map(i => (
-      <List.Item
-        key={`skill-${i}`}
-        thumb="https://zos.alipayobjects.com/rmsportal/eOZidTabPoEbPeU.png"
-      >
-        {i.toUpperCase()}
-      </List.Item>
+    {MODES.map(skill => (
+      <TouchableOpacity key={`skill-${skill}`} onPress={makeHandlePress(skill)}>
+        <List.Item>{skill.toUpperCase()}</List.Item>
+      </TouchableOpacity>
     ))}
   </List>
 );
 
-const DrawerSkill = ({ drawerOpen, handleDrawerToggle, children }) => (
-  <Drawer
-    className="my-drawer"
-    style={{ minHeight: document.documentElement.clientHeight }}
-    contentStyle={{}}
-    sidebar={sidebar}
-    sidebarStyle={{
-      border: '1px solid #ddd',
-      background: 'white',
-      width: '80%',
-    }}
-    open={drawerOpen}
-    onOpenChange={() => handleDrawerToggle(!drawerOpen)}
-  >
-    {children}
-  </Drawer>
-);
+const DrawerSkill = ({
+  drawerOpen,
+  dispatch,
+  handleDrawerToggle,
+  children,
+}) => {
+  const sidebarComponent = sidebar({
+    makeHandlePress: mode => () => {
+      dispatch({
+        type: 'mode/SWITCH',
+        payload: {
+          mode,
+        },
+      });
+    },
+  });
 
-export default DrawerSkill;
+  return (
+    <Drawer
+      className="my-drawer"
+      style={{ minHeight: document.documentElement.clientHeight }}
+      contentStyle={{}}
+      sidebar={sidebarComponent}
+      sidebarStyle={{
+        border: '1px solid #ddd',
+        background: 'white',
+        width: '80%',
+      }}
+      open={drawerOpen}
+      onOpenChange={() => handleDrawerToggle(!drawerOpen)}
+    >
+      {children}
+    </Drawer>
+  );
+};
+
+export default connect()(DrawerSkill);

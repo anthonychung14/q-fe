@@ -9,7 +9,7 @@ const makeHandleCheck = (handleCheck, item) => () => {
   handleCheck(item);
 };
 
-const Checkbox = ({ checked, checkboxValues, handleCheck, name, ...rest }) => (
+const Checkbox = ({ checked, checkboxValues, handleCheck, name }) => (
   <WingBlank size="md">
     <WhiteSpace size="md" />
     <List renderHeader={() => name}>

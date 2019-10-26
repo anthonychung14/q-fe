@@ -3,11 +3,11 @@ import { reduxForm } from 'redux-form';
 
 import { WingBlank } from 'antd-mobile';
 
-import { FIELDS } from './ExcerptForm';
 import MoveForm from './MoveForm';
 import TextSourceForm from './TextSourceForm';
 import SequenceForm from './SequenceForm';
 import StyleForm from './StyleForm';
+import ExcerptForm from './ExcerptForm';
 
 const FormMap = activeForm => {
   const componentMap = {
