@@ -51,6 +51,7 @@ const DynamicForm = ({
             type="submit"
             loading={processing}
             icon="check-circle-o"
+            handleClick={onSubmit}
             text={submitLabel || 'Submit'}
             disabled={processing || invalid}
           />
@@ -111,7 +112,6 @@ class Form extends React.Component<Props> {
 
   render() {
     const { Form: ClassForm } = this;
-    console.log('trying to render a form?', this.props);
     return (
       ClassForm && (
         <ClassForm

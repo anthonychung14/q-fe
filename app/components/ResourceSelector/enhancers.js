@@ -20,28 +20,38 @@ import {
 import resources from 'resources';
 import { WhiteSpace, WingBlank } from 'antd-mobile';
 
+import { connectActiveMode } from 'selectors/skillMode';
+
 // TODO: changes as a function of the resource
 const options = {
-  keys: ['fields.name', 'fields.title', 'fields.subtitle'],
+  keys: [
+    'fields.name',
+    'fields.title',
+    'fields.subtitle',
+    'fields.ingredient',
+    'field.unit',
+  ],
 };
 
 const withLoading = withState('loading', 'setLoading', false);
 
 const HEADERS = {
   headers: {
-    Authorization: 'Bearer keyXl84W0rtRUuOEV',
+    Authorization: 'Bearer keyXl84W0rtRUuOEV', // SUPER SECRET KEY
   },
 };
 
 export const fetchAirtable = compose(
+  connectActiveMode,
   withLoading,
   withState('records', 'setRecords', []),
   lifecycle({
     async componentDidMount() {
       const { setRecords, setLoading, resourceType } = this.props;
+      const appId = 'appO4vBVgVx66KFPX';
 
       const { records } = await fetch(
-        `https://api.airtable.com/v0/appO4vBVgVx66KFPX/${resourceType}?view=Grid%20view`,
+        `https://api.airtable.com/v0/${appId}/${resourceType}?view=Grid%20view`,
         HEADERS,
       )
         .then(r => r.json())
@@ -68,36 +78,12 @@ const fetchGif = () =>
       console.log(e, 'eeeee');
     });
 
-const postResource = async ({ resourceType, values }) => {
-  const headers = {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-    Authorization: 'Bearer keyXl84W0rtRUuOEV',
-  };
-
-  const body = await JSON.stringify({ fields: values.toJS() });
-
-  return resources.airtable(resourceType).create([
+const postResource = async ({ resourceType, values }) =>
+  resources.airtable(resourceType).create([
     {
       fields: values.toJS(),
     },
   ]);
-
-  // return fetch(
-  //   `https://api.airtable.com/v0/appO4vBVgVx66KFPX/${resourceType}`,
-  //   {
-  //     headers,
-  //     method: 'POST',
-  //     mode: 'no-cors',
-  //     body,
-  //   },
-  // )
-  //   .then(r => r.json())
-  //   .catch(e => {
-  //     console.error(e);
-  //     return e;
-  //   });
-};
 
 const withSetGif = compose(withState('gif', 'setGif', {}));
 

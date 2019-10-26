@@ -15,6 +15,7 @@ import { connect } from 'react-redux';
 
 import { SegmentedControl, WingBlank } from 'antd-mobile';
 import COLORS from 'constants/colors';
+import { getActiveMode } from 'selectors/skillMode';
 
 import CreateResource from '../CreateResource';
 
@@ -29,12 +30,11 @@ const withSegmentState = compose(
 );
 
 // Updates to mode should trigger this render
-// const CombatSegments = ['sequence', 'move', 'style'];
 const KnowledgeSegments = ['excerpt', 'textSource', 'author'];
-const NutritionSegments = ['meal', 'food', 'creator', 'supplier'];
-
-const getActiveMode = state =>
-  state.getIn(['skillMode', 'activeMode'], 'knowledge');
+const NutritionSegments = ['foodItem', 'meal', 'author'];
+// const CombatSegments = ['sequence', 'move', 'style'];
+// const LoveSegments = ['plan', 'interaction', 'character'];
+// const StrengthSegments = ['sequence', 'move', 'style'];
 
 class AddCardsComponent extends React.PureComponent {
   render() {
@@ -46,6 +46,11 @@ class AddCardsComponent extends React.PureComponent {
       tintColor,
       values,
     } = this.props;
+    // let resource = activeForm;
+    // if (resource === 'supplier' || resource === 'creator') {
+    //   resource = 'author';
+    // }
+
     return (
       <div
         style={{

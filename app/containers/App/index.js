@@ -10,9 +10,9 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { withState, compose, lifecycle } from 'recompose';
+import { withState } from 'recompose';
 
-import HomePage from 'containers/HomePage/Loadable';
+// import HomePage from 'containers/HomePage/Loadable';
 import AddCards from 'containers/AddCards/Loadable';
 import ViewCards from 'containers/ViewCards/Loadable';
 import CycleCards from 'containers/CycleCards/Loadable';
@@ -20,18 +20,12 @@ import CycleCards from 'containers/CycleCards/Loadable';
 import AppBar from 'components/AppBar';
 import DrawerSkill from 'components/DrawerSkill';
 
-import { fetchJSON } from 'utils/api';
-
 import GlobalStyle from '../../global-styles';
 
-const withToggleOpenState = compose(
-  // lifecycle({
-  //   async componentDidMount() {
-  //     const res = await fetchJSON('/api');
-  //     console.log('at least we fetched', res);
-  //   },
-  // }),
-  withState('drawerOpen', 'handleDrawerToggle', false),
+const withToggleOpenState = withState(
+  'drawerOpen',
+  'handleDrawerToggle',
+  false,
 );
 
 const Body = drawerProps => (
@@ -39,7 +33,7 @@ const Body = drawerProps => (
     <AppBar {...drawerProps} />
     <DrawerSkill {...drawerProps}>
       <Switch>
-        <Route exact path="/" component={AddCards} />
+        <Route exact path="/" component={ViewCards} />
         <Route exact path="/view" component={ViewCards} />
         <Route exact path="/add" component={AddCards} />
         <Route exact path="/cycle" component={CycleCards} />

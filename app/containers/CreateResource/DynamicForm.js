@@ -3,11 +3,17 @@ import { reduxForm } from 'redux-form';
 
 import { WingBlank } from 'antd-mobile';
 
+import {
+  author,
+  excerpt,
+  foodItem,
+  meal,
+  measurement,
+  textSource,
+} from 'resources';
 import MoveForm from './MoveForm';
-import TextSourceForm from './TextSourceForm';
 import SequenceForm from './SequenceForm';
 import StyleForm from './StyleForm';
-import ExcerptForm from './ExcerptForm';
 
 const FormMap = activeForm => {
   const componentMap = {
@@ -17,8 +23,10 @@ const FormMap = activeForm => {
       DynamicFormComponent: SequenceForm,
     },
     style: { tableName: 'combatStyles', DynamicFormComponent: StyleForm },
-    excerpt: { tableName: 'excerpt', DynamicFormComponent: TextSourceForm },
-    source: { tableName: 'source', DynamicFormComponent: ExcerptForm },
+    excerpt: { tableName: 'excerpt', DynamicFormComponent: excerpt },
+    source: { tableName: 'source', DynamicFormComponent: textSource },
+    meal: { tableName: 'meal', DynamicFormComponent: meal },
+    foodItem: { tableName: 'foodItem', DynamicFormComponent: foodItem },
   };
 
   const componentProps = componentMap[activeForm];

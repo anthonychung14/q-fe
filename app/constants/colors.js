@@ -8,9 +8,12 @@ export default Object.freeze({
   primaryGreen: '#61707D',
   secondaryGreen: 'rgba(42,126,210,1)',
   primaryDark: '#48435C',
+  secondaryDark: '#435C48',
   primaryLight: '#EDFFEC',
   orangeAccent: '#F29705',
   primaryBlue: 'rgb(109, 188, 219)',
+  darkBlue: '#0918B1',
+  redAccent: '#B10918',
   movetype: {
     ATK: 'red',
     DEF: 'blue',

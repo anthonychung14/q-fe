@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { TouchableOpacity } from 'react-native';
 import { Drawer, List } from 'antd-mobile';
 
-const MODES = ['combat', 'nutrition', 'strength', 'knowledge'];
+const MODES = ['nutrition', 'knowledge'];
 
 const sidebar = ({ makeHandlePress }) => (
   <List style={{ paddingTop: '42px' }}>

@@ -1,11 +1,10 @@
 import React from 'react';
-import { compose, defaultProps } from 'recompose';
+import { compose, defaultProps, withHandlers } from 'recompose';
 import { ListView, SegmentedControl, WhiteSpace, WingBlank } from 'antd-mobile';
 import { StickyContainer, Sticky } from 'react-sticky';
 import { firebaseConnect } from 'react-redux-firebase';
 import { connect } from 'react-redux';
 
-import ViewHeader from 'components/ViewHeader';
 import Separator from 'components/List/Separator';
 import ListRowMove from 'components/List/ListRowMove';
 import { withSegmentState } from 'components/SegmentBar/enhancers';
@@ -78,12 +77,15 @@ class ViewCards extends React.PureComponent {
       dataSource,
       isLoading,
       handleSegmentChange,
+      handlePress,
     } = this.props;
 
     return (
-      <StickyContainer className="sticky-container" style={{ zIndex: 4 }}>
+      <StickyContainer
+        className="sticky-container"
+        style={{ zIndex: 4, paddingTop: 50 }}
+      >
         <WingBlank size="md">
-          <ViewHeader header="View Cards" />
           <Sticky topOffset={100}>
             {({ style }) => (
               <SegmentedControl
@@ -105,7 +107,7 @@ class ViewCards extends React.PureComponent {
             pageSize={4}
             ref={this.setRef}
             renderFooter={() => <ListFooter isLoading={isLoading} />}
-            renderRow={ListRowMove}
+            renderRow={move => ListRowMove({ ...move, handlePress })}
             renderSeparator={Separator}
             scrollRenderAheadDistance={500}
             useBodyScroll
@@ -130,6 +132,11 @@ export default compose(
   }),
   withSegmentState,
   mapCombatCardsToDataSource,
+  withHandlers({
+    handlePress: () => () => {
+      console.log('yes');
+    },
+  }),
 )(ViewCards);
 
 // export default compose(
