@@ -1,8 +1,13 @@
+import _ from 'lodash';
 import React from 'react';
 import { Modal, List } from 'antd-mobile';
-import { View, Text } from 'react-native';
+import { compose, withProps } from 'recompose';
 import styled from 'styled-components';
 
+import { withFirebase, firebaseConnect } from 'react-redux-firebase';
+import { withOnSubmit } from 'containers/CreateResource/formEnhancers';
+
+import { View, Text } from 'react-native';
 import Button from 'components/Button';
 import { connectGoals } from 'selectors/goals';
 import { formatUnixTimestamp, currentTimeSeconds } from 'utils/time';
@@ -28,24 +33,58 @@ const HeaderColumn = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: ${({ start }) => (start ? 'flex-start' : 'flex-end')};
-  align-items: ${({ start }) => (start ? 'flex-start' : 'flex-end')};
+  justify-content: ${({ align }) =>
+    align === 'start' ? 'flex-start' : 'flex-end'};
+  align-items: ${({ align }) =>
+    align === 'start' ? 'flex-start' : 'flex-end'};
 `;
 
-const Total = ({ activeGoal }) => (
-  <Text>
-    {activeGoal.reduce((acc, curr, k) => {
-      const multiplier = k === 'fat' ? 9 : 4;
-      const final = acc + curr * multiplier;
-      return final;
-    }, 0)}{' '}
-    cal
-  </Text>
-);
+const CartColumn = ({ cart, subgoal }) => {
+  const text = cart.reduce((acc, curr) => {
+    const key =
+      subgoal !== 'calories'
+        ? _.camelCase(['grams', subgoal])
+        : _.camelCase([subgoal, 'atwater']);
+
+    const next = curr[key];
+    return acc + next;
+  }, 0);
+
+  return (
+    <Column justify="end">
+      <Text>{`${text} g`}</Text>
+    </Column>
+  );
+};
+
+const RemainingColumn = ({ activeGoal, cart, goalCalories, subgoal }) => {
+  const text = cart.reduce((acc, curr) => {
+    const key =
+      subgoal !== 'calories'
+        ? _.camelCase(['grams', subgoal])
+        : _.camelCase([subgoal, 'atwater']);
+
+    const next = acc - curr[key];
+    return next;
+  }, activeGoal.get(subgoal, goalCalories));
+
+  return (
+    <Column justify="end">
+      <Text>{`${text} g`}</Text>
+    </Column>
+  );
+};
+
+const NutritionTotals = ({ activeGoal, goalCalories, subgoal }) =>
+  subgoal === 'calories' ? (
+    <Text>{goalCalories} cal</Text>
+  ) : (
+    <Text>{activeGoal.get(subgoal)} g</Text>
+  );
 
 class SlideUpModal extends React.Component {
-  confirmAdd = () => {
-    // will have to write this to firebase...
+  handleConfirm = () => {
+    this.props.onBulkSubmit(this.props.cart.toJS());
     this.props.closeModal();
   };
 
@@ -56,22 +95,26 @@ class SlideUpModal extends React.Component {
     this.props.closeModal();
   };
 
+  handleLater = () => {
+    this.props.closeModal();
+  };
+
   render() {
     const {
-      activeMode,
-      closeModal,
       activeGoal,
-      visible,
+      activeMode,
+      cart,
+      goalCalories,
       maskClosable,
+      visible,
     } = this.props;
     return (
       <Modal
+        animationType="slide-up"
+        maskClosable={maskClosable}
         popup
         transparent
         visible={visible}
-        onClose={closeModal}
-        animationType="slide-up"
-        maskClosable={maskClosable}
       >
         <List
           renderHeader={() => (
@@ -82,14 +125,14 @@ class SlideUpModal extends React.Component {
                 justifyContent: 'space-between',
               }}
             >
-              <HeaderColumn start>
+              <HeaderColumn align="start">
                 <div>
                   {`${formatUnixTimestamp(currentTimeSeconds(), 'short_date')}`}{' '}
                 </div>
                 <div>{activeMode}</div>
               </HeaderColumn>
               <HeaderColumn>
-                <Text>consumed</Text>
+                <Text>in cart</Text>
               </HeaderColumn>
               <HeaderColumn>
                 <Text>remaining</Text>
@@ -120,19 +163,19 @@ class SlideUpModal extends React.Component {
                   <Column>
                     <Text>{i}</Text>
                   </Column>
+                  <CartColumn cart={cart} subgoal={i} />
+                  <RemainingColumn
+                    cart={cart}
+                    goalCalories={goalCalories}
+                    subgoal={i}
+                    activeGoal={activeGoal}
+                  />
                   <Column justify="end">
-                    <Text>120 g</Text>
-                  </Column>
-                  <Column justify="end">
-                    <Text>10 g</Text>
-                  </Column>
-
-                  <Column justify="end">
-                    {i === 'calories' ? (
-                      <Total activeGoal={activeGoal} />
-                    ) : (
-                      <Text>{activeGoal.get(i)} g</Text>
-                    )}
+                    <NutritionTotals
+                      activeGoal={activeGoal}
+                      subgoal={i}
+                      goalCalories={goalCalories}
+                    />
                   </Column>
                 </View>
               </List.Item>
@@ -148,18 +191,22 @@ class SlideUpModal extends React.Component {
               }}
             >
               <Button
-                type="secondary"
+                type="cancel"
                 handleClick={this.handleUndo}
-                text="Undo"
                 icon="cross-circle-o"
-                width="45%"
+                width="30%"
+              />
+              <Button
+                type="outline"
+                handleClick={this.handleLater}
+                icon="down"
+                width="30%"
               />
               <Button
                 type="primary"
-                handleClick={this.confirmAdd}
-                text="Confirm"
+                handleClick={this.handleConfirm}
                 icon="check-circle"
-                width="45%"
+                width="30%"
               />
             </div>
           </List.Item>
@@ -169,4 +216,10 @@ class SlideUpModal extends React.Component {
   }
 }
 
-export default connectGoals(SlideUpModal);
+export default compose(
+  connectGoals,
+  withProps(({ activeMode }) => ({ form: `${activeMode}/consumed` })),
+  firebaseConnect(props => [props.form]),
+  withFirebase,
+  withOnSubmit,
+)(SlideUpModal);

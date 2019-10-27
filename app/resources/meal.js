@@ -58,7 +58,7 @@ const FIELDS = [
     required: true,
   },
   {
-    name: 'grams_carbs',
+    name: 'grams_carb',
     displayName: 'carbs',
     type: 'integer',
     label: 'grams of carbs',

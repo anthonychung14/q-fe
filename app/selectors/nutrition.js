@@ -1,25 +1,36 @@
 import _ from 'lodash';
+import { createSelector } from 'reselect';
 import get from 'lodash.get';
+import { connect } from 'react-redux';
 import { ListView } from 'antd-mobile';
+import { firebaseConnect } from 'react-redux-firebase';
 
 import { compose, withProps, defaultProps } from 'recompose';
 import { fetchAirtable } from 'components/ResourceSelector/enhancers';
 import { mapObjKeysToCamel } from 'utils/enhancers';
 
 import { NUTRITION_CARD_TYPES } from 'mappers/nutrition-mappers';
+import { getFirebase, getIsFirebaseRequesting } from './firebase';
 
-// we need both sets from airtable
-// nutritionFoodItem
-// nutritionMeal
+export const getMealsEaten = createSelector(
+  [getFirebase],
+  firebase => get(firebase, ['data', 'combatMove']) || {},
+);
 
-// it should be
+const mapNutritionFirebaseToProps = state => ({
+  isLoading: getIsFirebaseRequesting(state),
+  mealsEaten: getMealsEaten(state),
+});
 
-// defaultProps({
-//   dataById: {},
-//   dataSource: new ListView.DataSource({
-//     rowHasChanged: (row1, row2) => row1 !== row2,
-//   }),
-// }),
+const connectNutritionFirebase = connect(mapNutritionFirebaseToProps);
+
+export const withMealRecords = compose(
+  firebaseConnect([
+    'nutritionMealEaten', // { path: '/todos' } // object notation
+  ]),
+  connectNutritionFirebase,
+);
+
 export const withNutritionCards = compose(
   withProps(({ activeIndex = 0 }) => ({
     activeCardType: get(NUTRITION_CARD_TYPES, [activeIndex, 'cardName']),

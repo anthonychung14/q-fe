@@ -19,3 +19,6 @@ export const withSegmentState = compose(
 
 export const mapObjKeysToCamel = (obj: Object) =>
   _.mapKeys(obj, (val, key) => _.camelCase(key));
+
+export const mapKeysToSnake = (obj: Object) =>
+  _.mapKeys(obj, (val, key) => _.snakeCase(key));

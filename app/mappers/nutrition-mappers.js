@@ -26,6 +26,12 @@ export const mapFoodItemToCard = ({
   cardTitle: `${ingredient}`,
   cardType: `${caloriesClaimed || caloriesAtwater} calories`,
   description: `${servingSize} ${servingUnit}`,
+  ingredient,
+  caloriesClaimed,
+  caloriesAtwater,
+  servingUnit,
+  servingSize,
+  supplier,
   ...rest,
 });
 
@@ -43,6 +49,8 @@ export const mapMealToCard = ({
   cardTitle: mealName,
   cardType: 'Shorthand of moves',
   description,
+  mealName,
+  ...rest,
 });
 
 export const NUTRITION_CARD_TYPES = [

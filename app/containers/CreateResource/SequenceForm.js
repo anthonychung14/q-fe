@@ -35,13 +35,13 @@ const SequenceForm = props => {
     invalid,
     loading,
     nameOptions,
-    onMultiSubmit,
+    onSequenceSubmit,
     // pristine,
     // reset,
     // submitting,
   } = props;
   return (
-    <form onSubmit={handleSubmit(onMultiSubmit)}>
+    <form onSubmit={handleSubmit(onSequenceSubmit)}>
       <FormHeader />
       <Field
         name="sequencename"

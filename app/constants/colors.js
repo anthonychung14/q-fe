@@ -4,6 +4,8 @@ const encodedColors = Object.freeze({
     // primary: '#48435C',
     primary: '#EDFFEC',
     secondary: '#83807c',
+    outline: '#f0e7e6',
+    cancel: '#ffa59c',
   },
   darkBlue: '#0918B1',
   accentTeal: '#36C9C7',

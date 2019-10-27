@@ -121,7 +121,7 @@ class ViewCards extends React.Component {
     return (
       <StickyContainer
         className="sticky-container"
-        style={{ zIndex: 4, paddingTop: 50 }}
+        style={{ zIndex: 4, paddingTop: 55 }}
       >
         <SlideUpModal
           visible={this.state.modalVisible}

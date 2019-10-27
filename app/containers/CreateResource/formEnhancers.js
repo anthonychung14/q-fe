@@ -1,4 +1,8 @@
+import _ from 'lodash';
 import { compose, withState, withHandlers } from 'recompose';
+
+import { currentTimeSeconds } from 'utils/time';
+import { mapKeysToSnake } from 'utils/enhancers';
 
 export const withOnSubmit = compose(
   withState('loading', 'setLoading', false),
@@ -18,7 +22,42 @@ export const withOnSubmit = compose(
           });
       }, 400);
     },
-    onMultiSubmit: ({ firebase, reset, form, setLoading }) => values => {
+    onBulkSubmit: ({ dispatch, firebase, form, setLoading }) => values => {
+      setLoading(true);
+      const time = currentTimeSeconds();
+      const firebaseValues = values
+        .map(
+          ({
+            producer,
+            cardId,
+            gramsCarb,
+            gramsFat,
+            gramsProtein,
+            caloriesAtwater,
+            ingredient,
+          }) => ({
+            dateCreatedTimestamp: time,
+            foodItemId: cardId,
+            producerId: _.first(producer),
+            gramsCarb,
+            gramsFat,
+            gramsProtein,
+            caloriesAtwater,
+            ingredient,
+          }),
+        )
+        .map(mapKeysToSnake);
+
+      firebaseValues.forEach(fbValue => {
+        firebase.push(form, { date_created_timestamp: time, ...fbValue });
+      });
+
+      setLoading(false);
+      dispatch({
+        type: 'card/EMPTY_RECENT_CART',
+      });
+    },
+    onSequenceSubmit: ({ firebase, reset, form, setLoading }) => values => {
       setLoading(true);
       const { sequencemoves, ...sequencevalues } = values;
 
@@ -54,5 +93,3 @@ export const withOnSubmit = compose(
     },
   }),
 );
-
-// movesequence
