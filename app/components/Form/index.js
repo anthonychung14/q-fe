@@ -5,7 +5,7 @@ import { reduxForm } from 'redux-form/immutable';
 import { Map, List } from 'immutable';
 import { withHandlers } from 'recompose';
 
-import { WingBlank, WhiteSpace } from 'antd-mobile';
+import { Grid, WingBlank, WhiteSpace } from 'antd-mobile';
 import Button from 'components/Button';
 import FormField from './form_field';
 
@@ -34,6 +34,11 @@ const DynamicForm = ({
   const [mediaForm, otherFields] = _.partition(fields, ['type', 'media']);
   const first = _.first(mediaForm);
 
+  const [numberFields, textFields] = _.partition(otherFields, [
+    'type',
+    'integer',
+  ]);
+
   const onSubmit = handleSubmit(submitForm);
 
   return (
@@ -41,11 +46,22 @@ const DynamicForm = ({
       <form onSubmit={onSubmit}>
         <fieldset disabled={processing}>
           <WingBlank size="md">
-            <h3>Content</h3>
+            <h3>Text Content</h3>
           </WingBlank>
-          {otherFields.map(field =>
+          {textFields.map(field =>
             renderField(form, field, makeRenderFieldHeader),
           )}
+          <WingBlank size="md">
+            <h3>Text Content</h3>
+          </WingBlank>
+          <Grid
+            data={numberFields}
+            columnNum={3}
+            renderItem={dataItem => {
+              const ref = React.createRef();
+              return renderField(form, dataItem, makeRenderFieldHeader, ref);
+            }}
+          />
           <WhiteSpace size="lg" />
           <Button
             type="submit"
@@ -138,5 +154,7 @@ type Props = {
 };
 
 export default withHandlers({
-  makeRenderFieldHeader: () => name => <label>{name}</label>,
+  makeRenderFieldHeader: () => name => (
+    <label>{_.startCase(_.toLower(name))}</label>
+  ),
 })(Form);

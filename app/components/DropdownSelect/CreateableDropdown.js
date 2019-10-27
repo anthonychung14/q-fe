@@ -7,7 +7,7 @@ const withDropdownHandlers = withHandlers({
   handleIsOptionDisabled: () => (option = '') =>
     option.label && !get(option, 'label', '').startsWith('Create'),
 
-  handleChange: ({ onChange }) => (newValue, actionMeta) => {
+  handleChange: ({ onChange }) => newValue => {
     if (newValue) {
       const { value } = newValue;
       onChange(value);

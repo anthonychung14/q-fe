@@ -7,9 +7,7 @@ export const currentTime = () => {
  * Returns the current time in seconds
  * @return {number}
  */
-export const currentTimeSeconds = () => {
-  return Math.round(currentTime() / 1000);
-};
+export const currentTimeSeconds = () => Math.round(currentTime() / 1000);
 
 export const formatUnixTimestamp = (
   timestamp: number,
@@ -20,6 +18,8 @@ export const formatUnixTimestamp = (
       return moment.unix(timestamp).fromNow();
     case 'date':
       return moment.unix(timestamp).format('ll');
+    case 'storage_date':
+      return moment.unix(timestamp).format('YYYY/M/DD');
     case 'short_date':
       return moment.unix(timestamp).format('M/DD/YY');
     case 'seconds':
@@ -36,3 +36,9 @@ export const formatUnixTimestamp = (
       return moment.unix(timestamp).format('M/DD/YY, h:mm a');
   }
 };
+
+export const getShortDate = () =>
+  formatUnixTimestamp(currentTimeSeconds(), 'short_date');
+
+export const getStorageDate = () =>
+  formatUnixTimestamp(currentTimeSeconds(), 'storage_date');

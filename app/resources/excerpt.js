@@ -31,7 +31,7 @@ const FIELDS = [
     name: 'media',
     type: 'media',
     label: 'a helpful picture of the palace',
-    required: true,
+    // required: true,
   },
 ];
 

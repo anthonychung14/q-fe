@@ -20,7 +20,7 @@ export default class MultiSelectDropdown extends Component {
   };
 
   render() {
-    const { options, value } = this.props;
+    const { options } = this.props;
     return (
       <Select
         closeMenuOnSelect={false}

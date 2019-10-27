@@ -104,10 +104,7 @@ export default compose(
     'combatMove',
     'combatSequence',
   ]),
-  connect(
-    mapCombatToProps,
-    {},
-  ),
+  connect(mapCombatToProps),
   reduxForm({
     name: 'combatSequence',
     validate: validateSequenceValues,

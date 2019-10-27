@@ -16,10 +16,10 @@ const FIELDS = [
   },
   {
     resourceName: 'author',
-    name: 'creator',
-    displayName: 'creator',
+    name: 'producer',
+    displayName: 'producer',
     type: 'resource',
-    label: 'creator of source',
+    label: 'producer of source',
     many: true,
     required: true,
   },
@@ -46,6 +46,12 @@ const FIELDS = [
     type: 'resource',
     label: 'serving_measurement',
     required: true,
+  },
+  {
+    name: 'serving_per_unit',
+    displayName: 'serving size',
+    type: 'integer',
+    label: 'servings per unit',
   },
   {
     name: 'calories_claimed',
@@ -93,7 +99,6 @@ const FIELDS = [
     name: 'media',
     type: 'media',
     label: 'a helpful picture of the item',
-    required: true,
   },
 ];
 

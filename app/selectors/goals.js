@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
 import { connect } from 'react-redux';
 
+import { getStorageDate } from 'utils/time';
 import { getActiveMode } from './skill_mode';
 
 const getGoals = state => state.get('goals');
@@ -22,6 +23,7 @@ export const getGoalCalories = createSelector([getGoalsForMode], activeGoal =>
 export const connectGoals = connect(state => ({
   activeGoal: getGoalsForMode(state),
   activeMode: getActiveMode(state),
-  goalCalories: getGoalCalories(state),
   cart: getCart(state),
+  date: getStorageDate(),
+  goalCalories: getGoalCalories(state),
 }));

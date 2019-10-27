@@ -8,6 +8,7 @@ const encodedColors = Object.freeze({
     cancel: '#ffa59c',
   },
   darkBlue: '#0918B1',
+  lightBlue: '#C2E0FE',
   accentTeal: '#36C9C7',
   orangeAccent: '#F29705',
   primaryBlue: 'rgb(109, 188, 219)',

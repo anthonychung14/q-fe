@@ -12,12 +12,12 @@ export const withOnSubmit = compose(
       setTimeout(() => {
         firebase
           .push(form, values)
-          .then(result => {
+          .then(() => {
             setLoading(false);
             reset();
           })
-          .catch(err => {
-            console.error(err);
+          .catch(() => {
+            // console.error(err);
             setLoading(false);
           });
       }, 400);
@@ -84,7 +84,7 @@ export const withOnSubmit = compose(
         firebase
           .ref()
           .update(allUpdates)
-          .then(completeUpdates => {
+          .then(() => {
             // console.log('DONE DONE DONE');
             setLoading(false);
             reset();

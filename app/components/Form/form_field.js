@@ -8,6 +8,7 @@ import { Field } from 'redux-form/immutable';
 import Checkbox from 'components/Checkbox';
 import TextAreaInput from 'components/TextAreaInput';
 import TextInput from 'components/TextInput';
+import NumberInput from 'components/NumberInput';
 import ResourceSelector from 'components/ResourceSelector';
 import MediaUpload from 'containers/MediaUpload';
 
@@ -66,12 +67,12 @@ const COMPONENT_TYPES = {
     component: Checkbox,
   },
   integer: {
-    component: TextInput,
+    component: NumberInput,
     fullWidth: true,
-    parse: value => _.toNumber(value.replace(/\D/g, '')), // strip non-numeric chars and parse into number
+    parse: value => _.toString(value.replace(/\D/g, '')), // strip non-numeric chars and parse into number
   },
   resource: { component: ResourceSelector },
-  media: {component: MediaUpload},
+  media: { component: MediaUpload },
   url: {
     component: TextInput,
     fullWidth: true,

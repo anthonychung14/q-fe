@@ -66,9 +66,10 @@ class ViewCards extends React.Component {
   // If you use redux, the data maybe at props, you need use `componentWillReceiveProps`
   componentWillReceiveProps(nextProps) {
     if (nextProps.dataById !== this.props.dataById) {
-      this.setState({
-        dataSource: this.state.dataSource.cloneWithRows(nextProps.dataById),
-      });
+      const ds = this.state.dataSource;
+      this.setState(() => ({
+        dataSource: ds.cloneWithRows(nextProps.dataById),
+      }));
     }
   }
 
@@ -119,49 +120,51 @@ class ViewCards extends React.Component {
     } = this.props;
 
     return (
-      <StickyContainer
-        className="sticky-container"
-        style={{ zIndex: 4, paddingTop: 55 }}
-      >
-        <SlideUpModal
-          visible={this.state.modalVisible}
-          closeModal={this.closeModal}
-        />
-        <WingBlank size="md">
-          <Sticky topOffset={100}>
-            {({ style }) => (
-              <SegmentedControl
-                onChange={handleSegmentChange}
-                onValueChange={this.handleValueChange}
-                selectedIndex={activeIndex}
-                style={{ ...style, zIndex: 4, top: 45 }}
-                tintColor={tintColor}
-                values={values}
-              />
-            )}
-          </Sticky>
-          <WhiteSpace size="lg" />
-          <ListView
-            className="am-list"
-            dataSource={dataSource}
-            onEndReached={this.onEndReached}
-            onEndReachedThreshold={10}
-            pageSize={4}
-            ref={this.setRef}
-            renderFooter={() => <ListFooter isLoading={isLoading} />}
-            renderRow={row => (
-              <ListRowMove
-                {...row}
-                handlePress={this.makehHandlePress(row)}
-                numInCart={cartConfirming.get(row.cardId)}
-              />
-            )}
-            renderSeparator={Separator}
-            scrollRenderAheadDistance={500}
-            useBodyScroll
+      <div>
+        <StickyContainer
+          className="sticky-container"
+          style={{ zIndex: 4, paddingTop: 55 }}
+        >
+          <SlideUpModal
+            visible={this.state.modalVisible}
+            closeModal={this.closeModal}
           />
-        </WingBlank>
-      </StickyContainer>
+          <WingBlank size="md">
+            <Sticky topOffset={100}>
+              {({ style }) => (
+                <SegmentedControl
+                  onChange={handleSegmentChange}
+                  onValueChange={this.handleValueChange}
+                  selectedIndex={activeIndex}
+                  style={{ ...style, zIndex: 4, top: 45 }}
+                  tintColor={tintColor}
+                  values={values}
+                />
+              )}
+            </Sticky>
+            <WhiteSpace size="lg" />
+            <ListView
+              className="am-list"
+              dataSource={dataSource}
+              onEndReached={this.onEndReached}
+              onEndReachedThreshold={10}
+              pageSize={4}
+              ref={this.setRef}
+              renderFooter={() => <ListFooter isLoading={isLoading} />}
+              renderRow={row => (
+                <ListRowMove
+                  {...row}
+                  handlePress={this.makehHandlePress(row)}
+                  numInCart={cartConfirming.get(row.cardId)}
+                />
+              )}
+              renderSeparator={Separator}
+              scrollRenderAheadDistance={500}
+              useBodyScroll
+            />
+          </WingBlank>
+        </StickyContainer>
+      </div>
     );
   }
 }

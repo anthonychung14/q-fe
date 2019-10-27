@@ -120,12 +120,6 @@ const withRenderers = withHandlers({
   renderSuggestion: () => hit => (
     <h3>{_.get(hit, 'fields.title', _.get(hit, 'fields.name'))}</h3>
   ),
-  // const withForwardingRef = BaseComponent =>
-  //   React.forwardRef((props, ref) => (
-  //     <BaseComponent {...props} forwardedRef={ref} />
-  //   ));
-
-  // const TextInputRef = withForwardingRef(TextInput);
 
   // renderInputComponent: ({ renderHeader, label }) => inputProps => (
   //   <TextInputRef {...inputProps} renderHeader={renderHeader} label={label} />

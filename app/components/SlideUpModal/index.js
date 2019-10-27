@@ -9,8 +9,13 @@ import { withOnSubmit } from 'containers/CreateResource/formEnhancers';
 
 import { View, Text } from 'react-native';
 import Button from 'components/Button';
+
 import { connectGoals } from 'selectors/goals';
-import { formatUnixTimestamp, currentTimeSeconds } from 'utils/time';
+import {
+  connectFirebaseForm,
+  withNutritionRemaining,
+} from 'selectors/skill_mode';
+import { getShortDate } from 'utils/time';
 
 const Column = styled.div`
   display: flex;
@@ -57,23 +62,15 @@ const CartColumn = ({ cart, subgoal }) => {
   );
 };
 
-const RemainingColumn = ({ activeGoal, cart, goalCalories, subgoal }) => {
-  const text = cart.reduce((acc, curr) => {
-    const key =
-      subgoal !== 'calories'
-        ? _.camelCase(['grams', subgoal])
-        : _.camelCase([subgoal, 'atwater']);
-
-    const next = acc - curr[key];
-    return next;
-  }, activeGoal.get(subgoal, goalCalories));
-
+const RemainingColumn = ({ unit, remainingAmount }) => {
   return (
     <Column justify="end">
-      <Text>{`${text} g`}</Text>
+      <Text>{`${remainingAmount} ${unit}`}</Text>
     </Column>
   );
 };
+
+const RemainingNutrition = withNutritionRemaining(RemainingColumn);
 
 const NutritionTotals = ({ activeGoal, goalCalories, subgoal }) =>
   subgoal === 'calories' ? (
@@ -104,10 +101,12 @@ class SlideUpModal extends React.Component {
       activeGoal,
       activeMode,
       cart,
+      firebaseData,
       goalCalories,
       maskClosable,
       visible,
     } = this.props;
+
     return (
       <Modal
         animationType="slide-up"
@@ -116,101 +115,102 @@ class SlideUpModal extends React.Component {
         transparent
         visible={visible}
       >
-        <List
-          renderHeader={() => (
+        {activeMode === 'nutrition' && (
+          <List
+            renderHeader={() => (
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <HeaderColumn align="start">
+                  <div>{`${getShortDate()}`} </div>
+                  <div>{activeMode}</div>
+                </HeaderColumn>
+                <HeaderColumn>
+                  <Text>in cart</Text>
+                </HeaderColumn>
+                <HeaderColumn>
+                  <Text>remaining</Text>
+                </HeaderColumn>
+                <HeaderColumn>
+                  <Text>daily goal</Text>
+                </HeaderColumn>
+              </View>
+            )}
+            className="popup-list"
+          >
             <View
               style={{
                 display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
               }}
             >
-              <HeaderColumn align="start">
-                <div>
-                  {`${formatUnixTimestamp(currentTimeSeconds(), 'short_date')}`}{' '}
-                </div>
-                <div>{activeMode}</div>
-              </HeaderColumn>
-              <HeaderColumn>
-                <Text>in cart</Text>
-              </HeaderColumn>
-              <HeaderColumn>
-                <Text>remaining</Text>
-              </HeaderColumn>
-              <HeaderColumn>
-                <Text>daily goal</Text>
-              </HeaderColumn>
-            </View>
-          )}
-          className="popup-list"
-        >
-          <View
-            style={{
-              display: 'flex',
-            }}
-          >
-            {['protein', 'fat', 'carb', 'calories'].map(i => (
-              // This will eventually be your x req - this
+              {['protein', 'fat', 'carb', 'calories'].map(i => (
+                // This will eventually be your x req - this
 
-              <List.Item key={`${i}-`}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    flex: 1,
-                  }}
-                >
-                  <Column>
-                    <Text>{i}</Text>
-                  </Column>
-                  <CartColumn cart={cart} subgoal={i} />
-                  <RemainingColumn
-                    cart={cart}
-                    goalCalories={goalCalories}
-                    subgoal={i}
-                    activeGoal={activeGoal}
-                  />
-                  <Column justify="end">
-                    <NutritionTotals
-                      activeGoal={activeGoal}
-                      subgoal={i}
+                <List.Item key={`${i}-`}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      flex: 1,
+                    }}
+                  >
+                    <Column>
+                      <Text>{i}</Text>
+                    </Column>
+                    <CartColumn cart={cart} subgoal={i} />
+                    <RemainingNutrition
+                      cart={cart}
+                      firebaseData={firebaseData}
                       goalCalories={goalCalories}
+                      subgoal={i}
+                      activeGoal={activeGoal}
                     />
-                  </Column>
-                </View>
-              </List.Item>
-            ))}
-          </View>
+                    <Column justify="end">
+                      <NutritionTotals
+                        activeGoal={activeGoal}
+                        subgoal={i}
+                        goalCalories={goalCalories}
+                      />
+                    </Column>
+                  </View>
+                </List.Item>
+              ))}
+            </View>
 
-          <List.Item>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-around',
-                flex: 1,
-              }}
-            >
-              <Button
-                type="cancel"
-                handleClick={this.handleUndo}
-                icon="cross-circle-o"
-                width="30%"
-              />
-              <Button
-                type="outline"
-                handleClick={this.handleLater}
-                icon="down"
-                width="30%"
-              />
-              <Button
-                type="primary"
-                handleClick={this.handleConfirm}
-                icon="check-circle"
-                width="30%"
-              />
-            </div>
-          </List.Item>
-        </List>
+            <List.Item>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-around',
+                  flex: 1,
+                }}
+              >
+                <Button
+                  type="cancel"
+                  handleClick={this.handleUndo}
+                  icon="cross-circle-o"
+                  width="30%"
+                />
+                <Button
+                  type="outline"
+                  handleClick={this.handleLater}
+                  icon="down"
+                  width="30%"
+                />
+                <Button
+                  type="primary"
+                  handleClick={this.handleConfirm}
+                  icon="check-circle"
+                  width="30%"
+                />
+              </div>
+            </List.Item>
+          </List>
+        )}
       </Modal>
     );
   }
@@ -218,8 +218,11 @@ class SlideUpModal extends React.Component {
 
 export default compose(
   connectGoals,
-  withProps(({ activeMode }) => ({ form: `${activeMode}/consumed` })),
+  withProps(({ activeMode, date }) => ({
+    form: `${activeMode}/consumed/${date}`,
+  })),
   firebaseConnect(props => [props.form]),
+  connectFirebaseForm,
   withFirebase,
   withOnSubmit,
 )(SlideUpModal);

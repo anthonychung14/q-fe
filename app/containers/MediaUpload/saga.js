@@ -9,10 +9,7 @@ function* postUpload({ fileData }) {
   }
 }
 
-// Root saga
 export default function* rootSaga() {
-  // if necessary, start multiple sagas at once with `all`
-  console.log('bing bong');
   yield all([
     takeLatest(CONSTANTS.upload.START, function* startUpload(action) {
       // we need to post to the backend

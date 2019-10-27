@@ -17,9 +17,6 @@ import resources from 'resources';
 class ResourceCreatePage extends React.Component<Props> {
   submitCallback = values => {
     const { createResource, resourceType } = this.props;
-    console.log('submit callback', resourceType, this.props);
-    // const { createResource, dispatch, create, resourceType } = this.props;
-    // dispatch(actions[resourceType].create(values, resourceType));
     createResource(resourceType, values);
   };
 

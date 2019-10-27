@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { WingBlank, WhiteSpace } from 'antd-mobile';
 import Button from 'components/Button';
-import urls from 'constants/urls';
+// import urls from 'constants/urls';
 
 const displayNoneStyle = { display: 'none' };
 /**
