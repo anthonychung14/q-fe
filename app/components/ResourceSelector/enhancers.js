@@ -20,8 +20,6 @@ import {
 import resources from 'resources';
 import { WhiteSpace, WingBlank } from 'antd-mobile';
 
-import { connectActiveMode } from 'selectors/skillMode';
-
 // TODO: changes as a function of the resource
 const options = {
   keys: [
@@ -42,9 +40,8 @@ const HEADERS = {
 };
 
 export const fetchAirtable = compose(
-  connectActiveMode,
   withLoading,
-  withState('records', 'setRecords', []),
+  withState('records', 'setRecords', { options: {}, list: [] }),
   lifecycle({
     async componentDidMount() {
       const { setRecords, setLoading, resourceType } = this.props;

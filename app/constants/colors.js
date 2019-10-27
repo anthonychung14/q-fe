@@ -1,19 +1,22 @@
-export default Object.freeze({
+const encodedColors = Object.freeze({
   accentGreen: '#37FF8B',
   buttonTypes: {
     // primary: '#48435C',
     primary: '#EDFFEC',
-    secondary: '#EDFFEC',
+    secondary: '#83807c',
   },
-  primaryGreen: '#61707D',
-  secondaryGreen: 'rgba(42,126,210,1)',
-  primaryDark: '#48435C',
-  secondaryDark: '#435C48',
-  primaryLight: '#EDFFEC',
+  darkBlue: '#0918B1',
+  accentTeal: '#36C9C7',
   orangeAccent: '#F29705',
   primaryBlue: 'rgb(109, 188, 219)',
-  darkBlue: '#0918B1',
+  primaryDark: '#48435C',
+  primaryGreen: '#61707D',
+  primaryLight: '#EDFFEC',
+  primaryRed: '#c93638',
   redAccent: '#B10918',
+  secondaryDark: '#435C48',
+  secondaryGreen: 'rgba(42,126,210,1)',
+  secondaryLight: '#83807c',
   movetype: {
     ATK: 'red',
     DEF: 'blue',
@@ -22,4 +25,32 @@ export default Object.freeze({
     POKE: 'green',
   },
   greenAccent: '#87C38F',
+});
+
+export default Object.freeze({
+  ...encodedColors,
+  modes: {
+    nutrition: {
+      primary: encodedColors.darkBlue,
+      secondary: encodedColors.redAccent,
+      types: {
+        PRO: 'red',
+        FAT: 'blue',
+        CRB: 'green',
+        CAL: 'black',
+      },
+    },
+    knowledge: {
+      primary: encodedColors.primaryDark,
+      secondary: encodedColors.greenAccent,
+    },
+    combat: {
+      primary: encodedColors.primaryRed,
+      secondary: encodedColors.accentTeal,
+    },
+    love: {
+      primary: encodedColors.accentTeal,
+      secondary: encodedColors.redAccent,
+    },
+  },
 });

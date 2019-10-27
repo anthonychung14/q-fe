@@ -1,6 +1,9 @@
 import get from 'lodash.get';
 import { createSelector } from 'reselect';
-import { defaultProps, compose, withProps } from 'recompose';
+import { defaultProps, compose, withProps, withHandlers } from 'recompose';
+import { firebaseConnect } from 'react-redux-firebase';
+import { connect } from 'react-redux';
+
 import { ListView } from 'antd-mobile';
 
 import { getFirebase, getIsFirebaseRequesting } from './firebase';
@@ -25,12 +28,6 @@ export const getOrderedCombatSequences = createSelector(
   [getFirebase],
   firebase => get(firebase, ['ordered', 'combatSequence']) || [],
 );
-
-export const mapCombatFirebaseToProps = state => ({
-  isLoading: getIsFirebaseRequesting(state),
-  combatMove: getOrderedCombatMoves(state),
-  combatSequence: getOrderedCombatSequences(state),
-});
 
 export const getCombatMovesFromFirebase = state => {
   const firebase = state.get('firebase');
@@ -95,7 +92,12 @@ export const mapCombatToProps = state => ({
   nameOptions: mapCombatSequenceNames(state),
 });
 
-// it should be
+export const mapCombatFirebaseToProps = state => ({
+  isLoading: getIsFirebaseRequesting(state),
+  combatMove: getOrderedCombatMoves(state),
+  combatSequence: getOrderedCombatSequences(state),
+});
+
 export const mapCombatCardsToDataSource = compose(
   defaultProps({
     dataSource: new ListView.DataSource({
@@ -121,4 +123,25 @@ export const mapCombatCardsToDataSource = compose(
       ),
     }),
   ),
+);
+
+export const withCombatSkill = compose(
+  firebaseConnect([
+    'combatMove', // { path: '/todos' } // object notation
+    'combatSequence',
+  ]),
+  connect(
+    mapCombatFirebaseToProps,
+    {},
+  ),
+  defaultProps({
+    combatMove: {},
+    combatSequence: {},
+  }),
+  mapCombatCardsToDataSource,
+  withHandlers({
+    handlePress: () => () => {
+      console.log('yes');
+    },
+  }),
 );

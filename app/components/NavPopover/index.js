@@ -34,6 +34,7 @@ export default class NavPopover extends React.Component {
   render() {
     return (
       <Popover
+        mask
         overlayClassName="navPopoverOverlay"
         overlayStyle={{ color: 'currentColor' }}
         visible={this.state.visible}

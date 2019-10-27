@@ -2,12 +2,12 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const multer = require('multer');
+// const multer = require('multer');
 
 const logger = require('./logger');
 const argv = require('./argv');
 const port = require('./port');
-const api = require('./api');
+// const api = require('./api');
 const setup = require('./middlewares/frontendMiddleware');
 
 const IS_DEV = process.env.NODE_ENV !== 'production';
@@ -60,4 +60,4 @@ app.listen(port, host, async err => {
 });
 
 // app.use('/', index);
-app.use('/api', api);
+// app.use('/api', api);

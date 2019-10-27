@@ -9,6 +9,8 @@ import { connectRouter } from 'connected-react-router/immutable';
 import { reducer as formReducer } from 'redux-form/immutable';
 
 import skillModeReducer from 'reducers/skill_mode';
+import cartReducer from 'reducers/cart';
+import goalsReducer from 'reducers/goals';
 import history from 'utils/history';
 import languageProviderReducer from 'containers/LanguageProvider/reducer';
 
@@ -21,6 +23,8 @@ export default function createReducer(injectedReducers = {}) {
     language: languageProviderReducer,
     firebase: firebaseReducer,
     skillMode: skillModeReducer,
+    cart: cartReducer,
+    goals: goalsReducer,
     ...injectedReducers,
   });
 

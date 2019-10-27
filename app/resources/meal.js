@@ -72,6 +72,13 @@ const FIELDS = [
     required: true,
   },
   {
+    name: 'calories_claimed',
+    displayName: 'calories',
+    type: 'integer',
+    label: 'calories in meal',
+    required: true,
+  },
+  {
     name: 'media',
     type: 'media',
     label: 'a helpful picture of the meal',

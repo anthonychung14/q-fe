@@ -1,9 +1,11 @@
 import React from 'react';
-import { WhiteSpace } from 'antd-mobile';
+import { WhiteSpace, ActivityIndicator } from 'antd-mobile';
 import styled from 'styled-components';
+// import styledN from 'styled-components/native';
 import Avatar from 'react-avatar';
 
-import { View, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity } from 'react-native';
+
 import COLORS from 'constants/colors';
 
 const RowHeaderWrapper = styled.div`
@@ -15,14 +17,35 @@ const RowHeaderWrapper = styled.div`
   justify-content: space-between;
 `;
 
-const RowContentWrapper = styled.div``;
+const RowContentWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
 
 const RowFooterWrapper = styled.div`
   display: flex;
+  flex-direction: row;
   justify-content: flex-end;
 `;
 
-const ListRow = rowData => {
+const NumIndicator = ({ numInCart }) => {
+  if (numInCart === 0) return null;
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+      }}
+    >
+      {numInCart} servings
+    </div>
+  );
+};
+
+const ListRow = props => {
   const {
     avatarColor,
     avatarName,
@@ -31,9 +54,16 @@ const ListRow = rowData => {
     description,
     cardType,
     handlePress,
-  } = rowData;
+    numInCart = 0,
+  } = props;
   return (
-    <View style={{ padding: 10 }} key={cardId}>
+    <View
+      style={{
+        padding: 10,
+        backgroundColor: numInCart ? COLORS.primaryLight : 'white',
+      }}
+      key={cardId}
+    >
       <TouchableOpacity onPress={handlePress}>
         <WhiteSpace size="md" />
         <RowHeaderWrapper>
@@ -43,19 +73,25 @@ const ListRow = rowData => {
             size={50}
             style={{ marginRight: '15px' }}
           />
-          <div style={{ fontWeight: 'bold' }}>{cardTitle}</div>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div style={{ fontWeight: 'bold' }}>{cardTitle}</div>
+          </div>
         </RowHeaderWrapper>
         <WhiteSpace size="lg" />
         <RowContentWrapper>
-          <div style={{ lineHeight: 1 }}>
+          <div style={{ lineHeight: 1, flexGrow: 1 }}>
             {description.split('.').map(d => (
-              <div style={{ marginBottom: '4px' }}>{d}</div>
+              <div key={d} style={{ marginBottom: '4px' }}>
+                {d}
+              </div>
             ))}
+            <NumIndicator numInCart={numInCart} />
+
             <WhiteSpace size="md" />
             <RowFooterWrapper>
-              <span style={{ fontSize: '14px', color: COLORS.orangeAccent }}>
+              <Text style={{ fontSize: '14px', color: COLORS.orangeAccent }}>
                 {cardType}
-              </span>
+              </Text>
             </RowFooterWrapper>
           </div>
           <WhiteSpace size="md" />

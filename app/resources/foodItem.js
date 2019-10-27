@@ -41,10 +41,17 @@ const FIELDS = [
   },
   {
     resourceName: 'unitMeasurement',
-    name: 'serving_measurement',
+    name: 'serving_unit',
     displayName: 'uom',
-    type: 'string',
+    type: 'resource',
     label: 'serving_measurement',
+    required: true,
+  },
+  {
+    name: 'calories_claimed',
+    displayName: 'calories',
+    type: 'integer',
+    label: 'calories in meal',
     required: true,
   },
   {

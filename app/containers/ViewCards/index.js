@@ -1,22 +1,24 @@
 import React from 'react';
-import { compose, defaultProps, withHandlers } from 'recompose';
+import _ from 'lodash';
+import { compose } from 'recompose';
 import { ListView, SegmentedControl, WhiteSpace, WingBlank } from 'antd-mobile';
 import { StickyContainer, Sticky } from 'react-sticky';
-import { firebaseConnect } from 'react-redux-firebase';
-import { connect } from 'react-redux';
 
 import Separator from 'components/List/Separator';
 import ListRowMove from 'components/List/ListRowMove';
-import { withSegmentState } from 'components/SegmentBar/enhancers';
+import SlideUpModal from 'components/SlideUpModal';
 
-import COLORS from 'constants/colors';
+import { condSwitch, withSegmentState } from 'utils/enhancers';
+import injectSaga from 'utils/injectSaga';
+import { DAEMON } from 'utils/constants';
 
-import {
-  mapCombatFirebaseToProps,
-  mapCombatCardsToDataSource,
-} from 'selectors/combat';
+import { connectActiveSegmentProps } from 'selectors/skill_mode';
+import { withNutritionCards } from 'selectors/nutrition';
+import { withCombatSkill } from 'selectors/combat';
+import { withKnowledgeCards } from 'selectors/knowledge';
 
-const ViewSegments = ['Move', 'Sequence'];
+import saga from './saga';
+import CONSTANTS from './constants';
 
 const ListFooter = ({ isLoading }) => (
   <div style={{ padding: 10, textAlign: 'center' }}>
@@ -25,7 +27,7 @@ const ListFooter = ({ isLoading }) => (
 );
 
 /* eslint-disable react/prefer-stateless-function */
-class ViewCards extends React.PureComponent {
+class ViewCards extends React.Component {
   constructor(props) {
     super(props);
     let dataSource = new ListView.DataSource({
@@ -33,24 +35,27 @@ class ViewCards extends React.PureComponent {
     });
 
     //
-    if (!props.isLoading && Object.keys(props.combatMove)) {
-      dataSource = dataSource.cloneWithRows(props.combatMove);
+    if (!props.isLoading && Object.keys(_.get(props, 'dataById', {}))) {
+      dataSource = dataSource.cloneWithRows(props.dataById);
     }
 
     this.state = {
       dataSource,
-      // activeForm: ViewSegments[0],
+      modalVisible: false,
     };
   }
 
-  onValueChange = value => {
+  handleValueChange = value => {
+    const { onValueChange } = this.props;
+    onValueChange(value);
+
     const ds = this.state.dataSource;
     const propToGet = {
       Move: 'combatMove',
       Sequence: 'combatSequence',
     };
 
-    const dataProp = propToGet[value];
+    const dataProp = propToGet[value] || 'dataById';
 
     this.setState(() => ({
       // activeForm: value,
@@ -60,9 +65,9 @@ class ViewCards extends React.PureComponent {
 
   // If you use redux, the data maybe at props, you need use `componentWillReceiveProps`
   componentWillReceiveProps(nextProps) {
-    if (nextProps.combatMove !== this.props.combatMove) {
+    if (nextProps.dataById !== this.props.dataById) {
       this.setState({
-        dataSource: this.state.dataSource.cloneWithRows(nextProps.combatMove),
+        dataSource: this.state.dataSource.cloneWithRows(nextProps.dataById),
       });
     }
   }
@@ -71,13 +76,46 @@ class ViewCards extends React.PureComponent {
     this.lv = el;
   };
 
+  makehHandlePress = card => () => this.handlePress(card);
+
+  handlePress = card => {
+    const delta = new Date().getTime() - this.state.lastPress;
+
+    if (delta < 200) {
+      // double tap happend
+      this.props.dispatch({
+        type: CONSTANTS.card.ADD_TO_CONSUME,
+        payload: {
+          card,
+          afterTimeout: () => {
+            this.setState({
+              modalVisible: true,
+            });
+          },
+        },
+      });
+    }
+
+    this.setState({
+      lastPress: new Date().getTime(),
+    });
+  };
+
+  closeModal = () => {
+    this.setState({
+      modalVisible: false,
+    });
+  };
+
   render() {
     const {
       activeIndex,
+      cartConfirming,
       dataSource,
-      isLoading,
       handleSegmentChange,
-      handlePress,
+      isLoading,
+      tintColor,
+      values,
     } = this.props;
 
     return (
@@ -85,16 +123,20 @@ class ViewCards extends React.PureComponent {
         className="sticky-container"
         style={{ zIndex: 4, paddingTop: 50 }}
       >
+        <SlideUpModal
+          visible={this.state.modalVisible}
+          closeModal={this.closeModal}
+        />
         <WingBlank size="md">
           <Sticky topOffset={100}>
             {({ style }) => (
               <SegmentedControl
                 onChange={handleSegmentChange}
-                onValueChange={this.onValueChange}
+                onValueChange={this.handleValueChange}
                 selectedIndex={activeIndex}
                 style={{ ...style, zIndex: 4, top: 45 }}
-                tintColor={COLORS.primaryGreen}
-                values={ViewSegments}
+                tintColor={tintColor}
+                values={values}
               />
             )}
           </Sticky>
@@ -107,7 +149,13 @@ class ViewCards extends React.PureComponent {
             pageSize={4}
             ref={this.setRef}
             renderFooter={() => <ListFooter isLoading={isLoading} />}
-            renderRow={move => ListRowMove({ ...move, handlePress })}
+            renderRow={row => (
+              <ListRowMove
+                {...row}
+                handlePress={this.makehHandlePress(row)}
+                numInCart={cartConfirming.get(row.cardId)}
+              />
+            )}
             renderSeparator={Separator}
             scrollRenderAheadDistance={500}
             useBodyScroll
@@ -119,26 +167,12 @@ class ViewCards extends React.PureComponent {
 }
 
 export default compose(
-  firebaseConnect([
-    'combatMove', // { path: '/todos' } // object notation
-    'combatSequence',
-  ]),
-  connect(
-    mapCombatFirebaseToProps,
-    {},
-  ),
-  defaultProps({
-    combatMove: {},
-  }),
+  injectSaga({ key: 'MediaUpload', saga, mode: DAEMON }),
+  connectActiveSegmentProps,
   withSegmentState,
-  mapCombatCardsToDataSource,
-  withHandlers({
-    handlePress: () => () => {
-      console.log('yes');
-    },
-  }),
+  condSwitch(
+    [props => props.activeMode === 'combat', withCombatSkill],
+    [props => props.activeMode === 'nutrition', withNutritionCards],
+    [props => props.activeMode === 'knowledge', withKnowledgeCards],
+  ),
 )(ViewCards);
-
-// export default compose(
-
-// )(ViewCards);

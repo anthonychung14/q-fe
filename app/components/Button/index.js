@@ -15,13 +15,13 @@ const Button = ({
   icon,
   text,
   type = 'primary',
+  width = '100%',
 }) => (
   <TouchableOpacity
     disabled={invalid}
     onPress={handleClick || onSubmit}
-    style={{ width: '100%' }}
+    style={{ width }}
   >
-    {/* <button disabled={invalid} type="submit" style={{ width: '100%' }}> */}
     <B
       style={{
         backgroundColor: loading
@@ -34,7 +34,6 @@ const Button = ({
     >
       {text}
     </B>
-    {/* </button> */}
   </TouchableOpacity>
 );
 
