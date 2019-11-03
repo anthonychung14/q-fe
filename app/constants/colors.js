@@ -16,6 +16,7 @@ const encodedColors = Object.freeze({
   primaryGreen: '#61707D',
   primaryLight: '#EDFFEC',
   primaryRed: '#c93638',
+  lightWhite: 'rgb(242, 242, 242)',
   redAccent: '#B10918',
   secondaryDark: '#435C48',
   secondaryGreen: 'rgba(42,126,210,1)',

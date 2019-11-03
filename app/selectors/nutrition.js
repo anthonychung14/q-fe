@@ -14,7 +14,7 @@ import { getFirebase, getIsFirebaseRequesting } from './firebase';
 
 export const getMealsEaten = createSelector(
   [getFirebase],
-  firebase => get(firebase, ['data', 'combatMove']) || {},
+  firebase => get(firebase, ['data', '']) || {},
 );
 
 const mapNutritionFirebaseToProps = state => ({
@@ -50,11 +50,14 @@ export const withNutritionCards = compose(
       .map(({ fields, id }) => ({ ...fields, id }))
       .map(mapObjKeysToCamel);
 
+    const mapped = data.map(({ id, ...rest }) =>
+      cardMapper({ key: id, value: rest }),
+    );
+
     return {
       dataById,
-      dataSource: dataSource.cloneWithRows(
-        data.map(({ id, ...rest }) => cardMapper({ key: id, value: rest })),
-      ),
+      dataSource: dataSource.cloneWithRows(mapped),
+      data: mapped,
     };
   }),
 );

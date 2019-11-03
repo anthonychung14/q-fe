@@ -1,3 +1,35 @@
+export const HEADERS = {
+  headers: {
+    Authorization: 'Bearer keyXl84W0rtRUuOEV', // SUPER SECRET KEY
+  },
+};
+
+const AIRTABLE_APP_ID = 'appO4vBVgVx66KFPX';
+const GIPHY_API_KEY = '5H93zHGj3Eg4pOv4BaV7oyJiO10O0r2X';
+
+export const fetchAirtableApi = async resourceType => {
+  const { records } = await fetch(
+    `https://api.airtable.com/v0/${AIRTABLE_APP_ID}/${resourceType}?view=Grid%20view`,
+    HEADERS,
+  )
+    .then(r => r.json())
+    .catch(e => e);
+
+  return records;
+};
+
+export const fetchGiphy = async () => {
+  const { data } = await fetch(
+    `https://api.giphy.com/v1/gifs/random?api_key=${GIPHY_API_KEY}`,
+  )
+    .then(r => r.json())
+    .catch(e => {
+      console.log(e, 'eeeee');
+    });
+
+  return data;
+};
+
 export const checkStatus = response => {
   if (response && response.status >= 200 && response.status < 300) {
     return response;

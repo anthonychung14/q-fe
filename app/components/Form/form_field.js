@@ -12,7 +12,7 @@ import NumberInput from 'components/NumberInput';
 import ResourceSelector from 'components/ResourceSelector';
 import MediaUpload from 'containers/MediaUpload';
 
-const FormField = ({ renderHeader, field, form }: Props) => {
+const FormField = ({ renderHeader, field, form, opts }: Props) => {
   const componentType = COMPONENT_TYPES[field.type];
 
   if (componentType == null) {
@@ -28,6 +28,17 @@ const FormField = ({ renderHeader, field, form }: Props) => {
     fieldValidators.push(required);
   }
 
+  if (field.blank && field.type === 'integer') {
+    return (
+      <NumberInput
+        opts={opts}
+        form={form}
+        renderHeader={renderHeader}
+        {...field}
+      />
+    );
+  }
+
   return (
     <Field
       component={componentType.component}
@@ -38,8 +49,9 @@ const FormField = ({ renderHeader, field, form }: Props) => {
       props={{
         form,
         renderHeader,
-        resourceType: field.resourceName,
+        resourceType: field.resourceName || field.name,
         ...field,
+        ...opts,
       }}
       validate={[...fieldValidators, ...componentValidators]}
     />
@@ -69,7 +81,8 @@ const COMPONENT_TYPES = {
   integer: {
     component: NumberInput,
     fullWidth: true,
-    parse: value => _.toString(value.replace(/\D/g, '')), // strip non-numeric chars and parse into number
+    parse: value =>
+      typeof value === 'number' ? value : _.toString(value.replace(/\D/g, '')), // strip non-numeric chars and parse into number
   },
   resource: { component: ResourceSelector },
   media: { component: MediaUpload },

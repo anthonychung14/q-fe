@@ -3,7 +3,7 @@ import { fromJS } from 'immutable';
 const INIT_STATE = fromJS({
   nutrition: {
     protein: 130,
-    carbs: 250,
+    carb: 250,
     fat: 75,
   },
   combat: {},

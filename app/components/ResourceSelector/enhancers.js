@@ -7,6 +7,7 @@
 import Fuse from 'fuse.js';
 
 import * as React from 'react';
+import _ from 'lodash';
 import {
   compose,
   withHandlers,
@@ -17,8 +18,9 @@ import {
   branch,
 } from 'recompose';
 
-import resources from 'resources';
 import { WhiteSpace, WingBlank } from 'antd-mobile';
+import resources from 'resources';
+import { fetchAirtableApi, fetchGiphy } from 'utils/api';
 
 // TODO: changes as a function of the resource
 const options = {
@@ -33,28 +35,16 @@ const options = {
 
 const withLoading = withState('loading', 'setLoading', false);
 
-const HEADERS = {
-  headers: {
-    Authorization: 'Bearer keyXl84W0rtRUuOEV', // SUPER SECRET KEY
-  },
-};
-
 export const fetchAirtable = compose(
   withLoading,
   withState('records', 'setRecords', { options: {}, list: [] }),
   lifecycle({
     async componentDidMount() {
       const { setRecords, setLoading, resourceType } = this.props;
-      const appId = 'appO4vBVgVx66KFPX';
 
-      const { records } = await fetch(
-        `https://api.airtable.com/v0/${appId}/${resourceType}?view=Grid%20view`,
-        HEADERS,
-      )
-        .then(r => r.json())
-        .catch(e => e);
+      const records = await fetchAirtableApi(resourceType);
 
-      setRecords(new Fuse(records, options), () => {
+      setRecords(new Fuse(_.reverse(records), options), () => {
         setLoading(false);
       });
     },
@@ -65,15 +55,6 @@ export const fetchAirtable = compose(
     },
   }),
 );
-
-const fetchGif = () =>
-  fetch(
-    'https://api.giphy.com/v1/gifs/random?api_key=5H93zHGj3Eg4pOv4BaV7oyJiO10O0r2X',
-  )
-    .then(r => r.json())
-    .catch(e => {
-      console.log(e, 'eeeee');
-    });
 
 const postResource = async ({ resourceType, values }) =>
   resources.airtable(resourceType).create([
@@ -93,15 +74,14 @@ export const withCreateResource = compose(
       values,
     ) => {
       setLoading(true);
-      // get a random gif link from a giphy endpoint
-      // create the thing
-      const { data } = await fetchGif();
-      const { image_url, id } = data;
+      const data = await fetchGiphy();
+
       setGif(data);
-      const withGifVals = values.set('gif_url', image_url).set('giphy_id', id);
+      const withGifVals = values
+        .set('gif_url', data.image_url)
+        .set('giphy_id', data.id);
 
-      const results = await postResource({ resourceType, values: withGifVals });
-
+      await postResource({ resourceType, values: withGifVals });
       setLoading(false);
     },
   }),

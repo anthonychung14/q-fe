@@ -24,7 +24,7 @@ export const mapFoodItemToCard = ({
   avatarName: ingredient,
   cardId: foodId,
   cardTitle: `${ingredient}`,
-  cardType: `${caloriesClaimed || caloriesAtwater} calories`,
+  cardType: `${caloriesAtwater} calories`,
   description: `${servingSize} ${servingUnit}`,
   ingredient,
   caloriesClaimed,

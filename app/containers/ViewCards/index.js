@@ -1,11 +1,18 @@
 import React from 'react';
 import _ from 'lodash';
 import { compose } from 'recompose';
-import { ListView, SegmentedControl, WhiteSpace, WingBlank } from 'antd-mobile';
+import {
+  Grid,
+  ListView,
+  SegmentedControl,
+  WhiteSpace,
+  WingBlank,
+} from 'antd-mobile';
 import { StickyContainer, Sticky } from 'react-sticky';
 
 import Separator from 'components/List/Separator';
-import ListRowMove from 'components/List/ListRowMove';
+// import ListRowMove from 'components/List/ListRowMove';
+import GridItem from 'components/List/GridItem';
 import SlideUpModal from 'components/SlideUpModal';
 
 import { condSwitch, withSegmentState } from 'utils/enhancers';
@@ -110,61 +117,78 @@ class ViewCards extends React.Component {
 
   render() {
     const {
+      activeMode,
       activeIndex,
       cartConfirming,
+      data,
       dataSource,
       handleSegmentChange,
       isLoading,
       tintColor,
       values,
+      ...rest
     } = this.props;
 
+    console.log('data is', data);
+
     return (
-      <div>
-        <StickyContainer
-          className="sticky-container"
-          style={{ zIndex: 4, paddingTop: 55 }}
-        >
-          <SlideUpModal
-            visible={this.state.modalVisible}
-            closeModal={this.closeModal}
+      <StickyContainer
+        className="sticky-container"
+        style={{ zIndex: 4, paddingTop: 55 }}
+      >
+        <SlideUpModal
+          visible={this.state.modalVisible}
+          closeModal={this.closeModal}
+        />
+        <WingBlank size="md">
+          {/* <Sticky topOffset={100}>
+            {({ style }) => (
+              <SegmentedControl
+                onChange={handleSegmentChange}
+                onValueChange={this.handleValueChange}
+                selectedIndex={activeIndex}
+                style={{ ...style, zIndex: 4, top: 45 }}
+                tintColor={tintColor}
+                values={values}
+              />
+            )}
+          </Sticky> */}
+          <WhiteSpace size="lg" />
+          <Grid
+            data={data}
+            columnNum={2}
+            renderItem={item => (
+              <GridItem
+                handlePress={this.makehHandlePress(item)}
+                numInCart={cartConfirming.get(item.cardId)}
+                activeMode={activeMode}
+                {...item}
+              />
+            )}
           />
-          <WingBlank size="md">
-            <Sticky topOffset={100}>
-              {({ style }) => (
-                <SegmentedControl
-                  onChange={handleSegmentChange}
-                  onValueChange={this.handleValueChange}
-                  selectedIndex={activeIndex}
-                  style={{ ...style, zIndex: 4, top: 45 }}
-                  tintColor={tintColor}
-                  values={values}
-                />
-              )}
-            </Sticky>
-            <WhiteSpace size="lg" />
-            <ListView
-              className="am-list"
-              dataSource={dataSource}
-              onEndReached={this.onEndReached}
-              onEndReachedThreshold={10}
-              pageSize={4}
-              ref={this.setRef}
-              renderFooter={() => <ListFooter isLoading={isLoading} />}
-              renderRow={row => (
-                <ListRowMove
-                  {...row}
-                  handlePress={this.makehHandlePress(row)}
-                  numInCart={cartConfirming.get(row.cardId)}
-                />
-              )}
-              renderSeparator={Separator}
-              scrollRenderAheadDistance={500}
-              useBodyScroll
-            />
-          </WingBlank>
-        </StickyContainer>
-      </div>
+          {/* <ListView
+            className="am-list"
+            dataSource={dataSource}
+            onEndReached={this.onEndReached}
+            onEndReachedThreshold={10}
+            pageSize={4}
+            ref={this.setRef}
+            initialListSize={100}
+            renderFooter={() => <ListFooter isLoading={isLoading} />}
+            renderRow={row => (
+              <ListRowMove
+                {...row}
+                handlePress={this.makehHandlePress(row)}
+                numInCart={cartConfirming.get(row.cardId)}
+                activeMode={activeMode}
+              />
+            )}
+            renderSeparator={Separator}
+            scrollRenderAheadDistance={500}
+            useBodyScroll
+          /> */}
+        </WingBlank>
+      </StickyContainer>
     );
   }
 }

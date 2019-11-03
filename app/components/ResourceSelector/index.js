@@ -33,7 +33,7 @@ const ResourceSelector = ({
   onSuggestionsClearRequested,
   onSuggestionSelected,
   onSuggestionsFetchRequested,
-  searchedRecords = [],
+  searchedRecords,
   renderInputComponent,
   renderHeader,
   renderSuggestion,
@@ -76,13 +76,8 @@ const withSearchFilter = compose(
     ({ input, unique }) => (input.value !== '' && unique ? input.value : ''),
   ),
   withHandlers({
-    onInputChange: ({ setSearchTerm }) => value => {
-      setSearchTerm(value);
-    },
-  }),
-  withHandlers({
-    onChange: ({ onInputChange }) => event => {
-      onInputChange(event.target.value);
+    onChange: ({ setSearchTerm }) => event => {
+      setSearchTerm(event.target.value);
     },
     onBlur: ({ input: formInput, unique, searchTerm }) => e => {
       if (unique) {
@@ -91,10 +86,11 @@ const withSearchFilter = compose(
     },
   }),
   withProps(({ searchTerm, records }) => ({
-    searchedRecords: records.search ? records.search(searchTerm) : records,
+    searchedRecords: records.search ? records.search(searchTerm) : records.list,
   })),
 );
 
+// TODO:
 const withSuggestionHandlers = withHandlers({
   onSuggestionSelected: ({ input: formInput, setSearchTerm, unique }) => (
     event,

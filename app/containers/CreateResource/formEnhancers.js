@@ -28,7 +28,7 @@ export const withOnSubmit = compose(
       const firebaseValues = values
         .map(
           ({
-            producer,
+            producerId,
             cardId,
             gramsCarb,
             gramsFat,
@@ -38,7 +38,7 @@ export const withOnSubmit = compose(
           }) => ({
             dateCreatedTimestamp: time,
             foodItemId: cardId,
-            producerId: _.first(producer),
+            producerId: _.first(producerId),
             gramsCarb,
             gramsFat,
             gramsProtein,
@@ -48,7 +48,7 @@ export const withOnSubmit = compose(
         )
         .map(mapKeysToSnake);
 
-      firebaseValues.forEach(fbValue => {
+      firebaseValues.forEach(({ producer_id, ...fbValue }) => {
         firebase.push(form, { date_created_timestamp: time, ...fbValue });
       });
 

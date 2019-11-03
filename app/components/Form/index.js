@@ -3,20 +3,23 @@ import _ from 'lodash';
 import * as React from 'react';
 import { reduxForm } from 'redux-form/immutable';
 import { Map, List } from 'immutable';
-import { withHandlers } from 'recompose';
+import { compose, withHandlers } from 'recompose';
 
-import { Grid, WingBlank, WhiteSpace } from 'antd-mobile';
+import { WingBlank, WhiteSpace } from 'antd-mobile';
 import Button from 'components/Button';
+import Keypad from 'components/Keypad';
 import FormField from './form_field';
 
-const renderField = (form, field, makeHeader) => (
+export const renderField = (form, field, makeHeader, opts = {}) => (
   <FormField
-    key={field.name}
-    form={form}
     field={field}
+    form={form}
+    key={field.name}
     renderHeader={makeHeader(field.name)}
-    name={field.name}
     many={field.many}
+    name={field.name}
+    opts={opts}
+    {...field}
   />
 );
 
@@ -24,15 +27,15 @@ const DynamicForm = ({
   fields,
   form,
   handleSubmit,
-  submitForm,
   invalid,
   makeRenderFieldHeader,
-  submitLabel,
   processing,
+  submitForm,
+  submitLabel,
 }) => {
   // filter out the ones with type media
   const [mediaForm, otherFields] = _.partition(fields, ['type', 'media']);
-  const first = _.first(mediaForm);
+  const firstMediaField = _.first(mediaForm);
 
   const [numberFields, textFields] = _.partition(otherFields, [
     'type',
@@ -51,17 +54,13 @@ const DynamicForm = ({
           {textFields.map(field =>
             renderField(form, field, makeRenderFieldHeader),
           )}
-          <WingBlank size="md">
-            <h3>Text Content</h3>
-          </WingBlank>
-          <Grid
-            data={numberFields}
+          <Keypad
             columnNum={3}
-            renderItem={dataItem => {
-              const ref = React.createRef();
-              return renderField(form, dataItem, makeRenderFieldHeader, ref);
-            }}
+            data={numberFields}
+            form={form}
+            makeRenderFieldHeader={makeRenderFieldHeader}
           />
+
           <WhiteSpace size="lg" />
           <Button
             type="submit"
@@ -73,13 +72,13 @@ const DynamicForm = ({
           />
         </fieldset>
       </form>
-      {first && (
+      {firstMediaField && (
         <FormField
-          key={first.name}
-          field={first}
-          renderHeader={makeRenderFieldHeader(first.name)}
-          name={first.name}
-          many={first.many}
+          key={firstMediaField.name}
+          field={firstMediaField}
+          renderHeader={makeRenderFieldHeader(firstMediaField.name)}
+          name={firstMediaField.name}
+          many={firstMediaField.many}
         />
       )}
     </WingBlank>
@@ -153,8 +152,10 @@ type Props = {
   submitLabel: string,
 };
 
-export default withHandlers({
-  makeRenderFieldHeader: () => name => (
-    <label>{_.startCase(_.toLower(name))}</label>
-  ),
-})(Form);
+export default compose(
+  withHandlers({
+    makeRenderFieldHeader: () => name => (
+      <label>{_.startCase(_.toLower(name))}</label>
+    ),
+  }),
+)(Form);

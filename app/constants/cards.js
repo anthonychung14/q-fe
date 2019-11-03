@@ -1,6 +1,6 @@
 export default Object.freeze({
   nutrition: ['foodItem', 'author'],
-  combat: ['Move', 'Sequence'],
+  combat: ['move', 'sequence'],
   knowledge: ['excerpt', 'textSource', 'author'],
   love: ['plan', 'interaction', 'character'],
 });

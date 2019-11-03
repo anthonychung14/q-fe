@@ -15,7 +15,7 @@ const RowHeaderWrapper = styled.div`
   border-bottom: 2px solid
     ${({ activeMode }) => _.get(COLORS, ['modes', activeMode, 'secondary'])};
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   padding-bottom: 10px;
 `;
 
@@ -47,10 +47,8 @@ const NumIndicator = ({ numInCart }) => {
   );
 };
 
-const ListRow = props => {
+const GridItem = props => {
   const {
-    avatarColor,
-    avatarName,
     cardId,
     cardTitle,
     description,
@@ -61,7 +59,8 @@ const ListRow = props => {
   return (
     <View
       style={{
-        padding: 10,
+        padding: '10px',
+        margin: '5px',
         backgroundColor: numInCart ? COLORS.primaryLight : 'white',
       }}
       key={cardId}
@@ -69,24 +68,23 @@ const ListRow = props => {
       <TouchableOpacity onPress={handlePress}>
         <WhiteSpace size="md" />
         <RowHeaderWrapper>
-          <Avatar
-            color={avatarColor}
-            name={avatarName}
-            size={50}
-            style={{ marginRight: '15px' }}
-          />
-          <Text style={{ fontWeight: 'bold' }}>{cardTitle}</Text>
+          <Text
+            style={{
+              fontWeight: 'bold',
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {cardTitle}
+          </Text>
         </RowHeaderWrapper>
         <WhiteSpace size="lg" />
         <RowContentWrapper>
-          <View
-            style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}
-          >
-            {description.split('.').map(d => (
-              <Text key={d} style={{ marginBottom: '4px' }}>
-                {d}
-              </Text>
-            ))}
+          <View style={{ display: 'flex', flexDirection: 'column' }}>
+            <Text style={{ display: 'flex', marginBottom: '4px' }}>
+              {description}
+            </Text>
             <NumIndicator numInCart={numInCart} />
 
             <WhiteSpace size="md" />
@@ -103,4 +101,4 @@ const ListRow = props => {
   );
 };
 
-export default ListRow;
+export default GridItem;

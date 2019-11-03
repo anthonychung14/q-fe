@@ -8,7 +8,7 @@ import { withFirebase, firebaseConnect } from 'react-redux-firebase';
 import { withOnSubmit } from 'containers/CreateResource/formEnhancers';
 
 import { View, Text } from 'react-native';
-import Button from 'components/Button';
+import ButtonGroup from 'components/Button/ButtonGroup';
 
 import { connectGoals } from 'selectors/goals';
 import {
@@ -181,34 +181,11 @@ class SlideUpModal extends React.Component {
               ))}
             </View>
 
-            <List.Item>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-around',
-                  flex: 1,
-                }}
-              >
-                <Button
-                  type="cancel"
-                  handleClick={this.handleUndo}
-                  icon="cross-circle-o"
-                  width="30%"
-                />
-                <Button
-                  type="outline"
-                  handleClick={this.handleLater}
-                  icon="down"
-                  width="30%"
-                />
-                <Button
-                  type="primary"
-                  handleClick={this.handleConfirm}
-                  icon="check-circle"
-                  width="30%"
-                />
-              </div>
-            </List.Item>
+            <ButtonGroup
+              handleUndo={this.handleUndo}
+              handleLater={this.handleLater}
+              handleConfirm={this.handleConfirm}
+            />
           </List>
         )}
       </Modal>

@@ -33,7 +33,7 @@ const Body = drawerProps => (
     <AppBar {...drawerProps} />
     <DrawerSkill {...drawerProps}>
       <Switch>
-        <Route exact path="/" component={AddCards} />
+        <Route exact path="/" component={ViewCards} />
         <Route exact path="/view" component={ViewCards} />
         <Route exact path="/add" component={AddCards} />
         <Route exact path="/cycle" component={CycleCards} />
