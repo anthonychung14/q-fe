@@ -21,6 +21,7 @@ const encodedColors = Object.freeze({
   secondaryDark: '#435C48',
   secondaryGreen: 'rgba(42,126,210,1)',
   secondaryLight: '#83807c',
+  secondaryWhite: '#f0f5f1',
   movetype: {
     ATK: 'red',
     DEF: 'blue',

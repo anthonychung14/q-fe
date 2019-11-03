@@ -1,4 +1,5 @@
 import React from 'react';
+import { TouchableOpacity, Text } from 'react-native';
 import _ from 'lodash';
 import { compose } from 'recompose';
 import {
@@ -37,17 +38,8 @@ const ListFooter = ({ isLoading }) => (
 class ViewCards extends React.Component {
   constructor(props) {
     super(props);
-    let dataSource = new ListView.DataSource({
-      rowHasChanged: (row1, row2) => row1 !== row2,
-    });
-
-    //
-    if (!props.isLoading && Object.keys(_.get(props, 'dataById', {}))) {
-      dataSource = dataSource.cloneWithRows(props.dataById);
-    }
 
     this.state = {
-      dataSource,
       modalVisible: false,
     };
   }
@@ -126,10 +118,9 @@ class ViewCards extends React.Component {
       isLoading,
       tintColor,
       values,
+      handleFilterClick,
       ...rest
     } = this.props;
-
-    console.log('data is', data);
 
     return (
       <StickyContainer
@@ -153,7 +144,16 @@ class ViewCards extends React.Component {
               />
             )}
           </Sticky> */}
-          <WhiteSpace size="lg" />
+          <Grid
+            data={rest.next}
+            columnNum={8}
+            renderItem={letter => (
+              <TouchableOpacity onPress={() => handleFilterClick(letter)}>
+                <Text>{letter}</Text>
+              </TouchableOpacity>
+            )}
+          />
+          <WhiteSpace size="sm" />
           <Grid
             data={data}
             columnNum={2}

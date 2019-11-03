@@ -59,9 +59,13 @@ const GridItem = props => {
   return (
     <View
       style={{
-        padding: '10px',
+        padding: '5px',
         margin: '5px',
-        backgroundColor: numInCart ? COLORS.primaryLight : 'white',
+        height: '100%',
+        width: '100%',
+        backgroundColor: numInCart
+          ? COLORS.primaryLight
+          : COLORS.secondaryWhite,
       }}
       key={cardId}
     >

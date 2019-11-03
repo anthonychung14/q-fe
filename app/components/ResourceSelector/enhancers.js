@@ -40,13 +40,24 @@ export const fetchAirtable = compose(
   withState('records', 'setRecords', { options: {}, list: [] }),
   lifecycle({
     async componentDidMount() {
-      const { setRecords, setLoading, resourceType } = this.props;
+      const { setRecords, setLoading, search, resourceType } = this.props;
 
-      const records = await fetchAirtableApi(resourceType);
+      const records = await fetchAirtableApi(resourceType, search);
 
       setRecords(new Fuse(_.reverse(records), options), () => {
         setLoading(false);
       });
+    },
+    async componentDidUpdate(prev) {
+      const { setRecords, setLoading, search, resourceType } = this.props;
+
+      if (search !== prev.search) {
+        const records = await fetchAirtableApi(resourceType, search);
+
+        setRecords(new Fuse(_.reverse(records), options), () => {
+          setLoading(false);
+        });
+      }
     },
   }),
   withHandlers({

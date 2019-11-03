@@ -7,9 +7,12 @@ export const HEADERS = {
 const AIRTABLE_APP_ID = 'appO4vBVgVx66KFPX';
 const GIPHY_API_KEY = '5H93zHGj3Eg4pOv4BaV7oyJiO10O0r2X';
 
-export const fetchAirtableApi = async resourceType => {
+export const fetchAirtableApi = async (resourceType, searchTerm) => {
+  const filter = `filterByFormula=SEARCH(%22${searchTerm}%22%2C%7Bingredient%7D)`;
+
   const { records } = await fetch(
-    `https://api.airtable.com/v0/${AIRTABLE_APP_ID}/${resourceType}?view=Grid%20view`,
+    `https://api.airtable.com/v0/${AIRTABLE_APP_ID}/${resourceType}?${searchTerm &&
+      filter}`,
     HEADERS,
   )
     .then(r => r.json())
