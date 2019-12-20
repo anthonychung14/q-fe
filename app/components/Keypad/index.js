@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import styled from 'styled-components';
 import {
@@ -24,7 +25,7 @@ const Outer = styled(View)`
 const Inner = styled(View)`
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-around;
 `;
 
@@ -43,7 +44,7 @@ const KeypadHeaderInput = ({
     <Inner>
       <h3>{keypadInput}</h3>
       <View>
-        <Text>{fieldName}</Text>
+        <Text>{_.startCase(_.camelCase(fieldName))}</Text>
       </View>
     </Inner>
     <ButtonGroup
@@ -83,6 +84,7 @@ const Keypad = ({
       <KeypadHeader
         startedInput={startedInput}
         fieldName={fieldName}
+        keypadInput={keypadInput}
         {...handlers}
       />
       <Grid

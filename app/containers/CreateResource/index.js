@@ -24,7 +24,6 @@ class ResourceCreatePage extends React.Component<Props> {
     const { resourceType } = this.props;
 
     const resource = resources[resourceType];
-
     return (
       <WingBlank size="lg">
         <WhiteSpace size="md" />

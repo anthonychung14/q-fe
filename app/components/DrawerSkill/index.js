@@ -3,13 +3,24 @@ import { connect } from 'react-redux';
 import { TouchableOpacity } from 'react-native';
 import { Drawer, List } from 'antd-mobile';
 
-const MODES = ['nutrition', 'knowledge', 'combat'];
+const MODES = ['nutrition', 'knowledge', 'combat', 'love'];
 
 const sidebar = ({ makeHandlePress }) => (
   <List style={{ paddingTop: '42px' }}>
     {MODES.map(skill => (
-      <TouchableOpacity key={`skill-${skill}`} onPress={makeHandlePress(skill)}>
-        <List.Item>{skill.toUpperCase()}</List.Item>
+      <TouchableOpacity
+        key={`skill-${skill}`}
+        disabled={skill !== 'nutrition' && skill !== 'knowledge'}
+        onPress={makeHandlePress(skill)}
+      >
+        <List.Item
+          style={{
+            backgroundColor:
+              skill !== 'nutrition' && skill !== 'knowledge' ? 'silver' : '',
+          }}
+        >
+          {skill.toUpperCase()}
+        </List.Item>
       </TouchableOpacity>
     ))}
   </List>
@@ -41,7 +52,7 @@ const DrawerSkill = ({
       sidebarStyle={{
         border: '1px solid #ddd',
         background: 'white',
-        width: '80%',
+        width: '60%',
       }}
       open={drawerOpen}
       onOpenChange={() => handleDrawerToggle(!drawerOpen)}

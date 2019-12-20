@@ -149,7 +149,15 @@ class ViewCards extends React.Component {
             columnNum={8}
             renderItem={letter => (
               <TouchableOpacity onPress={() => handleFilterClick(letter)}>
-                <Text>{letter}</Text>
+                <Text>
+                  {letter === 'CLEAR' ? (
+                    <span role="img" aria-label="no-good">
+                      🙅
+                    </span>
+                  ) : (
+                    letter
+                  )}
+                </Text>
               </TouchableOpacity>
             )}
           />

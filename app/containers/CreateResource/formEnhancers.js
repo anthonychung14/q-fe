@@ -48,7 +48,7 @@ export const withOnSubmit = compose(
         )
         .map(mapKeysToSnake);
 
-      firebaseValues.forEach(({ producer_id, ...fbValue }) => {
+      firebaseValues.forEach(({ producerId, ...fbValue }) => {
         firebase.push(form, { date_created_timestamp: time, ...fbValue });
       });
 

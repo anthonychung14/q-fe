@@ -6,6 +6,7 @@
  */
 
 import _ from 'lodash';
+import { fromJS } from 'immutable';
 import * as React from 'react';
 import {
   branch,
@@ -21,7 +22,8 @@ import { List, WhiteSpace, WingBlank } from 'antd-mobile';
 import Autosuggest from 'react-autosuggest';
 import TextInput from 'components/TextInput';
 
-import { fetchAirtable } from './enhancers';
+import { fetchAirtable, postResource } from './enhancers';
+
 // import ResourceSelectorResult from './resource_selector_result';
 // import ResourceLink from './resource_link';
 
@@ -79,9 +81,29 @@ const withSearchFilter = compose(
     onChange: ({ setSearchTerm }) => event => {
       setSearchTerm(event.target.value);
     },
-    onBlur: ({ input: formInput, unique, searchTerm }) => e => {
+    onBlur: ({
+      input: formInput,
+      unique,
+      searchTerm,
+      createOnBlur,
+      setLoading,
+      resourceName,
+    }) => async () => {
       if (unique) {
         formInput.onChange(searchTerm);
+      }
+
+      if (createOnBlur && !formInput.value && searchTerm) {
+        const rest = resourceName === 'author' ? { charType: 'company' } : {};
+
+        setLoading(true);
+        const records = await postResource({
+          resourceType: resourceName,
+          values: fromJS({ name: searchTerm, ...rest }),
+        });
+        setLoading(false);
+
+        formInput.onChange(_.get(_.first(records), 'id'));
       }
     },
   }),
@@ -92,17 +114,7 @@ const withSearchFilter = compose(
 
 // TODO:
 const withSuggestionHandlers = withHandlers({
-  onSuggestionSelected: ({ input: formInput, setSearchTerm, unique }) => (
-    event,
-    { suggestion },
-  ) => {
-    // navigate to the parent route with their id filling it out
-    // let val = ''
-    // if (!unique) {
-
-    //   setSearchTerm('');
-    //   val = suggestion.id
-    // }
+  onSuggestionSelected: ({ input: formInput }) => (event, { suggestion }) => {
     formInput.onChange(suggestion.id);
   },
   onSuggestionsFetchRequested: ({ fetchSuggestions }) => ({ value }) =>
@@ -123,10 +135,8 @@ const withRenderers = withHandlers({
 });
 
 /** 
-  There's the input that you see
-  There's the input that's being stored
+  Displays the input search term + stores the id in the form
 */
-
 const maybeRenderChosenField = branch(
   props => props.input.value !== '' && !props.unique,
   compose(
@@ -139,7 +149,11 @@ const maybeRenderChosenField = branch(
         ...props,
         input: {
           ...input,
-          value: _.get(found, 'fields.title', _.get(found, 'fields.name')),
+          value: _.get(
+            found,
+            'fields.title',
+            _.get(found, 'fields.name', _.get(found, 'fields.ingredient')),
+          ),
           // set this up so we can clear
           onChange: () => {
             input.onChange('');

@@ -1,9 +1,10 @@
 // @flow
 import _ from 'lodash';
 import * as React from 'react';
-import { reduxForm } from 'redux-form/immutable';
+import { connect } from 'react-redux';
+import { reduxForm, formValueSelector } from 'redux-form/immutable';
 import { Map, List } from 'immutable';
-import { compose, withHandlers } from 'recompose';
+import { branch, compose, withHandlers, withProps } from 'recompose';
 
 import { WingBlank, WhiteSpace } from 'antd-mobile';
 import Button from 'components/Button';
@@ -23,7 +24,29 @@ export const renderField = (form, field, makeHeader, opts = {}) => (
   />
 );
 
-const DynamicForm = ({
+const TextOrNumberField = ({
+  textFields,
+  textValues,
+  form,
+  numberFields,
+  makeRenderFieldHeader,
+}) => {
+  if (textFields.length === Object.keys(textValues).length) {
+    return (
+      <Keypad
+        columnNum={3}
+        data={numberFields}
+        form={form}
+        makeRenderFieldHeader={makeRenderFieldHeader}
+      />
+    );
+  }
+  return textFields.map(field =>
+    renderField(form, field, makeRenderFieldHeader),
+  );
+};
+
+const AddCardForm = ({
   fields,
   form,
   handleSubmit,
@@ -32,6 +55,8 @@ const DynamicForm = ({
   processing,
   submitForm,
   submitLabel,
+  textValues = {},
+  numberValues = {},
 }) => {
   // filter out the ones with type media
   const [mediaForm, otherFields] = _.partition(fields, ['type', 'media']);
@@ -48,28 +73,26 @@ const DynamicForm = ({
     <WingBlank size="md">
       <form onSubmit={onSubmit}>
         <fieldset disabled={processing}>
-          <WingBlank size="md">
-            <h3>Text Content</h3>
-          </WingBlank>
-          {textFields.map(field =>
-            renderField(form, field, makeRenderFieldHeader),
-          )}
-          <Keypad
-            columnNum={3}
-            data={numberFields}
+          <TextOrNumberField
+            numberFields={numberFields}
+            textFields={textFields}
+            textValues={textValues}
             form={form}
             makeRenderFieldHeader={makeRenderFieldHeader}
           />
 
           <WhiteSpace size="lg" />
-          <Button
-            type="submit"
-            loading={processing}
-            icon="check-circle-o"
-            handleClick={onSubmit}
-            text={submitLabel || 'Submit'}
-            disabled={processing || invalid}
-          />
+          {Object.keys(textValues).length === textFields.length &&
+            Object.keys(numberValues).length === numberFields.length && (
+              <Button
+                type="submit"
+                loading={processing}
+                icon="check-circle-o"
+                handleClick={onSubmit}
+                text={submitLabel || 'Submit'}
+                disabled={processing || invalid}
+              />
+            )}
         </fieldset>
       </form>
       {firstMediaField && (
@@ -84,6 +107,26 @@ const DynamicForm = ({
     </WingBlank>
   );
 };
+
+const DynamicForm = branch(
+  props => props.form === 'foodItem',
+  compose(
+    withProps(({ form }) => ({ selector: formValueSelector(form) })),
+    connect((state, { selector, fields }) => ({
+      textValues: selector(
+        state,
+        'ingredient',
+        'supplier',
+        'producer',
+        'serving_unit',
+      ),
+      numberValues: selector(
+        state,
+        ...fields.filter(i => i.type === 'integer').map(i => i.name),
+      ),
+    })),
+  ),
+)(AddCardForm);
 
 class Form extends React.Component<Props> {
   componentWillMount() {

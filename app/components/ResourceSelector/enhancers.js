@@ -49,9 +49,21 @@ export const fetchAirtable = compose(
       });
     },
     async componentDidUpdate(prev) {
-      const { setRecords, setLoading, search, resourceType } = this.props;
+      const {
+        loading,
+        setRecords,
+        setLoading,
+        search,
+        resourceType,
+      } = this.props;
 
       if (search !== prev.search) {
+        const records = await fetchAirtableApi(resourceType, search);
+
+        setRecords(new Fuse(_.reverse(records), options), () => {
+          setLoading(false);
+        });
+      } else if (!loading && prev.loading) {
         const records = await fetchAirtableApi(resourceType, search);
 
         setRecords(new Fuse(_.reverse(records), options), () => {
@@ -67,7 +79,7 @@ export const fetchAirtable = compose(
   }),
 );
 
-const postResource = async ({ resourceType, values }) =>
+export const postResource = async ({ resourceType, values }) =>
   resources.airtable(resourceType).create([
     {
       fields: values.toJS(),
