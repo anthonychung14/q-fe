@@ -7,6 +7,9 @@ export const condSwitch = (...conditions: Array<Condition>) =>
     ...conditions.map(([ifPredicate, thenDo]) => branch(ifPredicate, thenDo)),
   );
 
+export const withLoading = withState('loading', 'setLoading', false);
+export const withSetGif = compose(withState('gif', 'setGif', {}));
+
 export const withSegmentState = compose(
   withState('activeForm', 'onValueChange', props => _.first(props.values)),
   withState('activeIndex', 'onIndexChange', 0),

@@ -1,6 +1,7 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { firebaseConnect } from 'react-redux-firebase';
 
+import { TouchableOpacity } from 'react-native';
 import { Popover, Icon } from 'antd-mobile';
 
 const myImg = src => (
@@ -11,7 +12,7 @@ const myImg = src => (
   />
 );
 
-export default class NavPopover extends React.Component {
+class NavPopover extends React.Component {
   state = {
     visible: false,
     selected: '',
@@ -32,36 +33,23 @@ export default class NavPopover extends React.Component {
   };
 
   render() {
+    const { firebase } = this.props;
     return (
       <Popover
-        mask
         overlayClassName="navPopoverOverlay"
         overlayStyle={{ color: 'currentColor' }}
         visible={this.state.visible}
         overlay={[
-          <Popover.Item
-            key="4"
-            value="add"
-            icon={myImg('tOtXhkIWzwotgGSeptou')}
-            data-seed="logId"
-          >
-            <Link to="/add">Add</Link>
-          </Popover.Item>,
-          <Popover.Item
-            key="5"
-            value="view"
-            icon={myImg('PKAgAqZWJVNwKsAJSmXd')}
-            style={{ whiteSpace: 'nowrap' }}
-          >
-            <Link to="/view">View</Link>
-          </Popover.Item>,
-          <Popover.Item
-            key="6"
-            value="cycle"
-            icon={myImg('uQIYTFeRrjPELImDRrPt')}
-          >
-            <Link to="/cycle">Cycle</Link>
-          </Popover.Item>,
+          <TouchableOpacity onPress={() => firebase.logout()}>
+            <Popover.Item
+              key="5"
+              value="view"
+              icon={myImg('PKAgAqZWJVNwKsAJSmXd')}
+              style={{ whiteSpace: 'nowrap' }}
+            >
+              <h4>Logout</h4>
+            </Popover.Item>
+          </TouchableOpacity>,
         ]}
         align={{
           overflow: { adjustY: 0, adjustX: 0 },
@@ -85,3 +73,5 @@ export default class NavPopover extends React.Component {
     );
   }
 }
+
+export default firebaseConnect()(NavPopover);

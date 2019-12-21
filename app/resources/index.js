@@ -4,6 +4,9 @@ import excerpt from './excerpt';
 import textSource from './textSource';
 import author from './author';
 import meal from './meal';
+import theft from './theft';
+import intrusion from './intrusion';
+import emergency from './emergency';
 import foodItem from './foodItem';
 import measurement from './measurement';
 
@@ -18,6 +21,9 @@ export default {
   author,
   excerpt,
   foodItem,
+  theft,
+  intrusion,
+  emergency,
   meal,
   measurement,
   textSource,

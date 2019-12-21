@@ -57,5 +57,9 @@ export default Object.freeze({
       primary: encodedColors.accentTeal,
       secondary: encodedColors.redAccent,
     },
+    security: {
+      secondary: encodedColors.accentTeal,
+      primary: encodedColors.redAccent,
+    },
   },
 });

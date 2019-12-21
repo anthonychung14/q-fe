@@ -39,6 +39,7 @@ const KeypadHeaderInput = ({
   handleLater,
   handleUndo,
   handleConfirm,
+  startedInput,
 }) => (
   <Outer>
     <Inner>
@@ -55,15 +56,15 @@ const KeypadHeaderInput = ({
   </Outer>
 );
 
-const NumberData = () => (
-  <Inner>
-    <h3>Number Data</h3>
-  </Inner>
-);
+// const NumberData = () => (
+//   <Inner>
+//     <h3>Number Data</h3>
+//   </Inner>
+// );
 
 const KeypadHeader = branch(
   props => !props.startedInput,
-  renderComponent(NumberData),
+  renderComponent(({ fieldName }) => <h3>{fieldName}</h3>),
 )(KeypadHeaderInput);
 
 const Keypad = ({
@@ -153,19 +154,23 @@ export default compose(
       // keypadUndo();
     },
   }),
-  withProps(({ data, startedInput }) => {
-    // need at least 10 elements
-    // append the same prop
-    const diff = 10 - data.length;
-    const toAppend = [...Array(diff).keys()]
-      .map(dIdx => data.length + 2 + dIdx)
-      .map(v => ({
-        name: v,
-        type: 'integer',
-        blank: true,
-      }));
-    return {
-      data: data.concat(startedInput ? toAppend : []),
-    };
-  }),
+  branch(
+    props => props.type === 'phoneNumber',
+    withProps({}),
+    withProps(({ data, startedInput }) => {
+      // need at least 10 elements
+      // append the same prop
+      const diff = 10 - data.length;
+      const toAppend = [...Array(diff).keys()]
+        .map(dIdx => data.length + 2 + dIdx)
+        .map(v => ({
+          name: v,
+          type: 'integer',
+          blank: true,
+        }));
+      return {
+        data: data.concat(startedInput ? toAppend : []),
+      };
+    }),
+  ),
 )(Keypad);

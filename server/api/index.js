@@ -34,13 +34,6 @@ app.use('*', (req, res, next) => {
   next();
 });
 
-app.get('/', (req, res) => {
-  res.json({
-    hello: 'world',
-    ahhh: 'yeah',
-  });
-});
-
 app.post('/upload', (req, res, err) => {
   processFiles(req, res);
 });
