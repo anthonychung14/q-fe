@@ -16,7 +16,6 @@ const FIELDS = [
       'freight elevator',
       'parking garage',
       'hallways',
-      'package room',
     ],
     label: 'location',
     required: true,

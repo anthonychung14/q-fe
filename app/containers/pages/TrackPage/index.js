@@ -17,7 +17,7 @@ import { WingBlank } from 'antd-mobile';
 
 import Container from 'components/Container';
 import Login from 'components/Login';
-import TrackIncidents from 'containers/TrackIncidents';
+// import TrackIncidents from 'containers/TrackIncidents';
 
 /* eslint-disable react/prefer-stateless-function */
 const TrackPage = ({ auth, firebase }) => (
@@ -26,7 +26,7 @@ const TrackPage = ({ auth, firebase }) => (
       {isLoaded(auth) && isEmpty(auth) ? (
         <Login firebase={firebase} />
       ) : (
-        <TrackIncidents />
+        <h2>Hi</h2>
       )}
     </WingBlank>
   </Container>

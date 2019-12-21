@@ -10,7 +10,12 @@ const Container = ({ children, style = {}, ...props }) => {
   return (
     <View
       {...props}
-      style={{ paddingHorizontal: props.padded ? '4%' : null, ...style }}
+      style={{
+        display: 'flex',
+        paddingHorizontal: props.padded ? '4%' : null,
+        paddingBottom: props.paddedBottom ? '4%' : null,
+        ...style,
+      }}
     >
       {renderType(props.type)}
       {children}

@@ -33,14 +33,14 @@ const makeDataFromList = list => {
   }));
 };
 
-// const convertToDataSet = _.flow([
-//   _.groupBy('value.type'),
-//   _.map((listValues, k) => ({
-//     label: k,
-//     data: makeDataFromList(listValues, k),
-//     color: INCIDENT_COLORS[k],
-//   })),
-// ]);
+const convertToDataSet = _.flow([
+  _.groupBy('value.type'),
+  _.map((listValues, k) => ({
+    label: k,
+    data: makeDataFromList(listValues, k),
+    color: INCIDENT_COLORS[k],
+  })),
+]);
 
 const TrackIncidentComponent = ({
   activeForm,
@@ -57,14 +57,15 @@ const TrackIncidentComponent = ({
   const fbIncidents = useSelector(state => {
     return state.get('firebase').ordered.incident;
   });
+  console.log(convertToDataSet(fbIncidents), '.....need a break');
 
   const data = React.useMemo(
     () => {
-      return _.map(_.groupBy(fbIncidents, 'value.type'), (listValues, k) => ({
-        label: k,
-        data: makeDataFromList(listValues, k),
-        color: INCIDENT_COLORS[k],
-      }));
+      if (fbIncidents) {
+        return convertToDataSet(fbIncidents);
+      }
+
+      return [];
     },
     [fbIncidents],
   );

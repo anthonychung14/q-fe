@@ -1,24 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import Container from 'components/Container';
 import Button from 'components/Button';
 
 export const Login = ({ firebase }) => (
-  <div>
+  <Container>
     <Button
-      text="Google"
+      text="Login with Google"
+      type="secondary"
       handleClick={() => {
         firebase.login({ provider: 'google', type: 'popup' });
       }}
     />
-    <Button
-      text="Request Access"
-      handleClick={() => {
-        firebase.login({ provider: 'google', type: 'popup' });
-        // opens mail client.
-      }}
-    />
-  </div>
+  </Container>
 );
 
 Login.propTypes = {

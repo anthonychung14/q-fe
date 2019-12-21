@@ -15,6 +15,7 @@ import firebase from 'firebase/app';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { ReactReduxFirebaseProvider } from 'react-redux-firebase';
+// import * as serviceWorker from './serviceWorker';
 
 import { ConnectedRouter } from 'connected-react-router/immutable';
 import history from 'utils/history';

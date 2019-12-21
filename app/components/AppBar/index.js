@@ -18,7 +18,7 @@ const AppBar = ({ navBarStyle, handleDrawerToggle, drawerOpen }) => (
     rightContent={[<NavPopover key="Nav" />]}
   >
     <NavLink style={{ color: 'white' }} exact key="home" to="/">
-      Centinel
+      Centinel 0.0.3
     </NavLink>
   </NavBar>
 );

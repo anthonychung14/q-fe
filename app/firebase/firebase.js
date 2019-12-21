@@ -1,24 +1,24 @@
 // THIS DOESN'T BELONG. REMOVE MEEEEEE
 const prodConfig = {
-  apiKey: 'AIzaSyCkL35_BzawiRwTdI7fA2OBi01daQnqF-E',
-  authDomain: 'sentinel-ffe3b.firebaseapp.com',
-  databaseURL: 'https://sentinel-ffe3b.firebaseio.com',
-  projectId: 'sentinel-ffe3b',
-  storageBucket: 'sentinel-ffe3b.appspot.com',
-  messagingSenderId: '256224644335',
-  appId: '1:256224644335:web:1c11227f36f355060bdf1a',
-  measurementId: 'G-SN5CX8M7KW',
+  apiKey: 'AIzaSyDRmYJNqFiKC5s-VRwKcCUae5VY100_hPg',
+  authDomain: 'centinel-01.firebaseapp.com',
+  databaseURL: 'https://centinel-01.firebaseio.com',
+  projectId: 'centinel-01',
+  storageBucket: 'centinel-01.appspot.com',
+  messagingSenderId: '494225617282',
+  appId: '1:494225617282:web:c1903e4c0aba74d03f1f9b',
+  measurementId: 'G-1KEKRL2QW3',
 };
 
 const devConfig = {
-  apiKey: 'AIzaSyCkL35_BzawiRwTdI7fA2OBi01daQnqF-E',
-  authDomain: 'sentinel-ffe3b.firebaseapp.com',
-  databaseURL: 'https://sentinel-ffe3b.firebaseio.com',
-  projectId: 'sentinel-ffe3b',
-  storageBucket: 'sentinel-ffe3b.appspot.com',
-  messagingSenderId: '256224644335',
-  appId: '1:256224644335:web:1c11227f36f355060bdf1a',
-  measurementId: 'G-SN5CX8M7KW',
+  apiKey: 'AIzaSyDRmYJNqFiKC5s-VRwKcCUae5VY100_hPg',
+  authDomain: 'centinel-01.firebaseapp.com',
+  databaseURL: 'https://centinel-01.firebaseio.com',
+  projectId: 'centinel-01',
+  storageBucket: 'centinel-01.appspot.com',
+  messagingSenderId: '494225617282',
+  appId: '1:494225617282:web:c1903e4c0aba74d03f1f9b',
+  measurementId: 'G-1KEKRL2QW3',
 };
 
 const config = process.env.NODE_ENV === 'production' ? prodConfig : devConfig;

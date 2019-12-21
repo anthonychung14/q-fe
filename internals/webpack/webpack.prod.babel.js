@@ -93,7 +93,7 @@ module.exports = require('./webpack.base.babel')({
 
       // No need to cache .htaccess. See http://mxs.is/googmp,
       // this is applied before any match in `caches` section
-      excludes: ['.htaccess'],
+      excludes: ['.htaccess', '__'],
 
       caches: {
         main: [':rest:'],
@@ -116,9 +116,9 @@ module.exports = require('./webpack.base.babel')({
     }),
 
     new WebpackPwaManifest({
-      name: 'React Boilerplate',
-      short_name: 'React BP',
-      description: 'My React Boilerplate-based project!',
+      name: 'Centinel',
+      short_name: 'Centinel',
+      description: 'A security service solution',
       background_color: '#fafafa',
       theme_color: '#b1624d',
       inject: true,

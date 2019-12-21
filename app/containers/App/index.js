@@ -14,7 +14,7 @@ import { withState } from 'recompose';
 
 import HomePage from 'containers/pages/HomePage/Loadable';
 import AboutPage from 'containers/pages/AboutPage/Loadable';
-import TrackPage from 'containers/pages/TrackPage/Loadable';
+// import TrackPage from 'containers/pages/TrackPage/Loadable';
 // import ReportPage from 'containers/ReportPage/Loadable';
 
 import AppBar from 'components/AppBar';
@@ -36,7 +36,6 @@ const Body = drawerProps => (
         <Route exact path="/" component={HomePage} />
         <Route exact path="/report" component={HomePage} />
         <Route exact path="/about" component={AboutPage} />
-        <Route exact path="/track" component={TrackPage} />
       </Switch>
     </LeftDrawer>
     <GlobalStyle />
