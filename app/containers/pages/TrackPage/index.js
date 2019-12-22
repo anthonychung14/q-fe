@@ -1,7 +1,6 @@
 /*
  * HomePage
  *
- * This is the first thing users see of our App, at the '/' route
  *
  * NOTE: while this component should technically be a stateless functional
  * component (SFC), hot reloading does not currently support SFCs. If hot
@@ -9,30 +8,109 @@
  * the linting exception.
 */
 
+import _ from 'lodash';
 import React from 'react';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import { firebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase';
+import { Chart } from 'react-charts';
+import { useSelector } from 'react-redux';
+import { useFirebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase';
 import { WingBlank } from 'antd-mobile';
 
 import Container from 'components/Container';
 import Login from 'components/Login';
-// import TrackIncidents from 'containers/TrackIncidents';
+
+import { formatUnixTimestamp, convertToUnixFromDate } from 'utils/time';
+
+const INCIDENT_COLORS = {
+  emergency: 'red',
+  theft: 'yellow',
+  intrusion: 'blue',
+};
+
+const makeDataFromList = list => {
+  const numCounted = _.countBy(list, i =>
+    formatUnixTimestamp(i.value.reported_seconds, 'x_axis'),
+  );
+  return _.map(numCounted, (v, k) => ({
+    x: new Date(convertToUnixFromDate(k) * 1000),
+    y: v,
+  }));
+};
+
+// const convertToDataSet = _.flow([
+//   _.groupBy('value.type'),
+//   _.map((listValues, k) => ({
+//     label: k,
+//     data: makeDataFromList(listValues, k),
+//     color: INCIDENT_COLORS[k],
+//   })),
+// ]);
 
 /* eslint-disable react/prefer-stateless-function */
-const TrackPage = ({ auth, firebase }) => (
-  <Container type="page" headerText="Track Incidents">
-    <WingBlank size="lg">
-      {isLoaded(auth) && isEmpty(auth) ? (
-        <Login firebase={firebase} />
-      ) : (
-        <h2>Hi</h2>
-      )}
-    </WingBlank>
-  </Container>
-);
+const TrackPage = () => {
+  useFirebaseConnect(['incident']);
 
-export default compose(
-  firebaseConnect(),
-  connect(state => ({ auth: state.get('firebase').auth })),
-)(TrackPage);
+  const { firebase, auth } = useSelector(state => ({
+    firebase: state.get('firebase'),
+    auth: state.get('firebase').auth,
+  }));
+
+  const incidents = useSelector(state => {
+    return state.get('firebase').ordered.incident;
+  });
+
+  const data = React.useMemo(
+    () => {
+      if (incidents) {
+        return _.map(_.groupBy(incidents, 'value.type'), (listValues, k) => ({
+          label: k,
+          data: makeDataFromList(listValues, k),
+          color: INCIDENT_COLORS[k],
+        }));
+      }
+
+      return [];
+    },
+    [incidents],
+  );
+
+  const series = React.useMemo(
+    () => ({
+      type: 'area',
+    }),
+    [],
+  );
+
+  const axes = React.useMemo(
+    () => [
+      {
+        primary: true,
+        type: 'time',
+        position: 'bottom',
+      },
+      { position: 'left', type: 'linear', stacked: true },
+    ],
+    [],
+  );
+
+  return (
+    <Container type="page" headerText="Track Incidents">
+      <WingBlank size="lg">
+        {isLoaded(auth) && isEmpty(auth) ? (
+          <Login firebase={firebase} />
+        ) : (
+          <Container padded style={{ height: '450px', width: '100%' }}>
+            <Chart
+              data={data}
+              series={series}
+              axes={axes}
+              tooltip
+              getSeriesStyle={s => ({ color: s.originalSeries.color })}
+            />
+          </Container>
+        )}
+      </WingBlank>
+    </Container>
+  );
+};
+
+export default TrackPage;

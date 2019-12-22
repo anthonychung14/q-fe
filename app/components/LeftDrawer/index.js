@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { TouchableOpacity } from 'react-native';
 import { Drawer, List } from 'antd-mobile';
 
-const ROUTES = ['About', 'Report'];
+const ROUTES = ['About', 'Report', 'Track'];
 
 const sidebar = props => (
   <List style={{ paddingTop: '42px' }}>
