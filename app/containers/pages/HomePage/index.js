@@ -16,24 +16,55 @@ import { firebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase';
 
 import { WingBlank } from 'antd-mobile';
 
+import AboutPage from 'containers/pages/AboutPage/Loadable';
+import TrackPage from 'containers/pages/TrackPage/Loadable';
+import ReportIncident from 'containers/ReportIncident/Loadable';
+import { connectActiveMode } from 'selectors/skill_mode';
+
 import Container from 'components/Container';
 import Login from 'components/Login';
-import ReportIncident from 'containers/ReportIncident';
+
+const MAP = {
+  about: {
+    headerText: 'About Centinel',
+    Component: AboutPage,
+  },
+  track: {
+    headerText: 'Track Incidents',
+    Component: TrackPage,
+  },
+  report: {
+    headerText: 'Report an Incident',
+    Component: ReportIncident,
+  },
+};
+
+const getProps = page => {
+  return MAP[page] || MAP.report;
+};
+
+const PageDisplayer = ({ page }) => {
+  const { headerText, Component } = getProps(page);
+
+  return (
+    <Container type="page" headerText={headerText}>
+      <Component />
+    </Container>
+  );
+};
 
 /* eslint-disable react/prefer-stateless-function */
 class HomePage extends React.PureComponent {
   render() {
-    const { auth, firebase } = this.props;
+    const { auth, firebase, activeMode } = this.props;
     return (
-      <Container type="page" headerText="Report an incident">
-        <WingBlank size="lg">
-          {isLoaded(auth) && isEmpty(auth) ? (
-            <Login firebase={firebase} />
-          ) : (
-            <ReportIncident />
-          )}
-        </WingBlank>
-      </Container>
+      <WingBlank size="lg">
+        {isLoaded(auth) && isEmpty(auth) ? (
+          <Login firebase={firebase} />
+        ) : (
+          <PageDisplayer page={activeMode} />
+        )}
+      </WingBlank>
     );
   }
 }
@@ -41,4 +72,5 @@ class HomePage extends React.PureComponent {
 export default compose(
   firebaseConnect(),
   connect(state => ({ auth: state.get('firebase').auth })),
+  connectActiveMode,
 )(HomePage);

@@ -1,0 +1,24 @@
+[debug] [2019-12-22T02:19:44.941Z] ----------------------------------------------------------------------
+[debug] [2019-12-22T02:19:44.943Z] Command:       /usr/local/Cellar/node/10.0.0/bin/node /usr/local/bin/firebase deploy
+[debug] [2019-12-22T02:19:44.943Z] CLI Version:   6.1.1
+[debug] [2019-12-22T02:19:44.943Z] Platform:      darwin
+[debug] [2019-12-22T02:19:44.943Z] Node Version:  v10.0.0
+[debug] [2019-12-22T02:19:44.944Z] Time:          Sat Dec 21 2019 18:19:44 GMT-0800 (PST)
+[debug] [2019-12-22T02:19:44.944Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2019-12-22T02:19:44.953Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-12-22T02:19:44.954Z] > authorizing via signed-in user
+[debug] [2019-12-22T02:19:44.954Z] [iam] checking project centinel-01 for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2019-12-22T02:19:44.956Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/centinel-01:testIamPermissions  
+
+[debug] [2019-12-22T02:19:45.265Z] <<< HTTP RESPONSE 200
+[debug] [2019-12-22T02:19:45.266Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/centinel-01  
+ 
+[debug] [2019-12-22T02:19:45.495Z] <<< HTTP RESPONSE 200
+[warn] ⚠  functions: package.json indicates an outdated version of firebase-functions.
+ Please upgrade using npm install --save firebase-functions@latest in your functions directory.
+[info] 
+[info] === Deploying to 'centinel-01'...
+[info] 
+[info] i  deploying functions, hosting
+[info] Running command: npm --prefix "$RESOURCE_DIR" run lint

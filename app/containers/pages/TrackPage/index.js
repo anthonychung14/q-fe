@@ -12,11 +12,10 @@ import _ from 'lodash';
 import React from 'react';
 import { Chart } from 'react-charts';
 import { useSelector } from 'react-redux';
-import { useFirebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase';
+import { useFirebaseConnect, useFirebase } from 'react-redux-firebase';
 import { WingBlank } from 'antd-mobile';
 
 import Container from 'components/Container';
-import Login from 'components/Login';
 
 import { formatUnixTimestamp, convertToUnixFromDate } from 'utils/time';
 
@@ -47,12 +46,8 @@ const makeDataFromList = list => {
 
 /* eslint-disable react/prefer-stateless-function */
 const TrackPage = () => {
-  useFirebaseConnect(['incident']);
-
-  const { firebase, auth } = useSelector(state => ({
-    firebase: state.get('firebase'),
-    auth: state.get('firebase').auth,
-  }));
+  const firebase = useFirebase();
+  useFirebaseConnect('incident');
 
   const incidents = useSelector(state => {
     return state.get('firebase').ordered.incident;
@@ -93,23 +88,17 @@ const TrackPage = () => {
   );
 
   return (
-    <Container type="page" headerText="Track Incidents">
-      <WingBlank size="lg">
-        {isLoaded(auth) && isEmpty(auth) ? (
-          <Login firebase={firebase} />
-        ) : (
-          <Container padded style={{ height: '450px', width: '100%' }}>
-            <Chart
-              data={data}
-              series={series}
-              axes={axes}
-              tooltip
-              getSeriesStyle={s => ({ color: s.originalSeries.color })}
-            />
-          </Container>
-        )}
-      </WingBlank>
-    </Container>
+    <WingBlank size="lg">
+      <Container padded style={{ height: '450px', width: '100%' }}>
+        <Chart
+          data={data}
+          series={series}
+          axes={axes}
+          tooltip
+          getSeriesStyle={s => ({ color: s.originalSeries.color })}
+        />
+      </Container>
+    </WingBlank>
   );
 };
 
