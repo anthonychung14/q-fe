@@ -116,7 +116,8 @@
     "transloadit": "^2.0.8",
     "uuid-v4": "^0.1.0",
     "valid-url": "^1.0.9",
-    "warning": "4.0.2"
+    "warning": "4.0.2",
+    "webpack-remove-serviceworker-plugin": "^1.0.0"
   },
   "devDependencies": {
     "@babel/cli": "7.1.2",
