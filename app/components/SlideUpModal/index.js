@@ -115,7 +115,7 @@ class SlideUpModal extends React.Component {
         transparent
         visible={visible}
       >
-        {activeMode === 'nutrition' && (
+        {activeMode === 'consume' && (
           <List
             renderHeader={() => (
               <View

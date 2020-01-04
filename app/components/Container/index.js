@@ -5,18 +5,24 @@ import ViewHeader from 'components/ViewHeader';
 
 const Container = ({ children, style = {}, ...props }) => {
   const renderType = type =>
-    type === 'page' ? <ViewHeader header={props.headerText} /> : null;
+    type === 'page' && props.headerText ? (
+      <ViewHeader header={props.headerText} />
+    ) : null;
+
+  if (props.type === 'empty') {
+    return <View>{children}</View>;
+  }
+
+  const mergedStyles = {
+    display: 'flex',
+    paddingTop: props.type === 'mode' ? '42px' : null,
+    paddingHorizontal: props.padded ? '4%' : null,
+    paddingBottom: props.paddedBottom ? '4%' : null,
+    ...style,
+  };
 
   return (
-    <View
-      {...props}
-      style={{
-        display: 'flex',
-        paddingHorizontal: props.padded ? '4%' : null,
-        paddingBottom: props.paddedBottom ? '4%' : null,
-        ...style,
-      }}
-    >
+    <View {...props} style={mergedStyles}>
       {renderType(props.type)}
       {children}
     </View>

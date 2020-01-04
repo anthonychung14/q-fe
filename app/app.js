@@ -67,19 +67,6 @@ const AppComponent = messages => (
 AppRegistry.registerComponent('App', () => AppComponent);
 AppRegistry.runApplication('App', { rootTag: document.getElementById('app') });
 
-// const render = messages => {
-//   ReactDOM.render(
-//     <Provider store={store}>
-//       <LanguageProvider messages={messages}>
-//         <ConnectedRouter history={history}>
-//           <App />
-//         </ConnectedRouter>
-//       </LanguageProvider>
-//     </Provider>,
-//     MOUNT_NODE,
-//   );
-// };
-
 if (module.hot) {
   // Hot reloadable React components and translation json files
   // modules.hot.accept does not accept dynamic dependencies,

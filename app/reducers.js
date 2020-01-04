@@ -12,6 +12,7 @@ import skillModeReducer from 'reducers/skill_mode';
 import cartReducer from 'reducers/cart';
 import goalsReducer from 'reducers/goals';
 import keypad from 'reducers/keypad';
+import search from 'reducers/search';
 import history from 'utils/history';
 import languageProviderReducer from 'containers/LanguageProvider/reducer';
 
@@ -23,6 +24,7 @@ export default function createReducer(injectedReducers = {}) {
     form: formReducer,
     language: languageProviderReducer,
     firebase: firebaseReducer,
+    search,
     skillMode: skillModeReducer,
     cart: cartReducer,
     goals: goalsReducer,

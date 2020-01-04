@@ -1,21 +1,33 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { TouchableOpacity } from 'react-native';
 import { Drawer, List } from 'antd-mobile';
 
-const ROUTES = ['Report', 'Track', 'About'];
+import { getActiveMode } from 'selectors/skill_mode';
 
-const sidebar = ({ makeHandlePress }) => (
-  <List style={{ paddingTop: '42px' }}>
-    {ROUTES.map(route => (
-      <TouchableOpacity key={`route-${route}`} onPress={makeHandlePress(route)}>
-        <List.Item>{route.toUpperCase()}</List.Item>
-      </TouchableOpacity>
-    ))}
-  </List>
-);
+const ROUTES = ['consume', 'acquire', 'track', 'about'];
 
-const LeftDrawer = ({ drawerOpen, dispatch, handleDrawerToggle, children }) => {
+const sidebar = ({ makeHandlePress }) => {
+  const activeMode = useSelector(getActiveMode);
+  return (
+    <List style={{ paddingTop: '42px' }}>
+      {ROUTES.map(route => (
+        <TouchableOpacity
+          key={`route-${route}`}
+          onPress={makeHandlePress(route)}
+        >
+          <List.Item>{`${route.toUpperCase()} ${
+            activeMode === route ? '**' : ''
+          }`}</List.Item>
+        </TouchableOpacity>
+      ))}
+    </List>
+  );
+};
+
+const LeftDrawer = ({ drawerOpen, handleDrawerToggle, children }) => {
+  const dispatch = useDispatch();
+
   const sidebarComponent = sidebar({
     makeHandlePress: mode => () => {
       dispatch({
@@ -46,4 +58,4 @@ const LeftDrawer = ({ drawerOpen, dispatch, handleDrawerToggle, children }) => {
   );
 };
 
-export default connect()(LeftDrawer);
+export default LeftDrawer;

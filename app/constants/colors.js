@@ -13,13 +13,13 @@ const encodedColors = Object.freeze({
   orangeAccent: '#F29705',
   primaryBlue: 'rgb(109, 188, 219)',
   primaryDark: '#48435C',
-  primaryGreen: '#61707D',
+  primaryGreen: '#30694B',
   primaryLight: '#EDFFEC',
   primaryRed: '#c93638',
   lightWhite: 'rgb(242, 242, 242)',
   redAccent: '#B10918',
   secondaryDark: '#435C48',
-  secondaryGreen: 'rgba(42,126,210,1)',
+  secondaryGreen: '#10281B',
   secondaryLight: '#83807c',
   secondaryWhite: '#f0f5f1',
   movetype: {
@@ -35,9 +35,19 @@ const encodedColors = Object.freeze({
 export default Object.freeze({
   ...encodedColors,
   modes: {
-    nutrition: {
-      primary: encodedColors.darkBlue,
-      secondary: encodedColors.redAccent,
+    consume: {
+      primary: encodedColors.primaryGreen,
+      secondary: encodedColors.secondaryGreen,
+      types: {
+        PRO: 'red',
+        FAT: 'blue',
+        CRB: 'green',
+        CAL: 'black',
+      },
+    },
+    acquire: {
+      primary: encodedColors.primaryGreen,
+      secondary: encodedColors.secondaryGreen,
       types: {
         PRO: 'red',
         FAT: 'blue',

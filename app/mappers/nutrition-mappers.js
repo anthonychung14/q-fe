@@ -1,7 +1,7 @@
 import COLORS from 'constants/colors';
 
 const getColor = () => {
-  return COLORS.modes.nutrition.CAL;
+  return COLORS.modes.consume.CAL;
 };
 
 export const mapFoodItemToCard = ({
@@ -10,9 +10,9 @@ export const mapFoodItemToCard = ({
     ingredient,
     caloriesClaimed,
     caloriesAtwater,
+    isMeal,
     servingUnit,
     servingSize,
-    supplier,
     // description = 'Based on moves, we generate the description',
     // gramsProtein,
     // gramsFat,
@@ -27,31 +27,15 @@ export const mapFoodItemToCard = ({
   cardType: `${caloriesAtwater} calories`,
   description: `${servingSize} ${servingUnit}`,
   ingredient,
+  isMeal: isMeal || false,
   caloriesClaimed,
   caloriesAtwater,
   servingUnit,
   servingSize,
-  supplier,
   ...rest,
 });
 
-export const mapMealToCard = ({
-  key: mealId,
-  value: {
-    mealName,
-    description = 'Based on moves, we generate the description',
-    ...rest
-  },
-}) => ({
-  avatarColor: getColor(rest),
-  avatarName: mealName,
-  cardId: mealId,
-  cardTitle: mealName,
-  cardType: 'Shorthand of moves',
-  description,
-  mealName,
-  ...rest,
-});
+export const mapMealToCard = mapFoodItemToCard;
 
 export const NUTRITION_CARD_TYPES = [
   {

@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
+import { createSelector } from 'reselect';
 import { compose, withProps } from 'recompose';
 
 import CARDS from 'constants/cards';
@@ -9,20 +10,31 @@ import { getFirebase } from 'selectors/firebase';
 import { getStorageDate } from 'utils/time';
 
 export const getActiveMode = state => state.getIn(['skillMode', 'activeMode']);
-
-export const connectActiveMode = connect(state => ({
-  activeMode: getActiveMode(state),
-  cartConfirming: state.getIn(['cart', 'confirming']),
-}));
+const getConfirmingCart = state => state.getIn(['cart', 'confirming']);
 
 export const withCardValuesForMode = withProps(({ activeMode }) => ({
   values: _.get(CARDS, activeMode, []),
   tintColor: _.get(COLORS, ['modes', activeMode, 'secondary']),
 }));
 
+export const connectActiveMode = connect(state => ({
+  activeMode: getActiveMode(state),
+  cartConfirming: getConfirmingCart(state),
+}));
+
 export const connectActiveSegmentProps = compose(
   connectActiveMode,
   withCardValuesForMode,
+);
+
+export const getActiveModeData = createSelector(
+  [getActiveMode, getConfirmingCart],
+  (activeMode, cartConfirming) => ({
+    activeMode,
+    cartConfirming,
+    tintColor: _.get(COLORS, ['modes', activeMode, 'secondary']),
+    values: _.get(CARDS, activeMode, []),
+  }),
 );
 
 export const getConsumePath = state => {

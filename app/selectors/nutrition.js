@@ -30,30 +30,22 @@ export const withMealRecords = compose(
   connectNutritionFirebase,
 );
 
-const mapRecordsToCard = withProps(({ records, cardMapper }) => {
-  const data = records.list
-    .map(({ fields, id }) => ({ ...fields, id }))
-    .map(mapObjKeysToCamel);
+// converts data into the same format as would be expected by firebase
+const mapRecordsToFirebaseCard = withProps(
+  ({ activeCardType, records, cardMapper }) => {
+    const data = records.list
+      .map(({ fields, id }) => ({ ...fields, id }))
+      .map(mapObjKeysToCamel);
 
-  const mapped = data.map(({ id, ...rest }) =>
-    cardMapper({ key: id, value: rest }),
-  );
+    const mapped = data
+      .map(({ id, ...rest }) => cardMapper({ key: id, value: rest }))
+      .filter(i => (activeCardType === 'meal' ? i.isMeal : !i.isMeal));
 
-  return {
-    data: mapped,
-  };
-});
-
-// const withListViewDataSource = compose(
-//   defaultProps({
-//     dataSource: new ListView.DataSource({
-//       rowHasChanged: (row1, row2) => row1 !== row2,
-//     }),
-//   }),
-//   withProps(({ dataSource, mappedData }) => ({
-//     dataSource: dataSource.cloneWithRows(mappedData),
-//   })),
-// );
+    return {
+      data: mapped,
+    };
+  },
+);
 
 const withFirstNutritionLetters = compose(
   withProps(({ data, search }) => {
@@ -63,7 +55,7 @@ const withFirstNutritionLetters = compose(
 
     return {
       letterKeys: searchField,
-      next: next.concat('CLEAR'),
+      nextLetters: next.concat('CLEAR'),
     };
   }),
 );
@@ -85,6 +77,6 @@ export const withNutritionCards = compose(
     },
   ),
   fetchAirtable,
-  mapRecordsToCard,
+  mapRecordsToFirebaseCard,
   withFirstNutritionLetters,
 );

@@ -1,20 +1,11 @@
 import React from 'react';
-import { TouchableOpacity, Text } from 'react-native';
-import _ from 'lodash';
 import { compose } from 'recompose';
-import {
-  Grid,
-  ListView,
-  SegmentedControl,
-  WhiteSpace,
-  WingBlank,
-} from 'antd-mobile';
-import { StickyContainer, Sticky } from 'react-sticky';
+import { Grid, WhiteSpace, WingBlank } from 'antd-mobile';
+import { StickyContainer } from 'react-sticky';
 
-import Separator from 'components/List/Separator';
-// import ListRowMove from 'components/List/ListRowMove';
 import GridItem from 'components/List/GridItem';
 import SlideUpModal from 'components/SlideUpModal';
+import SearchKeypad from 'components/SearchKeypad';
 
 import { condSwitch, withSegmentState } from 'utils/enhancers';
 import injectSaga from 'utils/injectSaga';
@@ -28,12 +19,6 @@ import { withKnowledgeCards } from 'selectors/knowledge';
 import saga from './saga';
 import CONSTANTS from './constants';
 
-const ListFooter = ({ isLoading }) => (
-  <div style={{ padding: 10, textAlign: 'center' }}>
-    {isLoading ? 'Loading...' : ''}
-  </div>
-);
-
 /* eslint-disable react/prefer-stateless-function */
 class ViewCards extends React.Component {
   constructor(props) {
@@ -41,6 +26,7 @@ class ViewCards extends React.Component {
 
     this.state = {
       modalVisible: false,
+      lastPress: null,
     };
   }
 
@@ -56,10 +42,12 @@ class ViewCards extends React.Component {
 
     const dataProp = propToGet[value] || 'dataById';
 
-    this.setState(() => ({
-      // activeForm: value,
-      dataSource: ds.cloneWithRows(this.props[dataProp]),
-    }));
+    if (this.state.dataSource) {
+      this.setState(() => ({
+        // activeForm: value,
+        dataSource: ds.cloneWithRows(this.props[dataProp]),
+      }));
+    }
   };
 
   // If you use redux, the data maybe at props, you need use `componentWillReceiveProps`
@@ -76,7 +64,7 @@ class ViewCards extends React.Component {
     this.lv = el;
   };
 
-  makehHandlePress = card => () => this.handlePress(card);
+  makeHandlePress = card => () => this.handlePress(card);
 
   handlePress = card => {
     const delta = new Date().getTime() - this.state.lastPress;
@@ -115,10 +103,10 @@ class ViewCards extends React.Component {
       data,
       dataSource,
       handleSegmentChange,
+      handleFilterClick,
       isLoading,
       tintColor,
       values,
-      handleFilterClick,
       ...rest
     } = this.props;
 
@@ -132,34 +120,9 @@ class ViewCards extends React.Component {
           closeModal={this.closeModal}
         />
         <WingBlank size="md">
-          {/* <Sticky topOffset={100}>
-            {({ style }) => (
-              <SegmentedControl
-                onChange={handleSegmentChange}
-                onValueChange={this.handleValueChange}
-                selectedIndex={activeIndex}
-                style={{ ...style, zIndex: 4, top: 45 }}
-                tintColor={tintColor}
-                values={values}
-              />
-            )}
-          </Sticky> */}
-          <Grid
-            data={rest.next}
-            columnNum={8}
-            renderItem={letter => (
-              <TouchableOpacity onPress={() => handleFilterClick(letter)}>
-                <Text>
-                  {letter === 'CLEAR' ? (
-                    <span role="img" aria-label="no-good">
-                      🙅
-                    </span>
-                  ) : (
-                    letter
-                  )}
-                </Text>
-              </TouchableOpacity>
-            )}
+          <SearchKeypad
+            nextLetters={rest.nextLetters}
+            handleFilterClick={handleFilterClick}
           />
           <WhiteSpace size="sm" />
           <Grid
@@ -167,34 +130,13 @@ class ViewCards extends React.Component {
             columnNum={2}
             renderItem={item => (
               <GridItem
-                handlePress={this.makehHandlePress(item)}
+                handlePress={this.makeHandlePress(item)}
                 numInCart={cartConfirming.get(item.cardId)}
                 activeMode={activeMode}
                 {...item}
               />
             )}
           />
-          {/* <ListView
-            className="am-list"
-            dataSource={dataSource}
-            onEndReached={this.onEndReached}
-            onEndReachedThreshold={10}
-            pageSize={4}
-            ref={this.setRef}
-            initialListSize={100}
-            renderFooter={() => <ListFooter isLoading={isLoading} />}
-            renderRow={row => (
-              <ListRowMove
-                {...row}
-                handlePress={this.makehHandlePress(row)}
-                numInCart={cartConfirming.get(row.cardId)}
-                activeMode={activeMode}
-              />
-            )}
-            renderSeparator={Separator}
-            scrollRenderAheadDistance={500}
-            useBodyScroll
-          /> */}
         </WingBlank>
       </StickyContainer>
     );

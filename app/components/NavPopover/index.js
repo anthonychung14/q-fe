@@ -33,21 +33,20 @@ class NavPopover extends React.Component {
   };
 
   render() {
-    const { firebase } = this.props;
     return (
       <Popover
         overlayClassName="navPopoverOverlay"
         overlayStyle={{ color: 'currentColor' }}
         visible={this.state.visible}
         overlay={[
-          <TouchableOpacity onPress={() => firebase.logout()}>
+          <TouchableOpacity onPress={() => console.log('do thing')}>
             <Popover.Item
               key="5"
               value="view"
               icon={myImg('PKAgAqZWJVNwKsAJSmXd')}
               style={{ whiteSpace: 'nowrap' }}
             >
-              <h4>Logout</h4>
+              <h4>Donate</h4>
             </Popover.Item>
           </TouchableOpacity>,
         ]}

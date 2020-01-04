@@ -32,8 +32,9 @@ const AboutPage = () => (
         >
           <Container padded style={{ flexDirection: 'column' }}>
             <Text>
-              Centinel is a way for community and contractors to request help
-              and report suspicious activity
+              Provisor makes it easy to track and add custom food as items and
+              composite items. Over time, it will suggest foods that fit your
+              preferences + macros
             </Text>
           </Container>
         </Container>

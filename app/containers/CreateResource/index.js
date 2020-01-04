@@ -30,7 +30,7 @@ class ResourceCreatePage extends React.Component<Props> {
           fields={resource.fields}
           form={resourceType}
           submitCallback={this.submitCallback}
-          submitLabel={`Create ${resourceType} ${reportType}`}
+          submitLabel={`Create ${resourceType} ${reportType || ''}`}
         />
       </Container>
     );

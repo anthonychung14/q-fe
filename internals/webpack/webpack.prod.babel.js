@@ -127,8 +127,8 @@ module.exports = require('./webpack.base.babel')({
     }),
 
     new WebpackPwaManifest({
-      name: 'Centinel',
-      short_name: 'Centinel',
+      name: 'Provisor',
+      short_name: 'Provisor',
       description: 'A security service solution',
       background_color: '#fafafa',
       theme_color: '#b1624d',
