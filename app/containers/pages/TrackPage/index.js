@@ -12,18 +12,23 @@ import _ from 'lodash';
 import React from 'react';
 import { Chart } from 'react-charts';
 import { useSelector } from 'react-redux';
-import { useFirebaseConnect, useFirebase } from 'react-redux-firebase';
+import { compose, withProps } from 'recompose';
+import { useFirebaseConnect } from 'react-redux-firebase';
 import { WingBlank } from 'antd-mobile';
 
 import Container from 'components/Container';
 
-import { formatUnixTimestamp, convertToUnixFromDate } from 'utils/time';
+import { NutritionTable } from 'containers/widgets';
+import { withOnSubmit } from 'containers/CreateResource/formEnhancers';
 
-const INCIDENT_COLORS = {
-  emergency: 'red',
-  theft: 'yellow',
-  intrusion: 'blue',
-};
+import { getGoalProps } from 'selectors/goals';
+import { getNutritionConsumed } from 'selectors/firebase';
+import {
+  formatUnixTimestamp,
+  convertToUnixFromDate,
+  getDayFromDate,
+  getToday,
+} from 'utils/time';
 
 const makeDataFromList = list => {
   const numCounted = _.countBy(list, i =>
@@ -34,6 +39,30 @@ const makeDataFromList = list => {
     y: v,
   }));
 };
+
+// maps over all items eaten. y would be macro
+const makeDataByDay = object => {
+  const today = getToday();
+  // append 6 days behind it
+  // key each of them with an []
+
+  return _.reduce(object, (acc, curr) => {
+    return;
+
+    const date = getDayFromDate(curr.date_created_timestamp);
+    acc[date] = acc[date] + 1 || 1;
+    return acc;
+  });
+};
+
+// (consumedByKeys, macro) => ({
+//   label: macro,
+//   datums: _.map(consumedByKeys, item => ({
+//     // x: 'convertDateToDay'
+//     x: getDayFromDate(_.get(item, 'date_created_timestamp')),
+//     y: _.get(item, `grams_${macro}`, 10),
+//   })),
+// });
 
 // const convertToDataSet = _.flow([
 //   _.groupBy('value.type'),
@@ -46,57 +75,42 @@ const makeDataFromList = list => {
 
 /* eslint-disable react/prefer-stateless-function */
 const TrackPage = () => {
-  const firebase = useFirebase();
-  useFirebaseConnect('incident');
-
-  const incidents = useSelector(state => {
-    return state.get('firebase').ordered.incident;
-  });
-
-  const data = React.useMemo(
-    () => {
-      if (incidents) {
-        return _.map(_.groupBy(incidents, 'value.type'), (listValues, k) => ({
-          label: k,
-          data: makeDataFromList(listValues, k),
-          color: INCIDENT_COLORS[k],
-        }));
-      }
-
-      return [];
-    },
-    [incidents],
-  );
-
+  const { date, googleUID } = useSelector(getGoalProps);
   const series = React.useMemo(
     () => ({
-      type: 'area',
+      type: 'bar',
     }),
     [],
   );
-
   const axes = React.useMemo(
     () => [
-      {
-        primary: true,
-        type: 'time',
-        position: 'bottom',
-      },
-      { position: 'left', type: 'linear', stacked: true },
+      { primary: true, type: 'ordinal', position: 'left' },
+      { position: 'bottom', type: 'linear', stacked: true },
     ],
     [],
   );
 
+  useFirebaseConnect(`nutrition/consumed/${googleUID}/${date}`);
+  const path = date.split('/').join('.');
+  const consumed = useSelector(state => {
+    const consumedTree = getNutritionConsumed(state);
+    return _.get(consumedTree, `${googleUID}.${path}`, []);
+  });
+
+  // split today's date into this plus - 6 days
   return (
     <WingBlank size="lg">
-      <Container padded style={{ height: '450px', width: '100%' }}>
-        <Chart
-          data={data}
-          series={series}
-          axes={axes}
-          tooltip
-          getSeriesStyle={s => ({ color: s.originalSeries.color })}
-        />
+      <Container padded style={{ height: '300px', width: '100%' }}>
+        {Object.keys(consumed).length > 0 ? (
+          <Chart
+            data={[]}
+            series={series}
+            axes={axes}
+            tooltip
+            getSeriesStyle={s => ({ color: s.originalSeries.color })}
+          />
+        ) : null}
+        <NutritionTable />
       </Container>
     </WingBlank>
   );

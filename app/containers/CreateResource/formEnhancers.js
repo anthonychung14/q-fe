@@ -1,7 +1,8 @@
 import _ from 'lodash';
-import { compose, branch, withHandlers } from 'recompose';
+import { compose, withHandlers } from 'recompose';
 import { firebaseConnect } from 'react-redux-firebase';
 
+import { connectAuth } from 'selectors/firebase';
 import { currentTimeSeconds, getStorageDate } from 'utils/time';
 import { mapKeysToSnake, withLoading, withSetGif } from 'utils/enhancers';
 import { postResource, fetchGiphy } from 'utils/api';
@@ -39,16 +40,6 @@ const connectCreateResource = compose(
       }
     },
   }),
-);
-
-export const withOnSubmit = compose(
-  firebaseConnect(),
-  withLoading,
-  branch(
-    props => props.reportType === 'incident',
-    connectCreateResource,
-    withSubmitResources,
-  ),
 );
 
 const withSubmitResources = withHandlers({
@@ -93,9 +84,16 @@ const withSubmitResources = withHandlers({
       )
       .map(mapKeysToSnake);
 
-    firebaseValues.forEach(({ producerId, ...fbValue }) => {
-      firebase.push(form, { date_created_timestamp: time, ...fbValue });
-    });
+    try {
+      firebaseValues.forEach(({ producerId, ...fbValue }) => {
+        firebase.push(form, {
+          date_created_timestamp: time,
+          ...fbValue,
+        });
+      });
+    } catch (e) {
+      console.log('e is', e);
+    }
 
     setLoading(false);
     dispatch({
@@ -137,3 +135,14 @@ const withSubmitResources = withHandlers({
     });
   },
 });
+
+export const withOnSubmit = compose(
+  firebaseConnect(),
+  connectAuth,
+  withLoading,
+  withSubmitResources,
+  connectCreateResource,
+  // branch(
+  //   props => props.reportType === 'incident',
+  // ),
+);

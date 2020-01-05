@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "provisor-01"
+    "default": "provisor-0-1",
+    "staging": "provisor-0-1"
   }
 }

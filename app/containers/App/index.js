@@ -9,18 +9,22 @@
 
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { withState } from 'recompose';
+import { withState, compose } from 'recompose';
+import { firebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase';
+import { connect } from 'react-redux';
 
 import NutritionPage from 'containers/pages/NutritionPage/loadable';
 import TrackPage from 'containers/pages/TrackPage/loadable';
 import AboutPage from 'containers/pages/AboutPage/loadable';
 import AddCards from 'containers/AddCards/loadable';
 
+import Login from 'components/Login';
 import AppBar from 'components/AppBar';
 import LeftDrawer from 'components/LeftDrawer';
 import Container from 'components/Container';
 
 import { connectActiveMode } from 'selectors/skill_mode';
+import { getAuth } from 'selectors/firebase';
 
 import GlobalStyle from '../../global-styles';
 
@@ -44,7 +48,7 @@ const MAP = {
     Component: AddCards,
   },
   track: {
-    headerText: '',
+    headerText: 'Progress',
     Component: TrackPage,
   },
 };
@@ -53,17 +57,25 @@ const getProps = page => {
   return MAP[page] || MAP.consume;
 };
 
-const PageDisplayer = ({ activeMode }) => {
+const PageDisplayer = ({ activeMode, auth, firebase }) => {
   const { headerText, Component } = getProps(activeMode);
 
   return (
     <Container type="page" headerText={headerText}>
-      <Component />
+      {isLoaded(auth) && isEmpty(auth) ? (
+        <Login firebase={firebase} />
+      ) : (
+        <Component />
+      )}
     </Container>
   );
 };
 
-const PageContainer = connectActiveMode(PageDisplayer);
+const PageContainer = compose(
+  firebaseConnect(),
+  connect(state => ({ auth: getAuth(state) })),
+  connectActiveMode,
+)(PageDisplayer);
 
 const Body = drawerProps => (
   <div style={{ height: '100%', width: '100%' }}>

@@ -1,24 +1,24 @@
 // THIS DOESN'T BELONG. REMOVE MEEEEEE
 const prodConfig = {
-  apiKey: 'AIzaSyDRmYJNqFiKC5s-VRwKcCUae5VY100_hPg',
-  authDomain: 'provisor-01.firebaseapp.com',
-  databaseURL: 'https://provisor-01.firebaseio.com',
-  projectId: 'provisor-01',
-  storageBucket: 'provisor-01.appspot.com',
-  messagingSenderId: '494225617282',
-  appId: '1:494225617282:web:c1903e4c0aba74d03f1f9b',
-  measurementId: 'G-1KEKRL2QW3',
+  apiKey: 'AIzaSyBYNePtTwiGzLGZiHynWYPG0ukK2QOh14k',
+  authDomain: 'provisor-0-1.firebaseapp.com',
+  databaseURL: 'https://provisor-0-1.firebaseio.com',
+  projectId: 'provisor-0-1',
+  storageBucket: 'provisor-0-1.appspot.com',
+  messagingSenderId: '740065134914',
+  appId: '1:740065134914:web:362a707480c7c98845a0db',
+  measurementId: 'G-LL448LHM60',
 };
 
 const devConfig = {
-  apiKey: 'AIzaSyDRmYJNqFiKC5s-VRwKcCUae5VY100_hPg',
-  authDomain: 'provisor-01.firebaseapp.com',
-  databaseURL: 'https://provisor-01.firebaseio.com',
-  projectId: 'provisor-01',
-  storageBucket: 'provisor-01.appspot.com',
-  messagingSenderId: '494225617282',
-  appId: '1:494225617282:web:c1903e4c0aba74d03f1f9b',
-  measurementId: 'G-1KEKRL2QW3',
+  apiKey: 'AIzaSyBYNePtTwiGzLGZiHynWYPG0ukK2QOh14k',
+  authDomain: 'provisor-0-1.firebaseapp.com',
+  databaseURL: 'https://provisor-0-1.firebaseio.com',
+  projectId: 'provisor-0-1',
+  storageBucket: 'provisor-0-1.appspot.com',
+  messagingSenderId: '740065134914',
+  appId: '1:740065134914:web:362a707480c7c98845a0db',
+  measurementId: 'G-LL448LHM60',
 };
 
 const config = process.env.NODE_ENV === 'production' ? prodConfig : devConfig;

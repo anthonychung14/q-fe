@@ -11,10 +11,18 @@ import firebase from 'firebase/app';
 import 'firebase/database';
 import 'firebase/auth';
 import createReducer from './reducers';
-// make this not bad
-import { config } from './firebase/firebase';
 
-firebase.initializeApp(config);
+// make this not bad
+firebase.initializeApp({
+  apiKey: 'AIzaSyBYNePtTwiGzLGZiHynWYPG0ukK2QOh14k',
+  authDomain: 'provisor-0-1.firebaseapp.com',
+  databaseURL: 'https://provisor-0-1.firebaseio.com',
+  projectId: 'provisor-0-1',
+  storageBucket: 'provisor-0-1.appspot.com',
+  messagingSenderId: '740065134914',
+  appId: '1:740065134914:web:362a707480c7c98845a0db',
+  measurementId: 'G-LL448LHM60',
+});
 
 const sagaMiddleware = createSagaMiddleware();
 

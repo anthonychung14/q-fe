@@ -8,10 +8,17 @@
 const RESOURCE_TYPE = 'foodItem';
 const FIELDS = [
   {
+    name: 'food_type',
+    type: 'checkbox',
+    values: ['item', 'meal'],
+    label: 'is it a meal',
+    required: true,
+  },
+  {
     name: 'ingredient',
     displayName: 'ingredient',
     type: 'string',
-    label: 'Name of the food',
+    label: 'what to call it',
     required: true,
   },
   {
@@ -63,10 +70,10 @@ const FIELDS = [
     required: true,
   },
   {
-    name: 'grams_protein',
-    displayName: 'protein',
+    name: 'grams_fat',
+    displayName: 'fat',
     type: 'integer',
-    label: 'grams of protein',
+    label: 'grams of fat',
     required: true,
   },
   {
@@ -76,11 +83,12 @@ const FIELDS = [
     label: 'grams of carbs',
     required: true,
   },
+
   {
-    name: 'grams_fat',
-    displayName: 'fat',
+    name: 'grams_protein',
+    displayName: 'protein',
     type: 'integer',
-    label: 'grams of fat',
+    label: 'grams of protein',
     required: true,
   },
   {
@@ -89,12 +97,6 @@ const FIELDS = [
     type: 'integer',
     label: 'grams of fiber',
     required: true,
-  },
-  {
-    name: 'price_usd_cents',
-    displayName: 'price',
-    type: 'integer',
-    label: 'price in cents',
   },
   {
     name: 'media',

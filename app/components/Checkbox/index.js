@@ -10,6 +10,7 @@ import {
 } from 'recompose';
 
 import { List, Checkbox as C, WhiteSpace, WingBlank } from 'antd-mobile';
+import Container from 'components/Container';
 
 const { CheckboxItem } = C;
 
@@ -29,15 +30,17 @@ const Checkbox = ({ checked, checkboxValues, handleCheck, name }) => {
     <WingBlank size="md">
       <WhiteSpace size="md" />
       <List renderHeader={() => name}>
-        {checkboxValues.map(item => (
-          <CheckboxItem
-            key={`${item.label}-i`}
-            onChange={makeHandleCheck(handleCheck, item)}
-            checked={item.value === checked}
-          >
-            {item.label}
-          </CheckboxItem>
-        ))}
+        <Container type="empty" horizontal>
+          {checkboxValues.map(item => (
+            <CheckboxItem
+              key={`${item.label}-i`}
+              onChange={makeHandleCheck(handleCheck, item)}
+              checked={item.value === checked}
+            >
+              {item.label}
+            </CheckboxItem>
+          ))}
+        </Container>
       </List>
     </WingBlank>
   );

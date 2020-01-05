@@ -1,83 +1,18 @@
-import _ from 'lodash';
 import React from 'react';
-import { Modal, List } from 'antd-mobile';
+import { Modal } from 'antd-mobile';
 import { compose, withProps } from 'recompose';
-import styled from 'styled-components';
 
 import { withFirebase, firebaseConnect } from 'react-redux-firebase';
 import { withOnSubmit } from 'containers/CreateResource/formEnhancers';
+import {
+  NutritionTableParent,
+  NutritionData,
+} from 'containers/widgets/NutritionTable';
 
-import { View, Text } from 'react-native';
 import ButtonGroup from 'components/Button/ButtonGroup';
 
 import { connectGoals } from 'selectors/goals';
-import {
-  connectFirebaseForm,
-  withNutritionRemaining,
-} from 'selectors/skill_mode';
-import { getShortDate } from 'utils/time';
-
-const Column = styled.div`
-  display: flex;
-  flex: 1;
-  align-items: flex-start
-  flex-direction: column;
-  justify-content: ${({ justify }) => {
-    switch (justify) {
-      case 'end':
-        return 'flex-end';
-      case 'center':
-        return 'center';
-      default:
-        return 'flex-start';
-    }
-  }};
-`;
-
-const HeaderColumn = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: ${({ align }) =>
-    align === 'start' ? 'flex-start' : 'flex-end'};
-  align-items: ${({ align }) =>
-    align === 'start' ? 'flex-start' : 'flex-end'};
-`;
-
-const CartColumn = ({ cart, subgoal }) => {
-  const text = cart.reduce((acc, curr) => {
-    const key =
-      subgoal !== 'calories'
-        ? _.camelCase(['grams', subgoal])
-        : _.camelCase([subgoal, 'atwater']);
-
-    const next = curr[key];
-    return acc + next;
-  }, 0);
-
-  return (
-    <Column justify="end">
-      <Text>{`${text} g`}</Text>
-    </Column>
-  );
-};
-
-const RemainingColumn = ({ unit, remainingAmount }) => {
-  return (
-    <Column justify="end">
-      <Text>{`${remainingAmount} ${unit}`}</Text>
-    </Column>
-  );
-};
-
-const RemainingNutrition = withNutritionRemaining(RemainingColumn);
-
-const NutritionTotals = ({ activeGoal, goalCalories, subgoal }) =>
-  subgoal === 'calories' ? (
-    <Text>{goalCalories} cal</Text>
-  ) : (
-    <Text>{activeGoal.get(subgoal)} g</Text>
-  );
+import { connectFirebaseForm } from 'selectors/skill_mode';
 
 class SlideUpModal extends React.Component {
   handleConfirm = () => {
@@ -115,79 +50,20 @@ class SlideUpModal extends React.Component {
         transparent
         visible={visible}
       >
-        {activeMode === 'consume' && (
-          <List
-            renderHeader={() => (
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <HeaderColumn align="start">
-                  <div>{`${getShortDate()}`} </div>
-                  <div>{activeMode}</div>
-                </HeaderColumn>
-                <HeaderColumn>
-                  <Text>in cart</Text>
-                </HeaderColumn>
-                <HeaderColumn>
-                  <Text>remaining</Text>
-                </HeaderColumn>
-                <HeaderColumn>
-                  <Text>daily goal</Text>
-                </HeaderColumn>
-              </View>
-            )}
-            className="popup-list"
-          >
-            <View
-              style={{
-                display: 'flex',
-              }}
-            >
-              {['protein', 'fat', 'carb', 'calories'].map(i => (
-                // This will eventually be your x req - this
+        <NutritionTableParent activeMode={activeMode} cart={cart}>
+          <NutritionData
+            activeGoal={activeGoal}
+            cart={cart}
+            firebaseData={firebaseData}
+            goalCalories={goalCalories}
+          />
 
-                <List.Item key={`${i}-`}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      flex: 1,
-                    }}
-                  >
-                    <Column>
-                      <Text>{i}</Text>
-                    </Column>
-                    <CartColumn cart={cart} subgoal={i} />
-                    <RemainingNutrition
-                      cart={cart}
-                      firebaseData={firebaseData}
-                      goalCalories={goalCalories}
-                      subgoal={i}
-                      activeGoal={activeGoal}
-                    />
-                    <Column justify="end">
-                      <NutritionTotals
-                        activeGoal={activeGoal}
-                        subgoal={i}
-                        goalCalories={goalCalories}
-                      />
-                    </Column>
-                  </View>
-                </List.Item>
-              ))}
-            </View>
-
-            <ButtonGroup
-              handleUndo={this.handleUndo}
-              handleLater={this.handleLater}
-              handleConfirm={this.handleConfirm}
-            />
-          </List>
-        )}
+          <ButtonGroup
+            handleUndo={this.handleUndo}
+            handleLater={this.handleLater}
+            handleConfirm={this.handleConfirm}
+          />
+        </NutritionTableParent>
       </Modal>
     );
   }
@@ -195,8 +71,8 @@ class SlideUpModal extends React.Component {
 
 export default compose(
   connectGoals,
-  withProps(({ activeMode, date }) => ({
-    form: `${activeMode}/consumed/${date}`,
+  withProps(({ googleUID, date }) => ({
+    form: `nutrition/consumed/${googleUID}/${date}`,
   })),
   firebaseConnect(props => [props.form]),
   connectFirebaseForm,

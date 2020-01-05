@@ -27,24 +27,35 @@ export const renderField = (form, field, makeHeader, opts = {}) => (
 
 const TextOrNumberField = ({
   textFields,
+  textValues,
   form,
   numberFields,
   makeRenderFieldHeader,
 }) => {
   // only display if there's one or the other
-  // if (textFields.length === Object.keys(textValues).length) {
+  if (textFields.length === Object.keys(textValues).length) {
+    return (
+      <Container>
+        <Keypad
+          columnNum={3}
+          data={numberFields}
+          form={form}
+          makeRenderFieldHeader={makeRenderFieldHeader}
+        />
+      </Container>
+    );
+  }
+
   return (
     <Container>
       {textFields.map(field => renderField(form, field, makeRenderFieldHeader))}
-      <Keypad
-        columnNum={3}
-        data={numberFields}
-        form={form}
-        makeRenderFieldHeader={makeRenderFieldHeader}
-      />
     </Container>
   );
 };
+
+const allValues = (fields, textValues, numberValues) =>
+  fields.filter(i => i.required).length <=
+  Object.keys(textValues).length + Object.keys(numberValues).length;
 
 const AddCardForm = ({
   fields,
@@ -72,6 +83,8 @@ const AddCardForm = ({
 
   const onSubmit = handleSubmit(submitForm);
 
+  const hasAllVals = allValues(fields, textValues, numberValues);
+
   return (
     <Container>
       <form onSubmit={onSubmit}>
@@ -85,14 +98,17 @@ const AddCardForm = ({
           />
 
           <WhiteSpace size="lg" />
-          <Button
-            type="submit"
-            loading={processing}
-            icon="check-circle-o"
-            handleClick={onSubmit}
-            text={submitLabel || 'Submit'}
-            disabled={processing || invalid}
-          />
+
+          {hasAllVals && (
+            <Button
+              type="submit"
+              loading={processing}
+              icon="check-circle-o"
+              handleClick={onSubmit}
+              text={submitLabel || 'Submit'}
+              disabled={processing || invalid}
+            />
+          )}
         </fieldset>
       </form>
       {/* {firstMediaField && (
@@ -119,6 +135,7 @@ const DynamicForm = branch(
         'supplier',
         'producer',
         'serving_unit',
+        'food_type',
       ),
       numberValues: selector(
         state,

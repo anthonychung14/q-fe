@@ -66,9 +66,9 @@ export const withNutritionRemaining = compose(
       firebaseData,
       (acc, { value }) => {
         const lookup =
-          subgoal !== 'calories'
-            ? _.snakeCase(['grams', subgoal])
-            : _.snakeCase([subgoal, 'atwater']);
+          subgoal === 'calories'
+            ? _.snakeCase([subgoal, 'atwater'])
+            : _.snakeCase(['grams', subgoal]);
 
         return acc + _.get(value, lookup);
       },

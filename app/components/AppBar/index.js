@@ -23,7 +23,11 @@ const AppBar = ({
     icon={<Icon type={drawerOpen ? 'left' : 'right'} />}
     onLeftClick={() => handleDrawerToggle(!drawerOpen)}
     rightContent={[
-      activeMode === 'consume' ? <SearchButton key="Search" /> : <NavPopover />,
+      activeMode === 'consume' ? (
+        <SearchButton key="Search" />
+      ) : (
+        <NavPopover key="Outside" />
+      ),
     ]}
   >
     <NavLink style={{ color: 'white' }} exact key="home" to="/">

@@ -1,6 +1,6 @@
 import { Map } from 'immutable';
 
-export default function(state = Map({ activeMode: 'consume' }), action) {
+export default function(state = Map({ activeMode: 'track' }), action) {
   switch (action.type) {
     case 'mode/SWITCH':
       return state.set('activeMode', action.payload.mode.toLowerCase());

@@ -32,6 +32,8 @@ export const formatUnixTimestamp = (
       return moment.unix(timestamp).format('MMMM Do, YYYY');
     case 'x_axis':
       return moment.unix(timestamp).format('M/DD/YY');
+    case 'day':
+      return moment.unix(timestamp, 'YYYY-MM-DD HH:mm:ss');
     // case 'date_with_seconds':
     //   return (
     //     moment.unix(timestamp).format('ll') +
@@ -48,3 +50,10 @@ export const getShortDate = () =>
 
 export const getStorageDate = () =>
   formatUnixTimestamp(currentTimeSeconds(), 'storage_date');
+
+export const getDayFromDate = date => {
+  const dt = formatUnixTimestamp(date, 'day');
+  return dt.format('dddd');
+};
+
+export const getToday = () => getDayFromDate(currentTimeSeconds());

@@ -14,10 +14,6 @@
     ],
     "rewrites": [
       {
-        "source": "/functions/*",
-        "function": "functions"
-      },
-      {
         "source": "**",
         "destination": "/index.html"
       }

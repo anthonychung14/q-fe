@@ -5,7 +5,6 @@
  * @flow
  */
 import Fuse from 'fuse.js';
-
 import * as React from 'react';
 import _ from 'lodash';
 import {
@@ -17,9 +16,11 @@ import {
   renderComponent,
   branch,
 } from 'recompose';
+import { connect } from 'react-redux';
 import { withFirebase } from 'react-redux-firebase';
 
 import { WhiteSpace, WingBlank } from 'antd-mobile';
+import { getAuth } from 'selectors/firebase';
 import { fetchAirtableApi, fetchGiphy, postResource } from 'utils/api';
 import { withLoading, withSetGif } from 'utils/enhancers';
 import { currentTimeSeconds, getStorageDate } from 'utils/time';
@@ -83,18 +84,23 @@ export const withCreateResource = compose(
   withFirebase,
   withLoading,
   withSetGif,
+  connect(state => ({ auth: getAuth(state) })),
   withHandlers({
-    createResource: ({ reportType, firebase, setLoading, setGif }) => async (
-      resourceType,
-      values,
-    ) => {
+    createResource: ({
+      reportType,
+      firebase,
+      auth,
+      setLoading,
+      setGif,
+    }) => async (resourceType, values) => {
       setLoading(true);
       const data = await fetchGiphy();
 
       setGif(data);
       const withGifVals = values
         .set('gif_url', data.image_url)
-        .set('giphy_id', data.id);
+        .set('giphy_id', data.id)
+        .set('miner_google_uid', [auth.uid]);
 
       if (reportType === 'incident') {
         const storageDate = getStorageDate();
