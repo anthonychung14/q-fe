@@ -12,22 +12,19 @@ import _ from 'lodash';
 import React from 'react';
 import { Chart } from 'react-charts';
 import { useSelector } from 'react-redux';
-import { compose, withProps } from 'recompose';
-import { useFirebaseConnect } from 'react-redux-firebase';
-import { WingBlank } from 'antd-mobile';
 
 import Container from 'components/Container';
+import Button from 'components/Button';
 
 import { NutritionTable } from 'containers/widgets';
-import { withOnSubmit } from 'containers/CreateResource/formEnhancers';
 
-import { getGoalProps } from 'selectors/goals';
+// TODO: nutrition specific selectors must be moved into their own module
 import { getNutritionConsumed } from 'selectors/firebase';
 import {
-  formatUnixTimestamp,
   convertToUnixFromDate,
-  getDayFromDate,
-  getToday,
+  currentTimeSeconds,
+  formatUnixTimestamp,
+  convertDateToPath,
 } from 'utils/time';
 
 const makeDataFromList = list => {
@@ -40,42 +37,83 @@ const makeDataFromList = list => {
   }));
 };
 
-// maps over all items eaten. y would be macro
-const makeDataByDay = object => {
-  const today = getToday();
-  // append 6 days behind it
-  // key each of them with an []
+const totalForMacroInDate = (date, consumedOnDate, macro) =>
+  _.reduce(
+    consumedOnDate,
+    (acc, curr) => {
+      const next = acc + _.get(curr, `grams_${macro}`);
+      return next;
+    },
+    0,
+  );
 
-  return _.reduce(object, (acc, curr) => {
-    return;
+const getConsumedFromDate = (date, object) =>
+  _.defaultTo(_.get(object, `2020.${convertDateToPath(date)}`), {});
 
-    const date = getDayFromDate(curr.date_created_timestamp);
-    acc[date] = acc[date] + 1 || 1;
-    return acc;
+export const getStoragePathFromItem = item =>
+  convertDateToPath(
+    formatUnixTimestamp(item.date_created_timestamp, 'storage_date'),
+  );
+
+const makeMacroSummaries = (date, object) => {
+  // { 2020: { 1: { 04: { stuff, stuff, stuff } } } }
+
+  const consumedOnDate = getConsumedFromDate(date, object);
+
+  return ['protein', 'fat', 'carb'].map(m => ({
+    x: m,
+    y: totalForMacroInDate(date, consumedOnDate, m),
+  }));
+};
+
+const makeDatesFromPastWeek = () =>
+  new Array(7)
+    .fill(0)
+    .map((_, idx) =>
+      formatUnixTimestamp(
+        currentTimeSeconds() - (7 + idx * 24 * 60 * 60),
+        'shorter_date',
+      ),
+    )
+    .reduce((acc, date) => {
+      acc[date] = [];
+      return acc;
+    }, {});
+
+const makeMacrosForWeek = (object, m, dates) => {
+  //
+
+  // for each date, return a total where
+  return _.keys(dates).map(date => {
+    const consumedOnDate = getConsumedFromDate(date, object);
+    return {
+      x: date,
+      y: totalForMacroInDate(date, consumedOnDate, m),
+    };
   });
 };
 
-// (consumedByKeys, macro) => ({
-//   label: macro,
-//   datums: _.map(consumedByKeys, item => ({
-//     // x: 'convertDateToDay'
-//     x: getDayFromDate(_.get(item, 'date_created_timestamp')),
-//     y: _.get(item, `grams_${macro}`, 10),
-//   })),
-// });
+// splits data so that secondary axes is macros + histogram of dates
+const makeDataByDay = object => {
+  const dates = makeDatesFromPastWeek();
+  return _.map(dates, (currArr, shorterDateKey) => ({
+    label: shorterDateKey,
+    datums: currArr.concat(makeMacroSummaries(shorterDateKey, object)),
+  }));
+};
 
-// const convertToDataSet = _.flow([
-//   _.groupBy('value.type'),
-//   _.map((listValues, k) => ({
-//     label: k,
-//     data: makeDataFromList(listValues, k),
-//     color: INCIDENT_COLORS[k],
-//   })),
-// ]);
+// splits data so that secondary is dates, histogram of macros
+const makeHistogramOfMacros = object => {
+  const dates = makeDatesFromPastWeek();
+  return ['protein', 'fat', 'carb'].map(m => ({
+    label: m,
+    datums: makeMacrosForWeek(object, m, dates),
+  }));
+};
 
-/* eslint-disable react/prefer-stateless-function */
 const TrackPage = () => {
-  const { date, googleUID } = useSelector(getGoalProps);
+  const [isOn, toggleView] = React.useState(false);
+
   const series = React.useMemo(
     () => ({
       type: 'bar',
@@ -90,29 +128,39 @@ const TrackPage = () => {
     [],
   );
 
-  useFirebaseConnect(`nutrition/consumed/${googleUID}/${date}`);
-  const path = date.split('/').join('.');
-  const consumed = useSelector(state => {
-    const consumedTree = getNutritionConsumed(state);
-    return _.get(consumedTree, `${googleUID}.${path}`, []);
-  });
+  const userConsumeMap = useSelector(getNutritionConsumed);
+  const data = React.useMemo(
+    () =>
+      isOn
+        ? makeHistogramOfMacros(userConsumeMap)
+        : makeDataByDay(userConsumeMap),
+    [userConsumeMap, isOn],
+  );
 
-  // split today's date into this plus - 6 days
   return (
-    <WingBlank size="lg">
+    <Container type="empty">
       <Container padded style={{ height: '300px', width: '100%' }}>
-        {Object.keys(consumed).length > 0 ? (
+        <NutritionTable />
+
+        {Object.keys(userConsumeMap).length > 0 ? (
           <Chart
-            data={[]}
+            data={data}
             series={series}
             axes={axes}
             tooltip
             getSeriesStyle={s => ({ color: s.originalSeries.color })}
           />
         ) : null}
-        <NutritionTable />
+        <Container horizontal end>
+          <Button
+            handleClick={() => toggleView(!isOn)}
+            width="25%"
+            text={isOn ? 'Macro' : 'Week'}
+            type={isOn ? 'secondary' : 'cancel'}
+          />
+        </Container>
       </Container>
-    </WingBlank>
+    </Container>
   );
 };
 

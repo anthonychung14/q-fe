@@ -3,7 +3,7 @@ import { View } from 'react-native';
 
 import ViewHeader from 'components/ViewHeader';
 
-const Container = ({ children, horizontal, style = {}, ...props }) => {
+const Container = ({ children, horizontal, end, style = {}, ...props }) => {
   const renderType = type =>
     type === 'page' && props.headerText ? (
       <ViewHeader header={props.headerText} />
@@ -12,6 +12,7 @@ const Container = ({ children, horizontal, style = {}, ...props }) => {
   const mergedStyles = {
     display: 'flex',
     flexDirection: horizontal ? 'row' : 'column',
+    justifyContent: end ? 'flex-end' : 'flex-start',
     paddingTop: props.type === 'mode' ? '42px' : null,
     paddingHorizontal: props.padded ? '4%' : null,
     paddingBottom: props.paddedBottom ? '4%' : null,

@@ -159,13 +159,9 @@ export const NutritionTableParent = ({ children, cart, activeMode }) => {
   );
 };
 
-const Table = ({
-  activeMode,
-  cart,
-  goalCalories,
-  firebaseData,
-  activeGoal,
-}) => {
+const Table = props => {
+  const { activeMode, cart, goalCalories, firebaseData, activeGoal } = props;
+
   return (
     <NutritionTableParent activeMode={activeMode} cart={cart}>
       <NutritionData

@@ -100,7 +100,7 @@ export const withCreateResource = compose(
       const withGifVals = values
         .set('gif_url', data.image_url)
         .set('giphy_id', data.id)
-        .set('miner_google_uid', [auth.uid]);
+        .set('miner_google_uid', auth.uid);
 
       if (reportType === 'incident') {
         const storageDate = getStorageDate();

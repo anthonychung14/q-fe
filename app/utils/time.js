@@ -1,4 +1,5 @@
 import moment from 'moment';
+import _ from 'lodash';
 
 export const currentTime = () => {
   return new Date().getTime();
@@ -8,6 +9,8 @@ export const currentTime = () => {
  * @return {number}
  */
 export const currentTimeSeconds = () => Math.round(currentTime() / 1000);
+
+export const convertDateToPath = date => date.split('/').join('.');
 
 export const convertToUnixFromDate = string => {
   return moment(string, 'M/DD/YY').unix();
@@ -24,6 +27,8 @@ export const formatUnixTimestamp = (
       return moment.unix(timestamp).format('ll');
     case 'storage_date':
       return moment.unix(timestamp).format('YYYY/M/DD');
+    case 'shorter_date':
+      return moment.unix(timestamp).format('M/DD');
     case 'short_date':
       return moment.unix(timestamp).format('M/DD/YY');
     case 'seconds':
@@ -45,11 +50,19 @@ export const formatUnixTimestamp = (
   }
 };
 
+export const getNow = format =>
+  formatUnixTimestamp(currentTimeSeconds(), format);
+
 export const getShortDate = () =>
   formatUnixTimestamp(currentTimeSeconds(), 'short_date');
 
-export const getStorageDate = () =>
-  formatUnixTimestamp(currentTimeSeconds(), 'storage_date');
+export const getStoragePath = () => convertDateToPath(getStorageDate());
+
+export const getStorageDate = item =>
+  formatUnixTimestamp(
+    _.get(item, 'date_created_timestamp', currentTimeSeconds()),
+    'storage_date',
+  );
 
 export const getDayFromDate = date => {
   const dt = formatUnixTimestamp(date, 'day');

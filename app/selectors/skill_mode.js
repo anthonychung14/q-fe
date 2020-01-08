@@ -6,7 +6,7 @@ import { compose, withProps } from 'recompose';
 import CARDS from 'constants/cards';
 import COLORS from 'constants/colors';
 
-import { getFirebase } from 'selectors/firebase';
+import { getFirebase, getTodayConsumed } from 'selectors/firebase';
 import { getStorageDate } from 'utils/time';
 
 export const getActiveMode = state => state.getIn(['skillMode', 'activeMode']);

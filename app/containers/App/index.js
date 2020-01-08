@@ -48,7 +48,7 @@ const MAP = {
     Component: AddCards,
   },
   track: {
-    headerText: 'Progress',
+    headerText: 'Progress Today',
     Component: TrackPage,
   },
 };

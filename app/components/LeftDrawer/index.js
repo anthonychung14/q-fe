@@ -5,7 +5,7 @@ import { Drawer, List } from 'antd-mobile';
 
 import { getActiveMode } from 'selectors/skill_mode';
 
-const ROUTES = ['consume', 'acquire', 'track', 'about'];
+const ROUTES = ['consume', 'track', 'acquire', 'about'];
 
 const sidebar = ({ makeHandlePress }) => {
   const activeMode = useSelector(getActiveMode);

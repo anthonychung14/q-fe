@@ -88,6 +88,7 @@ const withSubmitResources = withHandlers({
       firebaseValues.forEach(({ producerId, ...fbValue }) => {
         firebase.push(form, {
           date_created_timestamp: time,
+          date_created: String(getStorageDate()),
           ...fbValue,
         });
       });
