@@ -17,10 +17,12 @@ import {
   renderComponent,
   branch,
 } from 'recompose';
+import { withFirebase } from 'react-redux-firebase';
 
 import { WhiteSpace, WingBlank } from 'antd-mobile';
-import resources from 'resources';
-import { fetchAirtableApi, fetchGiphy } from 'utils/api';
+import { fetchAirtableApi, fetchGiphy, postResource } from 'utils/api';
+import { withLoading, withSetGif } from 'utils/enhancers';
+import { currentTimeSeconds, getStorageDate } from 'utils/time';
 
 // TODO: changes as a function of the resource
 const options = {
@@ -32,8 +34,6 @@ const options = {
     'field.unit',
   ],
 };
-
-const withLoading = withState('loading', 'setLoading', false);
 
 export const fetchAirtable = compose(
   withLoading,
@@ -79,20 +79,12 @@ export const fetchAirtable = compose(
   }),
 );
 
-export const postResource = async ({ resourceType, values }) =>
-  resources.airtable(resourceType).create([
-    {
-      fields: values.toJS(),
-    },
-  ]);
-
-const withSetGif = compose(withState('gif', 'setGif', {}));
-
 export const withCreateResource = compose(
+  withFirebase,
   withLoading,
   withSetGif,
   withHandlers({
-    createResource: ({ setLoading, setGif }) => async (
+    createResource: ({ reportType, firebase, setLoading, setGif }) => async (
       resourceType,
       values,
     ) => {
@@ -104,7 +96,19 @@ export const withCreateResource = compose(
         .set('gif_url', data.image_url)
         .set('giphy_id', data.id);
 
-      await postResource({ resourceType, values: withGifVals });
+      if (reportType === 'incident') {
+        const storageDate = getStorageDate();
+        await firebase.push(
+          reportType,
+          withGifVals
+            .set('type', resourceType)
+            .set('reported_seconds', currentTimeSeconds())
+            .set('display_date', storageDate)
+            .toJS(),
+        );
+      } else {
+        await postResource({ resourceType, values: withGifVals });
+      }
       setLoading(false);
     },
   }),

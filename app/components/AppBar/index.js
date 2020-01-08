@@ -18,7 +18,7 @@ const AppBar = ({ navBarStyle, handleDrawerToggle, drawerOpen }) => (
     rightContent={[<NavPopover key="Nav" />]}
   >
     <NavLink style={{ color: 'white' }} exact key="home" to="/">
-      Q
+      Centinel-01
     </NavLink>
   </NavBar>
 );
@@ -27,7 +27,11 @@ export default compose(
   connect(state => ({ activeMode: getActiveMode(state) })),
   withProps(({ activeMode }) => ({
     navBarStyle: {
-      backgroundColor: _.get(COLORS, ['modes', activeMode, 'primary']),
+      backgroundColor: _.get(COLORS, [
+        'modes',
+        _.has(COLORS, ['modes', activeMode]) ? activeMode : 'security',
+        'primary',
+      ]),
       borderBottom: `4px solid ${_.get(COLORS, [
         'modes',
         activeMode,

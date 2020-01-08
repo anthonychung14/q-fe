@@ -6,7 +6,8 @@ import { reduxForm, formValueSelector } from 'redux-form/immutable';
 import { Map, List } from 'immutable';
 import { branch, compose, withHandlers, withProps } from 'recompose';
 
-import { WingBlank, WhiteSpace } from 'antd-mobile';
+import { WhiteSpace } from 'antd-mobile';
+import Container from 'components/Container';
 import Button from 'components/Button';
 import Keypad from 'components/Keypad';
 import FormField from './form_field';
@@ -26,23 +27,22 @@ export const renderField = (form, field, makeHeader, opts = {}) => (
 
 const TextOrNumberField = ({
   textFields,
-  textValues,
   form,
   numberFields,
   makeRenderFieldHeader,
 }) => {
-  if (textFields.length === Object.keys(textValues).length) {
-    return (
+  // only display if there's one or the other
+  // if (textFields.length === Object.keys(textValues).length) {
+  return (
+    <Container>
+      {textFields.map(field => renderField(form, field, makeRenderFieldHeader))}
       <Keypad
         columnNum={3}
         data={numberFields}
         form={form}
         makeRenderFieldHeader={makeRenderFieldHeader}
       />
-    );
-  }
-  return textFields.map(field =>
-    renderField(form, field, makeRenderFieldHeader),
+    </Container>
   );
 };
 
@@ -62,15 +62,18 @@ const AddCardForm = ({
   const [mediaForm, otherFields] = _.partition(fields, ['type', 'media']);
   const firstMediaField = _.first(mediaForm);
 
-  const [numberFields, textFields] = _.partition(otherFields, [
-    'type',
-    'integer',
-  ]);
+  const [numberFields, nonNumberFields] = _.partition(
+    otherFields,
+    f => f.type === 'integer' || f.type === 'phoneNumber',
+  );
+
+  // TODO filter on area + check box
+  const textFields = nonNumberFields;
 
   const onSubmit = handleSubmit(submitForm);
 
   return (
-    <WingBlank size="md">
+    <Container>
       <form onSubmit={onSubmit}>
         <fieldset disabled={processing}>
           <TextOrNumberField
@@ -82,20 +85,17 @@ const AddCardForm = ({
           />
 
           <WhiteSpace size="lg" />
-          {Object.keys(textValues).length === textFields.length &&
-            Object.keys(numberValues).length === numberFields.length && (
-              <Button
-                type="submit"
-                loading={processing}
-                icon="check-circle-o"
-                handleClick={onSubmit}
-                text={submitLabel || 'Submit'}
-                disabled={processing || invalid}
-              />
-            )}
+          <Button
+            type="submit"
+            loading={processing}
+            icon="check-circle-o"
+            handleClick={onSubmit}
+            text={submitLabel || 'Submit'}
+            disabled={processing || invalid}
+          />
         </fieldset>
       </form>
-      {firstMediaField && (
+      {/* {firstMediaField && (
         <FormField
           key={firstMediaField.name}
           field={firstMediaField}
@@ -103,8 +103,8 @@ const AddCardForm = ({
           name={firstMediaField.name}
           many={firstMediaField.many}
         />
-      )}
-    </WingBlank>
+      )} */}
+    </Container>
   );
 };
 

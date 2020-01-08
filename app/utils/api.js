@@ -1,3 +1,5 @@
+import resources from 'resources';
+
 export const HEADERS = {
   headers: {
     Authorization: 'Bearer keyXl84W0rtRUuOEV', // SUPER SECRET KEY
@@ -32,6 +34,13 @@ export const fetchGiphy = async () => {
 
   return data;
 };
+
+export const postResource = async ({ resourceType, values }) =>
+  resources.airtable(resourceType).create([
+    {
+      fields: values.toJS(),
+    },
+  ]);
 
 export const checkStatus = response => {
   if (response && response.status >= 200 && response.status < 300) {

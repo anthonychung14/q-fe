@@ -1,22 +1,24 @@
 // THIS DOESN'T BELONG. REMOVE MEEEEEE
 const prodConfig = {
-  apiKey: 'AIzaSyDcV3_wB9_8oQem2fyoA7V71Nzo9oW3X4A',
-  appName: 'q-shadow',
-  authDomain: 'shadow-self.firebaseapp.com',
-  databaseURL: 'https://shadow-self.firebaseio.com',
-  projectId: 'shadow-self',
-  storageBucket: 'shadow-self.appspot.com',
-  messagingSenderId: '597390864622',
+  apiKey: 'AIzaSyDRmYJNqFiKC5s-VRwKcCUae5VY100_hPg',
+  authDomain: 'centinel-01.firebaseapp.com',
+  databaseURL: 'https://centinel-01.firebaseio.com',
+  projectId: 'centinel-01',
+  storageBucket: 'centinel-01.appspot.com',
+  messagingSenderId: '494225617282',
+  appId: '1:494225617282:web:c1903e4c0aba74d03f1f9b',
+  measurementId: 'G-1KEKRL2QW3',
 };
 
 const devConfig = {
-  apiKey: 'AIzaSyDcV3_wB9_8oQem2fyoA7V71Nzo9oW3X4A',
-  appName: 'q-shadow',
-  authDomain: 'shadow-self.firebaseapp.com',
-  databaseURL: 'https://shadow-self.firebaseio.com',
-  projectId: 'shadow-self',
-  storageBucket: 'shadow-self.appspot.com',
-  messagingSenderId: '597390864622',
+  apiKey: 'AIzaSyDRmYJNqFiKC5s-VRwKcCUae5VY100_hPg',
+  authDomain: 'centinel-01.firebaseapp.com',
+  databaseURL: 'https://centinel-01.firebaseio.com',
+  projectId: 'centinel-01',
+  storageBucket: 'centinel-01.appspot.com',
+  messagingSenderId: '494225617282',
+  appId: '1:494225617282:web:c1903e4c0aba74d03f1f9b',
+  measurementId: 'G-1KEKRL2QW3',
 };
 
 const config = process.env.NODE_ENV === 'production' ? prodConfig : devConfig;

@@ -9,6 +9,10 @@ export const currentTime = () => {
  */
 export const currentTimeSeconds = () => Math.round(currentTime() / 1000);
 
+export const convertToUnixFromDate = string => {
+  return moment(string, 'M/DD/YY').unix();
+};
+
 export const formatUnixTimestamp = (
   timestamp: number,
   format?: string,
@@ -26,6 +30,8 @@ export const formatUnixTimestamp = (
       return moment.unix(timestamp).format('M/DD/YY, h:mm:ss a');
     case 'wordy':
       return moment.unix(timestamp).format('MMMM Do, YYYY');
+    case 'x_axis':
+      return moment.unix(timestamp).format('M/DD/YY');
     // case 'date_with_seconds':
     //   return (
     //     moment.unix(timestamp).format('ll') +

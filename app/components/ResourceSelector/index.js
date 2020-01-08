@@ -22,7 +22,8 @@ import { List, WhiteSpace, WingBlank } from 'antd-mobile';
 import Autosuggest from 'react-autosuggest';
 import TextInput from 'components/TextInput';
 
-import { fetchAirtable, postResource } from './enhancers';
+import { postResource } from 'utils/api';
+import { fetchAirtable } from './enhancers';
 
 // import ResourceSelectorResult from './resource_selector_result';
 // import ResourceLink from './resource_link';

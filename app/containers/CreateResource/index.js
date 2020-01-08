@@ -7,8 +7,8 @@
 
 import * as React from 'react';
 
-import { WingBlank, WhiteSpace } from 'antd-mobile';
 import Form from 'components/Form';
+import Container from 'components/Container';
 
 import { withCreateResource } from 'components/ResourceSelector/enhancers';
 // import actions from 'actions';
@@ -21,19 +21,18 @@ class ResourceCreatePage extends React.Component<Props> {
   };
 
   render() {
-    const { resourceType } = this.props;
+    const { resourceType, reportType } = this.props;
 
     const resource = resources[resourceType];
     return (
-      <WingBlank size="lg">
-        <WhiteSpace size="md" />
+      <Container>
         <Form
           fields={resource.fields}
           form={resourceType}
           submitCallback={this.submitCallback}
-          submitLabel="Create"
+          submitLabel={`Create ${resourceType} ${reportType}`}
         />
-      </WingBlank>
+      </Container>
     );
   }
 }

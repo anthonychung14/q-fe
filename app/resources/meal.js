@@ -1,5 +1,5 @@
 /**
- * Creates a new text source
+ * Creates a new meal
  *
  * @flow
  * @format

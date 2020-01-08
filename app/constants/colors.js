@@ -57,5 +57,10 @@ export default Object.freeze({
       primary: encodedColors.accentTeal,
       secondary: encodedColors.redAccent,
     },
+    security: {
+      secondary: encodedColors.darkBlue,
+      primary: encodedColors.redAccent,
+    },
   },
+  pages: {},
 });

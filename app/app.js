@@ -11,9 +11,12 @@ import '@babel/polyfill';
 // Import all the third party stuff
 import React from 'react';
 import { AppRegistry } from 'react-native';
-
+import firebase from 'firebase/app';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import { ReactReduxFirebaseProvider } from 'react-redux-firebase';
+// import * as serviceWorker from './serviceWorker';
+
 import { ConnectedRouter } from 'connected-react-router/immutable';
 import history from 'utils/history';
 import 'sanitize.css/sanitize.css';
@@ -40,13 +43,24 @@ const initialState = {};
 const store = configureStore(initialState, history);
 const MOUNT_NODE = document.getElementById('app');
 
+const rrfConfig = {};
+
+const rrfProps = {
+  firebase,
+  config: rrfConfig,
+  dispatch: store.dispatch,
+  // createFirestoreInstance // <- needed if using firestore
+};
+
 const AppComponent = messages => (
   <Provider store={store}>
-    <LanguageProvider messages={messages}>
-      <ConnectedRouter history={history}>
-        <App />
-      </ConnectedRouter>
-    </LanguageProvider>
+    <ReactReduxFirebaseProvider {...rrfProps}>
+      <LanguageProvider messages={messages}>
+        <ConnectedRouter history={history}>
+          <App />
+        </ConnectedRouter>
+      </LanguageProvider>
+    </ReactReduxFirebaseProvider>
   </Provider>
 );
 

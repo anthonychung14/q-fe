@@ -5,6 +5,8 @@ import * as React from 'react';
 import validUrl from 'valid-url';
 
 import { Field } from 'redux-form/immutable';
+
+import Container from 'components/Container';
 import Checkbox from 'components/Checkbox';
 import TextAreaInput from 'components/TextAreaInput';
 import TextInput from 'components/TextInput';
@@ -64,6 +66,14 @@ type Props = {
   resource: Object,
 };
 
+const PhoneNumber = ({ number, name }) => {
+  return (
+    <Container padded>
+      <a href={`tel:${number}`}>{name}</a>
+    </Container>
+  );
+};
+
 const required = (value: boolean): ?string =>
   value !== undefined && value !== null && value.toString() !== ''
     ? undefined
@@ -86,6 +96,9 @@ const COMPONENT_TYPES = {
   },
   resource: { component: ResourceSelector },
   media: { component: MediaUpload },
+  phoneNumber: {
+    component: PhoneNumber,
+  },
   url: {
     component: TextInput,
     fullWidth: true,
