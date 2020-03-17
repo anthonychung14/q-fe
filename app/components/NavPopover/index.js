@@ -46,16 +46,6 @@ class NavPopover extends React.Component {
               <h4>Logout</h4>
             </Popover.Item>
           </TouchableOpacity>,
-          <TouchableOpacity key="5" onPress={() => console.log('do thing')}>
-            <Popover.Item
-              value="view"
-              key="5"
-              // icon={myImg('PKAgAqZWJVNwKsAJSmXd')}
-              style={{ whiteSpace: 'nowrap' }}
-            >
-              <h4>Donate</h4>
-            </Popover.Item>
-          </TouchableOpacity>,
         ]}
         align={{
           overflow: { adjustY: 0, adjustX: 0 },

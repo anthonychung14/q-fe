@@ -12,6 +12,7 @@ import COLORS from 'constants/colors';
 import { getActiveMode } from 'selectors/skill_mode';
 
 const AppBar = ({
+  appName,
   activeMode,
   navBarStyle,
   handleDrawerToggle,
@@ -31,7 +32,7 @@ const AppBar = ({
     ]}
   >
     <NavLink style={{ color: 'white' }} exact key="home" to="/">
-      Provisor 0-1
+      {appName}
     </NavLink>
   </NavBar>
 );
@@ -39,6 +40,7 @@ const AppBar = ({
 export default compose(
   connect(state => ({ activeMode: getActiveMode(state) })),
   withProps(({ activeMode }) => ({
+    appName: 'Q',
     navBarStyle: {
       backgroundColor: _.get(COLORS, [
         'modes',

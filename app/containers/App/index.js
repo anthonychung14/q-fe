@@ -22,6 +22,7 @@ import Login from 'components/Login';
 import AppBar from 'components/AppBar';
 import LeftDrawer from 'components/LeftDrawer';
 import Container from 'components/Container';
+import TreeView from 'components/TreeView';
 
 import { connectActiveMode } from 'selectors/skill_mode';
 import { getAuth } from 'selectors/firebase';
@@ -39,6 +40,10 @@ const MAP = {
     headerText: '',
     Component: AboutPage,
   },
+  view: {
+    headerText: 'Author View',
+    Component: TreeView,
+  },
   consume: {
     headerText: '',
     Component: NutritionPage,
@@ -46,10 +51,6 @@ const MAP = {
   acquire: {
     headerText: '',
     Component: AddCards,
-  },
-  track: {
-    headerText: 'Progress Today',
-    Component: TrackPage,
   },
 };
 
