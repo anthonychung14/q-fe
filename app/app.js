@@ -15,11 +15,16 @@ import firebase from 'firebase/app';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { ReactReduxFirebaseProvider } from 'react-redux-firebase';
-// import * as serviceWorker from './serviceWorker';
+
+import { ApolloProvider } from '@apollo/react-hooks';
+import { ApolloClient } from 'apollo-client';
+import { createHttpLink } from 'apollo-link-http';
+import { InMemoryCache } from 'apollo-cache-inmemory';
 
 import { ConnectedRouter } from 'connected-react-router/immutable';
 import history from 'utils/history';
 import 'sanitize.css/sanitize.css';
+// import * as serviceWorker from './serviceWorker';
 
 // Import root app
 import App from 'containers/App';
@@ -54,16 +59,33 @@ const rrfProps = {
   // createFirestoreInstance // <- needed if using firestore
 };
 
+const csrfToken = document
+  .querySelector('meta[name=csrf-token]')
+  .getAttribute('content');
+
+const client = new ApolloClient({
+  link: createHttpLink({
+    uri: 'http://debatermaster.herokuapp.com/graphql',
+    credentials: 'same-origin',
+    headers: {
+      'X-CSRF-Token': csrfToken,
+    },
+  }),
+  cache: new InMemoryCache(),
+});
+
 const AppComponent = messages => (
-  <Provider store={store}>
-    <ReactReduxFirebaseProvider {...rrfProps}>
-      <LanguageProvider messages={messages}>
-        <ConnectedRouter history={history}>
-          <App />
-        </ConnectedRouter>
-      </LanguageProvider>
-    </ReactReduxFirebaseProvider>
-  </Provider>
+  <ApolloProvider client={client}>
+    <Provider store={store}>
+      <ReactReduxFirebaseProvider {...rrfProps}>
+        <LanguageProvider messages={messages}>
+          <ConnectedRouter history={history}>
+            <App />
+          </ConnectedRouter>
+        </LanguageProvider>
+      </ReactReduxFirebaseProvider>
+    </Provider>
+  </ApolloProvider>
 );
 
 AppRegistry.registerComponent('App', () => AppComponent);

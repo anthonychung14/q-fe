@@ -8,7 +8,7 @@ import 'rodal/lib/rodal.css';
 import Button from './Button';
 
 // const first =
-//   "http://content.blubrry.com/52716/Defenders_3_Doctrine_of_Creation_Part_1_.mp3";
+//   "";
 
 const YouTubePlayer = ({
   url,
@@ -28,7 +28,6 @@ const YouTubePlayer = ({
         onSeek={handleSeek}
         width="100%"
         height="100%"
-        controls
         ref={playerRef}
       />
     </div>
@@ -50,7 +49,7 @@ function useMarkPosition(markType) {
 
 // <ReactAudioPlayer src={first} autoPlay controls />
 // Time-bound excerpt maker
-const ExcerptMaker = ({ contentId, seconds, seekTo }) => {
+const ExcerptMaker = ({ contentId, seconds, seekTo, handlePause }) => {
   const [start, setStart] = useMarkPosition('start');
   const [end, setEnd] = useMarkPosition('end');
   const [modalVisible, setModalVisible] = React.useState(false);
@@ -69,6 +68,15 @@ const ExcerptMaker = ({ contentId, seconds, seekTo }) => {
           <div style={{ display: 'flex', flexDirection: 'row' }}>
             <Button handleClick={() => setStart(seconds)} text="Set Start" />
             <Button handleClick={() => seekTo(start)} text="Go Start" />
+          </div>
+        </div>
+        <div>
+          <h4>{seconds.toFixed(2)} seconds</h4>
+          <div style={{ display: 'flex', flexDirection: 'row' }}>
+            <Button handleClick={() => seekTo(seconds - 20)} text="REW 20" />
+            <Button handleClick={() => seekTo(seconds - 5)} text="REW 5" />
+            <Button handleClick={() => seekTo(seconds + 5)} text="FF 5" />
+            <Button handleClick={() => seekTo(seconds + 20)} text="FF 20" />
           </div>
         </div>
         <div>
@@ -99,24 +107,37 @@ const ExcerptMaker = ({ contentId, seconds, seekTo }) => {
   );
 };
 
-const AudioPlayer = ({ playerRef }) => {
-  return <ReactAudioPlayer />;
+const AudioPlayer = ({
+  playerRef,
+  url,
+  handleSeek,
+  handlePause,
+  handleProgress,
+}) => {
+  return (
+    <div style={{ textAlign: 'center' }}>
+      <ReactAudioPlayer
+        src={url}
+        ref={playerRef}
+        controls
+        onListen={handleProgress}
+        onPause={handlePause}
+        onSeeked={handleSeek}
+        listenInterval={200}
+      />
+    </div>
+  );
 };
 
-const MediaPlayer = ({
-  contentCategory,
-  handlers,
-  playerRef,
-  url = 'https://www.youtube.com/watch?v=DZIA7H24F48&list=RDDZIA7H24F48&start_radio=1',
-}) => {
+const MediaPlayer = ({ contentCategory, handlers, playerRef, url }) => {
   if (contentCategory === 'PODCAST') {
-    return <AudioPlayer />;
+    return <AudioPlayer {...handlers} playerRef={playerRef} url={url} />;
   }
 
   return <YouTubePlayer {...handlers} playerRef={playerRef} url={url} />;
 };
 
-const ContentMediaCard = ({ contentId }) => {
+const ContentMediaCard = ({ contentId, contentCategory, url }) => {
   const [seconds, setSeconds] = React.useState(0);
   const [markIndicator, setMark] = React.useState(false);
   const playerRef = React.useRef(null);
@@ -129,26 +150,38 @@ const ContentMediaCard = ({ contentId }) => {
   );
 
   const handleSeek = React.useCallback(
-    seconds => {
-      setSeconds(seconds);
+    s => {
+      if (contentCategory === 'PODCAST' && playerRef.current) {
+        setSeconds(playerRef.current.audioEl.currentTime);
+        // console.log(playerRef.current.audioEl.currentTime);
+      } else {
+        setSeconds(s);
+      }
     },
-    [setSeconds],
+    [setSeconds, playerRef],
   );
 
   const seekTo = React.useCallback(
     s => {
-      if (playerRef && playerRef.current) {
+      if (contentCategory === 'PODCAST') {
+        playerRef.current.audioEl.currentTime = s;
+      } else if (playerRef && playerRef.current) {
         playerRef.current.seekTo(s);
       }
+      setSeconds(s);
     },
-    [playerRef],
+    [playerRef, contentCategory],
   );
 
   const handleProgress = React.useCallback(
     ({ playedSeconds }) => {
-      setSeconds(playedSeconds);
+      if (playedSeconds) {
+        setSeconds(playedSeconds);
+      } else if (contentCategory === 'PODCAST') {
+        setSeconds(playerRef.current.audioEl.currentTime);
+      }
     },
-    [setSeconds],
+    [setSeconds, playerRef, contentCategory],
   );
 
   const handlers = { handlePause, handleSeek, handleProgress };
@@ -157,14 +190,15 @@ const ContentMediaCard = ({ contentId }) => {
     <div style={{ flexDirection: 'space-between', flex: 1 }}>
       <MediaPlayer
         handlers={handlers}
-        contentCategory=""
         playerRef={playerRef}
+        contentCategory={contentCategory}
+        url={url}
       />
       <ExcerptMaker
         seconds={seconds}
         seekTo={seekTo}
         contentId={contentId}
-        setMo
+        handlePause={handlePause}
       />
     </div>
   );

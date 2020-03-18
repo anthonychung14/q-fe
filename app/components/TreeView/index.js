@@ -1,9 +1,52 @@
 import React from 'react';
+import { useQuery } from '@apollo/react-hooks';
+import { gql } from 'apollo-boost';
+
 // import { FixedSizeTree as Tree } from "react-vtree";
 import Select from 'react-select';
 
+import TextInput from 'components/TextInput';
 import ContentMediaCard from './ContentMediaCard';
 import Button from './Button';
+
+const RESOURCE_MAP = {
+  Author: 'fullName',
+  Creator: 'email',
+  SourceContent: 'title',
+};
+
+const makeFetchAllQuery = resourceName => gql`
+      {
+        all${resourceName}s {
+          id
+          ${RESOURCE_MAP[resourceName]}
+        }
+      }
+    `;
+
+const children = [
+  {
+    title: 'title',
+    contentCategory: 'YOUTUBE',
+    url:
+      'https://www.youtube.com/watch?v=DZIA7H24F48&list=RDDZIA7H24F48&start_radio=1',
+    id: 'a',
+  },
+  {
+    title: 'bar title',
+    contentCategory: 'PODCAST',
+    url:
+      'http://content.blubrry.com/52716/Defenders_3_Doctrine_of_Creation_Part_1_.mp3',
+    id: 'b',
+  },
+  {
+    title: 'baz',
+    contentCategory: 'YOUTUBE',
+    url:
+      'https://www.youtube.com/watch?v=DZIA7H24F48&list=RDDZIA7H24F48&start_radio=1',
+    id: 'c',
+  },
+];
 
 const makeChildren = num => children.slice(num);
 
@@ -11,45 +54,6 @@ const CONTENT_CATEGORIES = [
   { value: 'PODCAST', label: 'PODCAST' },
   { value: 'YOUTUBE', label: 'YOUTUBE' },
   { value: 'BOOK', label: 'BOOK' },
-];
-
-const children = [
-  {
-    title: 'title',
-    content_category: 'PODCAST',
-    link: 'link',
-    id: 'a',
-  },
-  {
-    title: 'bar title',
-    content_category: 'PODCAST',
-    link: 'link',
-    id: 'b',
-  },
-  {
-    title: 'baz',
-    content_category: 'PODCAST',
-    link: 'link',
-    id: 'c',
-  },
-];
-
-const DATA = [
-  {
-    fullName: 'Anthony Chung',
-    id: 'a',
-    sourceContentWorks: makeChildren(1),
-  },
-  {
-    fullName: 'Bob Fullname',
-    id: 'b',
-    sourceContentWorks: makeChildren(2),
-  },
-  {
-    fullName: 'Charlie Chaplin',
-    id: 'c',
-    sourceContentWorks: makeChildren(0),
-  },
 ];
 
 const ROW = {
@@ -106,6 +110,9 @@ const SourceContentForm = ({ setModalVisible }) => (
       <fieldset id="group1">
         <Select options={CONTENT_CATEGORIES} />
       </fieldset>
+      <fieldset id="group1">
+        <TextInput input={{}} label="link" />
+      </fieldset>
 
       <fieldset id="group3">
         <Button
@@ -154,13 +161,14 @@ const SourceContentWorks = ({
       <ContentMediaCard
         contentId={sourceContentId}
         setModalVisible={setModalVisible}
+        {...sourceContentWorks.find(i => i.title === sourceContentId) || {}}
       />
     )}
   </div>
 );
 
 function TreeView() {
-  const [data, setData] = React.useState(DATA);
+  const { loading, error, data } = useQuery(makeFetchAllQuery('Author'));
   const [open, toggleSetOpen] = React.useState({});
   const [resourceAdding, setAddResource] = React.useState('');
   const [modalVisible, setModalVisible] = React.useState(false);
@@ -181,10 +189,14 @@ function TreeView() {
     [open, toggleSetOpen, resourceAdding],
   );
 
+  if (loading) return <h3>Loading</h3>;
+
+  const sourceContentWorks = makeChildren(0);
+
   return (
     <div style={{ padding: '1%' }}>
-      {data.map(
-        ({ id, sourceContentWorks, fullName }) =>
+      {data.allAuthors.map(
+        ({ id, fullName }) =>
           id === authorId ||
           id === resourceAdding ||
           (!authorId && !resourceAdding) ? (

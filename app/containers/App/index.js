@@ -14,7 +14,6 @@ import { firebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase';
 import { connect } from 'react-redux';
 
 import NutritionPage from 'containers/pages/NutritionPage/loadable';
-import TrackPage from 'containers/pages/TrackPage/loadable';
 import AboutPage from 'containers/pages/AboutPage/loadable';
 import AddCards from 'containers/AddCards/loadable';
 
@@ -93,8 +92,8 @@ const BodyWithDrawer = withToggleOpenState(Body);
 export default function App() {
   return (
     <div>
-      <Helmet titleTemplate="%s - Provisor" defaultTitle="Provisor">
-        <meta name="description" content="Automate Nutrition" />
+      <Helmet titleTemplate="%s - Q" defaultTitle="Q">
+        <meta name="description" content="Automate Learning" />
       </Helmet>
       <BodyWithDrawer />
     </div>
