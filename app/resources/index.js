@@ -6,6 +6,7 @@ import author from './author';
 import meal from './meal';
 import theft from './theft';
 import intrusion from './intrusion';
+import sourceContent from './sourceContent';
 import emergency from './emergency';
 import foodItem from './foodItem';
 import measurement from './measurement';
@@ -19,6 +20,7 @@ const base = new Airtable({
 export default {
   airtable: base,
   author,
+  sourceContent,
   excerpt,
   foodItem,
   theft,
