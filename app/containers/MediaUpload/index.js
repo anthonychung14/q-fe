@@ -1,6 +1,7 @@
 // import * as React from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
+import { firebaseConnect } from 'react-redux-firebase';
 
 import injectSaga from 'utils/injectSaga';
 import { DAEMON } from 'utils/constants';
@@ -20,4 +21,5 @@ export default compose(
       uploadMedia,
     },
   ),
+  firebaseConnect(),
 )(MediaPicker);

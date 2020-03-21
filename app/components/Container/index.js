@@ -14,8 +14,8 @@ const Container = ({ children, horizontal, end, style = {}, ...props }) => {
     flexDirection: horizontal ? 'row' : 'column',
     justifyContent: end ? 'flex-end' : 'flex-start',
     paddingTop: props.type === 'mode' ? '42px' : null,
-    paddingHorizontal: props.padded ? '4%' : null,
-    paddingBottom: props.paddedBottom ? '4%' : null,
+    paddingHorizontal: props.padded ? '2%' : null,
+    paddingBottom: props.paddedBottom ? '2%' : null,
     ...style,
   };
 

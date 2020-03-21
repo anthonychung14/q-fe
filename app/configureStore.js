@@ -10,6 +10,7 @@ import firebase from 'firebase/app';
 
 import 'firebase/database';
 import 'firebase/auth';
+import 'firebase/storage';
 import createReducer from './reducers';
 
 // make this not bad

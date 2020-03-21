@@ -19,13 +19,6 @@ const makeHandleCheck = (handleCheck, item) => () => {
 };
 
 const Checkbox = ({ checked, checkboxValues, handleCheck, name }) => {
-  // useEffect(
-  //   () => {
-  //     handleCheck(_.first(checkboxValues));
-  //   },
-  //   [handleCheck, checkboxValues],
-  // );
-
   return (
     <WingBlank size="md">
       <WhiteSpace size="md" />

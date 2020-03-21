@@ -13,7 +13,6 @@ import { withState, compose } from 'recompose';
 import { firebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase';
 import { connect } from 'react-redux';
 
-import NutritionPage from 'containers/pages/NutritionPage/loadable';
 import AboutPage from 'containers/pages/AboutPage/loadable';
 import AddCards from 'containers/AddCards/loadable';
 
@@ -22,6 +21,7 @@ import AppBar from 'components/AppBar';
 import LeftDrawer from 'components/LeftDrawer';
 import Container from 'components/Container';
 import TreeView from 'components/TreeView';
+import SourceTreeView from 'components/TreeView/SourceTreeView';
 
 import { connectActiveMode } from 'selectors/skill_mode';
 import { getAuth } from 'selectors/firebase';
@@ -36,32 +36,26 @@ const withToggleOpenState = withState(
 
 const MAP = {
   about: {
-    headerText: '',
     Component: AboutPage,
   },
   view: {
-    headerText: 'Author View',
     Component: TreeView,
   },
   excerpts: {
-    headerText: '',
-    Component: TreeView,
+    Component: SourceTreeView,
   },
   acquire: {
-    headerText: '',
     Component: AddCards,
   },
 };
 
-const getProps = page => {
-  return MAP[page] || MAP.consume;
-};
+const getProps = page => MAP[page] || MAP.about;
 
 const PageDisplayer = ({ activeMode, auth, firebase }) => {
-  const { headerText, Component } = getProps(activeMode);
+  const { Component } = getProps(activeMode);
 
   return (
-    <Container type="page" headerText={headerText}>
+    <Container type="page">
       {isLoaded(auth) && isEmpty(auth) ? (
         <Login firebase={firebase} />
       ) : (

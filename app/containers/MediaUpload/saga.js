@@ -1,9 +1,10 @@
 import { call, all, takeLatest } from 'redux-saga/effects';
 import CONSTANTS from './constants';
 
-function* postUpload({ fileData }) {
+function* postUpload({ fileData, options }) {
   try {
     console.log(fileData, 'we will post eventually');
+    options.firebase.uploadFiles('files', fileData, 'files');
   } catch (error) {
     throw new Error(error);
   }

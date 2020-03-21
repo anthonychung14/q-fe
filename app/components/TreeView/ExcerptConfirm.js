@@ -20,7 +20,7 @@ const withMutate = graphql(gql`
       endPosition: $endPosition
       contentId: $contentId
     ) {
-      ok
+      sourceContentId
     }
   }
 `);
@@ -41,7 +41,7 @@ const ExcerptConfirm = ({
       }}
       closeMaskOnClick={false}
       animation="slideUp"
-      height={500}
+      height={700}
     >
       <h3>Creating excerpt for {excerptValues.contentId}</h3>
       <MediaPlayer {...excerptValues} type="excerpt" />

@@ -74,6 +74,7 @@ window.addEventListener('DOMContentLoaded', () => {
 const client = new ApolloClient({
   link: createHttpLink({
     uri: 'https://debatermaster.herokuapp.com/graphql',
+    // uri: 'http://localhost:4000/graphql',
     // fetchOptions: {
     //   mode: 'no-cors',
     // },

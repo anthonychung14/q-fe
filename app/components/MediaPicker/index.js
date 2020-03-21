@@ -26,10 +26,10 @@ class MediaPicker extends Component {
   };
 
   handleUpload = (event: Object) => {
-    const { mediaType, uploadMedia } = this.props;
+    const { mediaType, uploadMedia, firebase } = this.props;
     const { target } = event;
     if (target.files) {
-      uploadMedia(target.files, { mediaType: 'image' });
+      uploadMedia(target.files, { mediaType, firebase });
     }
   };
 
@@ -57,6 +57,7 @@ class MediaPicker extends Component {
             onChange={this.handleUpload}
             style={displayNoneStyle}
           />
+
           <WhiteSpace size="lg" />
         </form>
       </fieldset>

@@ -5,7 +5,17 @@ import MediaPlayer from './MediaPlayer';
 
 const convertToIntegerSeconds = seconds => parseInt(Math.round(seconds), 10);
 
-const ContentMediaCard = ({ contentId, contentCategory, url }) => {
+const ALTERNATES = ['PODCAST', 'YOUTUBE'];
+
+const ContentMediaCard = ({ contentId, data = {} }) => {
+  const { sourceContentsForAuthor = [] } = data;
+  const { contentCategory, link } =
+    sourceContentsForAuthor.find(i => i.id === contentId) || {};
+
+  if (!ALTERNATES.includes(contentCategory)) {
+    return <h4>NOTHING YET</h4>;
+  }
+
   const [seconds, setSeconds] = React.useState(0);
   const [markIndicator, setMark] = React.useState(false);
   const playerRef = React.useRef(null);
@@ -67,13 +77,13 @@ const ContentMediaCard = ({ contentId, contentCategory, url }) => {
         handlers={handlers}
         playerRef={playerRef}
         contentCategory={contentCategory}
-        url={url}
+        url={link}
       />
       <ExcerptMaker
         seconds={seconds}
         seekTo={seekTo}
         contentId={contentId}
-        url={url}
+        url={link}
         handlePause={handlePause}
         contentCategory={contentCategory}
       />
