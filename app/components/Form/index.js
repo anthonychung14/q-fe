@@ -186,7 +186,7 @@ class Form extends React.Component<Props> {
     // console.log('updatedValues.toJS() is', updatedValues.toJS());
 
     submitCallback(
-      values.set('author_id', parseInt(parentId, 10)),
+      values.set('content_maker_id', parseInt(parentId, 10)),
       resourceType,
     );
   };

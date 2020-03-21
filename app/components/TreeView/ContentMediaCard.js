@@ -8,9 +8,9 @@ const convertToIntegerSeconds = seconds => parseInt(Math.round(seconds), 10);
 const ALTERNATES = ['PODCAST', 'YOUTUBE'];
 
 const ContentMediaCard = ({ contentId, data = {} }) => {
-  const { sourceContentsForAuthor = [] } = data;
+  const { sourceContentsForContentMaker = [] } = data;
   const { contentCategory, link } =
-    sourceContentsForAuthor.find(i => i.id === contentId) || {};
+    sourceContentsForContentMaker.find(i => i.id === contentId) || {};
 
   if (!ALTERNATES.includes(contentCategory)) {
     return <h4>NOTHING YET</h4>;

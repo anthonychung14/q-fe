@@ -14,7 +14,7 @@ import SourceContentWorks from './SourceContentWorks';
 import { FlexOne, Row } from './Box';
 
 const RESOURCE_MAP = {
-  Author: 'fullName',
+  ContentMaker: 'fullName',
   Creator: 'email',
   SourceContent: 'title',
 };
@@ -28,7 +28,7 @@ const makeFetchAllQuery = resourceName => gql`
       }
     `;
 
-function TreeView({ resource = 'Author' }) {
+function TreeView({ resource = 'ContentMaker' }) {
   const { loading, error, data } = useQuery(makeFetchAllQuery(resource));
 
   const [open, toggleSetOpen] = React.useState({});
@@ -126,7 +126,8 @@ function TreeView({ resource = 'Author' }) {
     showButton,
   };
 
-  const dataPath = resource === 'Author' ? 'allAuthors' : 'allSourceContents';
+  const dataPath =
+    resource === 'ContentMaker' ? 'allContentMakers' : 'allSourceContents';
 
   if (loading) return <h3>Loading</h3>;
 
@@ -202,7 +203,7 @@ const TreeRow = ({
 
         {open[id] && (
           <SourceContentWorks
-            authorId={id}
+            contentMakerId={id}
             open={open}
             selectedChild={selectedChild}
             {...handlers}

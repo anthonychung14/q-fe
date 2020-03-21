@@ -8,7 +8,7 @@ import { Row, FlexOne } from './Box';
 
 const getAllForId = id => gql`
       {
-        sourceContentsForAuthor(authorId: ${id}) {
+        sourceContentsForContentMaker(contentMakerId: ${id}) {
           id
           title
           link
@@ -19,7 +19,7 @@ const getAllForId = id => gql`
 
 const SourceContent = ({
   id,
-  authorId,
+  contentMakerId,
   title,
   handleSelectView,
   selectedChild,
@@ -43,7 +43,7 @@ const SourceContent = ({
             text="Back"
             handleClick={e => {
               e.stopPropagation();
-              resetViewState(authorId);
+              resetViewState(contentMakerId);
             }}
             type="outline"
           />
@@ -54,18 +54,18 @@ const SourceContent = ({
 };
 
 const SourceContentWorks = ({
-  authorId,
+  contentMakerId,
   open,
   setViewState,
   selectedChild,
   makeToggleChild,
   resetViewState,
 }) => {
-  const { loading, error, data } = useQuery(getAllForId(authorId));
+  const { loading, error, data } = useQuery(getAllForId(contentMakerId));
 
   return (
     <div
-      key={`data-${authorId}`}
+      key={`data-${contentMakerId}`}
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -73,18 +73,20 @@ const SourceContentWorks = ({
         marginLeft: '5%',
       }}
     >
-      {!loading && open[authorId] && data.sourceContentsForAuthor.length ? (
-        data.sourceContentsForAuthor.map(
+      {!loading &&
+      open[contentMakerId] &&
+      data.sourceContentsForContentMaker.length ? (
+        data.sourceContentsForContentMaker.map(
           i =>
             !selectedChild || i.id === selectedChild ? (
               <SourceContent
                 {...i}
-                authorId={authorId}
+                contentMakerId={contentMakerId}
                 key={i.id}
                 resetViewState={resetViewState}
                 setViewState={setViewState}
                 handleSelectView={makeToggleChild({
-                  parentId: authorId,
+                  parentId: contentMakerId,
                   id: i.id,
                 })}
               />

@@ -8,8 +8,6 @@ import Fuse from 'fuse.js';
 import * as React from 'react';
 import _ from 'lodash';
 
-import { graphql } from 'react-apollo';
-import { gql } from 'apollo-boost';
 import {
   compose,
   withHandlers,
@@ -21,9 +19,10 @@ import {
 } from 'recompose';
 import { connect } from 'react-redux';
 import { withFirebase } from 'react-redux-firebase';
-
 import { WhiteSpace, WingBlank } from 'antd-mobile';
+
 import { getAuth } from 'selectors/firebase';
+import { withCreateSourceContent } from 'gql/mutations';
 import { fetchAirtableApi, fetchGiphy, postResource } from 'utils/api';
 import { withLoading, withSetGif } from 'utils/enhancers';
 import { currentTimeSeconds, getStorageDate } from 'utils/time';
@@ -83,19 +82,11 @@ export const fetchAirtable = compose(
   }),
 );
 
-const withCreateYoutubeSource = graphql(gql`
-  mutation CreateSourceContentForAuthor($link: String!, $author_id: ID!) {
-    createSourceContent(link: $link, authorId: $author_id) {
-      link
-    }
-  }
-`);
-
 export const withCreateResource = compose(
   withFirebase,
   withLoading,
   withSetGif,
-  withCreateYoutubeSource,
+  withCreateSourceContent,
   connect(state => ({ auth: getAuth(state) })),
   withHandlers({
     createResource: ({ auth, setLoading, setGif, mutate }) => async (
@@ -106,7 +97,6 @@ export const withCreateResource = compose(
       const data = await fetchGiphy();
 
       setGif(data);
-      // const withGifVals = values.set('gif_url', data.image_url);
       // .set('giphy_id', data.id)
       // .set('miner_google_uid', auth.uid);
 
@@ -124,7 +114,7 @@ export const withCreateResource = compose(
       //   await postResource({ resourceType, values: withGifVals });
       // }
       mutate({
-        variables: values.toJS(),
+        variables: values.set('gif_url', data.image_url).toJS(),
       });
 
       setLoading(false);
@@ -139,7 +129,7 @@ export const withCreateResource = compose(
       <WingBlank size="md">
         <WhiteSpace size="md" />
         <h4>PROCESSING</h4>
-        <img src={gif} alt="Loading Gif" />
+        <img src={gif.image_url} alt="Loading Gif" />
       </WingBlank>
     )),
   ),

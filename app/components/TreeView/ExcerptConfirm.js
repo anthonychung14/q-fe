@@ -2,28 +2,11 @@ import React from 'react';
 import Rodal from 'rodal';
 import 'rodal/lib/rodal.css';
 
-import { graphql } from 'react-apollo';
-import { gql } from 'apollo-boost';
+import { withCreateExcerpt } from 'gql';
 
 import Button from 'components/Button';
 
 import MediaPlayer from './MediaPlayer';
-
-const withMutate = graphql(gql`
-  mutation CreateExcerptForContent(
-    $startPosition: Int!
-    $endPosition: Int!
-    $contentId: ID!
-  ) {
-    createExcerpt(
-      startPosition: $startPosition
-      endPosition: $endPosition
-      contentId: $contentId
-    ) {
-      sourceContentId
-    }
-  }
-`);
 
 const ExcerptConfirm = ({
   modalVisible,
@@ -73,4 +56,4 @@ const ExcerptConfirm = ({
   );
 };
 
-export default withMutate(ExcerptConfirm);
+export default withCreateExcerpt(ExcerptConfirm);

@@ -21,10 +21,9 @@ const FIELDS = [
     required: true,
   },
   {
-    name: 'author',
+    name: 'content_maker',
     type: 'resource',
-    label: 'Primary author of content',
-    belongsTo: true,
+    label: 'maker of content',
   },
 ];
 
