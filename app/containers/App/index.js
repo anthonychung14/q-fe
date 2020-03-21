@@ -43,9 +43,9 @@ const MAP = {
     headerText: 'Author View',
     Component: TreeView,
   },
-  consume: {
+  excerpts: {
     headerText: '',
-    Component: NutritionPage,
+    Component: TreeView,
   },
   acquire: {
     headerText: '',

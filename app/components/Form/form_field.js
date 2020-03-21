@@ -21,6 +21,8 @@ const FormField = ({ renderHeader, field, form, opts }: Props) => {
     throw new Error(`Unknown field type: ${field.type}`);
   }
 
+  if (field.belongsTo) return null;
+
   const fieldValidators = field.validate ? [...field.validate] : [];
   const componentValidators = componentType.validate
     ? [...componentType.validate]

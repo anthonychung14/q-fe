@@ -7,6 +7,9 @@
 import Fuse from 'fuse.js';
 import * as React from 'react';
 import _ from 'lodash';
+
+import { graphql } from 'react-apollo';
+import { gql } from 'apollo-boost';
 import {
   compose,
   withHandlers,
@@ -80,41 +83,50 @@ export const fetchAirtable = compose(
   }),
 );
 
+const withCreateYoutubeSource = graphql(gql`
+  mutation CreateSourceContentForAuthor($link: String!, $author_id: ID!) {
+    createSourceContent(link: $link, authorId: $author_id) {
+      link
+    }
+  }
+`);
+
 export const withCreateResource = compose(
   withFirebase,
   withLoading,
   withSetGif,
+  withCreateYoutubeSource,
   connect(state => ({ auth: getAuth(state) })),
   withHandlers({
-    createResource: ({
-      reportType,
-      firebase,
-      auth,
-      setLoading,
-      setGif,
-    }) => async (resourceType, values) => {
+    createResource: ({ auth, setLoading, setGif, mutate }) => async (
+      resourceType,
+      values,
+    ) => {
       setLoading(true);
       const data = await fetchGiphy();
 
       setGif(data);
-      const withGifVals = values
-        .set('gif_url', data.image_url)
-        .set('giphy_id', data.id)
-        .set('miner_google_uid', auth.uid);
+      // const withGifVals = values.set('gif_url', data.image_url);
+      // .set('giphy_id', data.id)
+      // .set('miner_google_uid', auth.uid);
 
-      if (reportType === 'incident') {
-        const storageDate = getStorageDate();
-        await firebase.push(
-          reportType,
-          withGifVals
-            .set('type', resourceType)
-            .set('reported_seconds', currentTimeSeconds())
-            .set('display_date', storageDate)
-            .toJS(),
-        );
-      } else {
-        await postResource({ resourceType, values: withGifVals });
-      }
+      // if (reportType === 'incident') {
+      //   const storageDate = getStorageDate();
+      //   await firebase.push(
+      //     reportType,
+      //     withGifVals
+      //       .set('type', resourceType)
+      //       .set('reported_seconds', currentTimeSeconds())
+      //       .set('display_date', storageDate)
+      //       .toJS(),
+      //   );
+      // } else {
+      //   await postResource({ resourceType, values: withGifVals });
+      // }
+      mutate({
+        variables: values.toJS(),
+      });
+
       setLoading(false);
     },
   }),
@@ -123,10 +135,11 @@ export const withCreateResource = compose(
   // processing no longer true...so...
   branch(
     props => props.processing,
-    renderComponent(() => (
+    renderComponent(({ gif }) => (
       <WingBlank size="md">
         <WhiteSpace size="md" />
         <h4>PROCESSING</h4>
+        <img src={gif} alt="Loading Gif" />
       </WingBlank>
     )),
   ),

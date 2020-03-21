@@ -2,7 +2,7 @@ import React from 'react';
 
 import CreateResource from 'containers/CreateResource';
 
-const SourceContentForm = () => (
+const SourceContentForm = ({ parentId }) => (
   <div
     style={{
       display: 'flex',
@@ -12,7 +12,7 @@ const SourceContentForm = () => (
       padding: '2%',
     }}
   >
-    <CreateResource resourceType="sourceContent" />
+    <CreateResource resourceType="sourceContent" parentId={parentId} />
   </div>
 );
 

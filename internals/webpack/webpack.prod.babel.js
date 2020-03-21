@@ -127,8 +127,8 @@ module.exports = require('./webpack.base.babel')({
     }),
 
     new WebpackPwaManifest({
-      name: 'Provisor',
-      short_name: 'Provisor',
+      name: 'Quartermaster',
+      short_name: 'Quartermaster',
       description: 'A security service solution',
       background_color: '#fafafa',
       theme_color: '#b1624d',
@@ -145,6 +145,15 @@ module.exports = require('./webpack.base.babel')({
           ios: true,
         },
       ],
+      share_target: {
+        action: '/share-target/',
+        method: 'GET',
+        params: {
+          title: 'title',
+          text: 'text',
+          url: 'url',
+        },
+      },
     }),
 
     new HashedModuleIdsPlugin({

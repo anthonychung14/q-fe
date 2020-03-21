@@ -21,7 +21,7 @@ class ResourceCreatePage extends React.Component<Props> {
   };
 
   render() {
-    const { resourceType, reportType } = this.props;
+    const { resourceType, reportType, parentId } = this.props;
 
     const resource = resources[resourceType];
     return (
@@ -31,6 +31,7 @@ class ResourceCreatePage extends React.Component<Props> {
           form={resourceType}
           submitCallback={this.submitCallback}
           submitLabel={`Create ${resourceType} ${reportType || ''}`}
+          parentId={parentId}
         />
       </Container>
     );

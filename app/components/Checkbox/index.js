@@ -30,7 +30,7 @@ const Checkbox = ({ checked, checkboxValues, handleCheck, name }) => {
     <WingBlank size="md">
       <WhiteSpace size="md" />
       <List renderHeader={() => name}>
-        <Container type="empty" horizontal>
+        <Container type="empty">
           {checkboxValues.map(item => (
             <CheckboxItem
               key={`${item.label}-i`}

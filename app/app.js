@@ -59,17 +59,27 @@ const rrfProps = {
   // createFirestoreInstance // <- needed if using firestore
 };
 
-const csrfToken = document
-  .querySelector('meta[name=csrf-token]')
-  .getAttribute('content');
+window.addEventListener('DOMContentLoaded', () => {
+  const parsedUrl = new URL(window.location);
+  // searchParams.get() will properly handle decoding the values.
+  console.log('Title shared: ' + parsedUrl.searchParams.get('title'));
+  console.log('Text shared: ' + parsedUrl.searchParams.get('text'));
+  console.log('URL shared: ' + parsedUrl.searchParams.get('url'));
+});
+
+// const csrfToken = document
+//   .querySelector('meta[name=csrf-token]')
+//   .getAttribute('content');
 
 const client = new ApolloClient({
   link: createHttpLink({
-    uri: 'http://debatermaster.herokuapp.com/graphql',
-    credentials: 'same-origin',
-    headers: {
-      'X-CSRF-Token': csrfToken,
-    },
+    uri: 'https://debatermaster.herokuapp.com/graphql',
+    // fetchOptions: {
+    //   mode: 'no-cors',
+    // },
+    // headers: {
+    //   'X-CSRF-Token': csrfToken,
+    // },
   }),
   cache: new InMemoryCache(),
 });

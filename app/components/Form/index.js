@@ -99,16 +99,14 @@ const AddCardForm = ({
 
           <WhiteSpace size="lg" />
 
-          {hasAllVals && (
-            <Button
-              type="submit"
-              loading={processing}
-              icon="check-circle-o"
-              handleClick={onSubmit}
-              text={submitLabel || 'Submit'}
-              disabled={processing || invalid}
-            />
-          )}
+          <Button
+            type="submit"
+            loading={processing}
+            icon="check-circle-o"
+            handleClick={onSubmit}
+            text={submitLabel || 'Submit'}
+            disabled={processing || invalid}
+          />
         </fieldset>
       </form>
       {/* {firstMediaField && (
@@ -167,20 +165,30 @@ class Form extends React.Component<Props> {
   }
 
   submit = values => {
-    const { submitCallback, fields, resourceType } = this.props;
+    const { submitCallback, fields, resourceType, parentId } = this.props;
 
-    // updates values
-    const keyMap = _.keyBy(fields, 'name');
-    const updatedValues = values.reduce((acc, val, key) => {
-      const fieldData = keyMap[key];
-      if (fieldData.type === 'resource' && !fieldData.unique) {
-        return acc.set(`${keyMap[key].displayName}_id`, List.of(val));
-      }
+    // updates values for a resource reference
+    // const keyMap = _.keyBy(fields, 'name');
+    // const updatedValues = values.reduce((acc, val, key) => {
+    //   const fieldData = keyMap[key];
+    //   console.log('fieldData is', fieldData);
+    //   if (fieldData.type === 'resource' && fieldData.belongsTo) {
+    //     return acc.set(`author_id`, parentId);
+    //   }
 
-      return acc.set(key, val);
-    }, Map());
+    //   if (fieldData.type === 'resource' && !fieldData.unique) {
+    //     return acc.set(`${keyMap[key].displayName}_id`, List.of(val));
+    //   }
 
-    submitCallback(updatedValues, resourceType);
+    //   return acc.set(key, val);
+    // }, Map());
+
+    // console.log('updatedValues.toJS() is', updatedValues.toJS());
+
+    submitCallback(
+      values.set('author_id', parseInt(parentId, 10)),
+      resourceType,
+    );
   };
 
   Form = null;
