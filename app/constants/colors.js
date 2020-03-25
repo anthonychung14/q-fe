@@ -3,6 +3,7 @@ const encodedColors = Object.freeze({
   buttonTypes: {
     // primary: '#48435C',
     primary: '#EDFFEC',
+    selected: '#ffaf8a',
     secondary: '#83807c',
     outline: '#f0e7e6',
     cancel: '#ffa59c',

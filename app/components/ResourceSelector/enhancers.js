@@ -86,10 +86,12 @@ export const withCreateResource = compose(
   withFirebase,
   withLoading,
   withSetGif,
+  // or we create a better input flow...
+  // resource create page can be generalized a bit better...
   withCreateSourceContent,
   connect(state => ({ auth: getAuth(state) })),
   withHandlers({
-    createResource: ({ auth, setLoading, setGif, mutate }) => async (
+    createResource: ({ auth, setLoading, setGif, mutate, parentId }) => async (
       resourceType,
       values,
     ) => {
@@ -113,10 +115,19 @@ export const withCreateResource = compose(
       // } else {
       //   await postResource({ resourceType, values: withGifVals });
       // }
-      mutate({
-        variables: values.set('gif_url', data.image_url).toJS(),
-      });
 
+      if (resourceType === 'SourceContent') {
+        mutate({
+          variables: values
+            .set('gif_url', data.image_url)
+            .set('content_maker_id', parseInt(parentId, 10))
+            .toJS(),
+        });
+      } else {
+        mutate({
+          variables: values.set('gif_url', data.image_url).toJS(),
+        });
+      }
       setLoading(false);
     },
   }),

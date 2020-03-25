@@ -17,3 +17,7 @@ export const Row = ({ children, style, onClick }) => (
 export const FlexOne = ({ children }) => (
   <div style={{ flex: 1 }}>{children}</div>
 );
+
+export const Flex = ({ children, flex = 1 }) => (
+  <div style={{ flex }}>{children}</div>
+);

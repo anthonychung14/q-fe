@@ -1,6 +1,6 @@
 import Airtable from 'airtable';
 
-import excerpt from './excerpt';
+import sourceCard from './sourceCard';
 import textSource from './textSource';
 import author from './author';
 import meal from './meal';
@@ -21,7 +21,7 @@ export default {
   airtable: base,
   author,
   sourceContent,
-  excerpt,
+  sourceCard,
   foodItem,
   theft,
   intrusion,

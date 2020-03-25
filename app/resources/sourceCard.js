@@ -5,15 +5,13 @@
  * @format
  */
 
-const RESOURCE_TYPE = 'excerpt';
+const RESOURCE_TYPE = 'sourceCard';
 const FIELDS = [
   {
-    resourceName: 'textSource',
-    name: 'textSource',
-    displayName: 'source',
+    name: 'excerpt',
     type: 'resource',
-    label: 'The source of the excerpt',
-    required: true,
+    label: 'origin of excerpt',
+    belongsTo: true,
   },
   {
     name: 'title',
@@ -22,16 +20,16 @@ const FIELDS = [
     required: true,
   },
   {
-    name: 'content',
+    name: 'subtitle',
+    type: 'string',
+    label: 'slightly more detail',
+    required: false,
+  },
+  {
+    name: 'warrant',
     type: 'textArea',
     label: 'Contains the warrants and deeper evidence',
     required: true,
-  },
-  {
-    name: 'media',
-    type: 'media',
-    label: 'a helpful picture of the palace',
-    // required: true,
   },
 ];
 

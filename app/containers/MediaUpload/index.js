@@ -5,6 +5,7 @@ import { firebaseConnect } from 'react-redux-firebase';
 
 import injectSaga from 'utils/injectSaga';
 import { DAEMON } from 'utils/constants';
+import { withCreateSourceContent } from 'gql/mutations';
 
 import MediaPicker from 'components/MediaPicker';
 import saga from './saga';
@@ -22,4 +23,5 @@ export default compose(
     },
   ),
   firebaseConnect(),
+  withCreateSourceContent,
 )(MediaPicker);

@@ -8,10 +8,26 @@ import createSagaMiddleware from 'redux-saga';
 import thunk from 'redux-thunk';
 import firebase from 'firebase/app';
 
+import { ApolloClient } from 'apollo-client';
+import { createHttpLink } from 'apollo-link-http';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+
 import 'firebase/database';
 import 'firebase/auth';
 import 'firebase/storage';
 import createReducer from './reducers';
+
+const uri =
+  process.env.NODE_ENV !== 'production'
+    ? 'http://localhost:4000/graphql'
+    : 'https://debatermaster.herokuapp.com/graphql';
+
+export const client = new ApolloClient({
+  link: createHttpLink({
+    uri,
+  }),
+  cache: new InMemoryCache(),
+});
 
 // make this not bad
 firebase.initializeApp({

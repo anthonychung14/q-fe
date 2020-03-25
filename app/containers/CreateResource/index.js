@@ -22,7 +22,6 @@ class ResourceCreatePage extends React.Component<Props> {
 
   render() {
     const { resourceType, reportType, parentId } = this.props;
-
     const resource = resources[resourceType];
     return (
       <Container>

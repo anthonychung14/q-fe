@@ -140,8 +140,6 @@ export const withCombatSkill = compose(
   }),
   mapCombatCardsToDataSource,
   withHandlers({
-    handlePress: () => () => {
-      console.log('yes');
-    },
+    handlePress: () => () => {},
   }),
 );

@@ -8,6 +8,7 @@ import { TouchableOpacity } from 'react-native';
 import COLORS from 'constants/colors';
 
 const Button = ({
+  disabled,
   handleClick,
   onSubmit,
   invalid,
@@ -18,7 +19,7 @@ const Button = ({
   width = '100%',
 }) => (
   <TouchableOpacity
-    disabled={invalid}
+    disabled={invalid || disabled}
     onPress={handleClick || onSubmit}
     style={{ width }}
   >

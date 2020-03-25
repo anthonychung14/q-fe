@@ -15,13 +15,13 @@ import { connect } from 'react-redux';
 
 import AboutPage from 'containers/pages/AboutPage/loadable';
 import AddCards from 'containers/AddCards/loadable';
+// import CycleCards from 'containers/CycleCards';
 
 import Login from 'components/Login';
 import AppBar from 'components/AppBar';
 import LeftDrawer from 'components/LeftDrawer';
 import Container from 'components/Container';
 import TreeView from 'components/TreeView';
-import SourceTreeView from 'components/TreeView/SourceTreeView';
 
 import { connectActiveMode } from 'selectors/skill_mode';
 import { getAuth } from 'selectors/firebase';
@@ -38,18 +38,12 @@ const MAP = {
   about: {
     Component: AboutPage,
   },
-  view: {
+  directory: {
     Component: TreeView,
-  },
-  excerpts: {
-    Component: SourceTreeView,
-  },
-  acquire: {
-    Component: AddCards,
   },
 };
 
-const getProps = page => MAP[page] || MAP.about;
+const getProps = page => MAP[page] || MAP.directory;
 
 const PageDisplayer = ({ activeMode, auth, firebase }) => {
   const { Component } = getProps(activeMode);

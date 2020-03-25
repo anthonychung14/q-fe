@@ -26,10 +26,24 @@ class MediaPicker extends Component {
   };
 
   handleUpload = (event: Object) => {
-    const { mediaType, uploadMedia, firebase } = this.props;
+    const {
+      mediaType,
+      uploadMedia,
+      firebase,
+      resource,
+      contentMakerId,
+      mutate,
+    } = this.props;
     const { target } = event;
+
     if (target.files) {
-      uploadMedia(target.files, { mediaType, firebase });
+      uploadMedia(target.files, {
+        mediaType,
+        firebase,
+        resource,
+        contentMakerId,
+        mutate,
+      });
     }
   };
 

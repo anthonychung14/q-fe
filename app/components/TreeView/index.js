@@ -1,35 +1,44 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import _ from 'lodash';
-// import { FixedSizedList as List } from 'react-window';
-// import AutoSizer from 'react-virtualized-auto-sizer';
 import { useQuery } from '@apollo/react-hooks';
-import { gql } from 'apollo-boost';
 
+// import AutoSizer from 'react-virtualized-auto-sizer';
+// import { FixedSizeTree as Tree } from 'react-vtree';
+import { LEVELS } from 'gql/types';
+import { getRootLevel } from 'selectors/skill_mode';
 import Button from 'components/Button';
+import FlexContainer from 'components/FlexContainer';
 import ViewHeader from 'components/ViewHeader';
-// import { FixedSizeTree as Tree } from "react-vtree";
-import SourceContentForm, { ContentMediumHeader } from './SourceContentForm';
+import { makeFetchAllQuery } from 'gql/query';
+import SourceContentForm from './SourceContentForm';
 import SourceContentWorks from './SourceContentWorks';
+import SimonHeader from './SimonHeader';
 
 import { FlexOne, Row } from './Box';
 
-const RESOURCE_MAP = {
-  ContentMaker: 'fullName',
-  Creator: 'email',
-  SourceContent: 'title',
-};
+function TreeView() {
+  const resourceType = useSelector(getRootLevel);
 
-const makeFetchAllQuery = resourceName => gql`
-      {
-        all${resourceName}s {
-          id
-          ${RESOURCE_MAP[resourceName]}
-        }
-      }
-    `;
+  const dataPath =
+    resourceType === 'contentMaker' ? 'allContentMakers' : 'allSourceContents';
+  const childResourceType =
+    LEVELS[LEVELS.findIndex(i => i === resourceType) + 1];
+  const childDataPath =
+    childResourceType === 'sourceContent'
+      ? 'sourceContentsForContentMaker'
+      : 'excerptsForSourceContent';
 
-function TreeView({ resource = 'ContentMaker' }) {
-  const { loading, error, data } = useQuery(makeFetchAllQuery(resource));
+  const { loading, data } = useQuery(makeFetchAllQuery(resourceType));
+
+  // React.useEffect(
+  //   () => {
+  //     if (cart.size) {
+  //       refetch({ filters, resource });
+  //     }
+  //   },
+  //   [cart, refetch, resource],
+  // );
 
   const [open, toggleSetOpen] = React.useState({});
   const [resourceAdding, setAddResource] = React.useState('');
@@ -37,18 +46,23 @@ function TreeView({ resource = 'ContentMaker' }) {
 
   const { selectedChild, selectedParent } = selectedViewState;
 
-  const handleToggleParent = React.useCallback(
+  const toggleParentById = React.useCallback(
     id => {
       if (resourceAdding) return;
 
+      if (selectedChild && id === selectedParent) return;
+
       if (!id) {
         toggleSetOpen({});
-      } else {
-        toggleSetOpen({ ...open, [id]: !open[id] });
+      } else if (selectedParent && selectedChild) {
+        setViewState({});
       }
+
+      toggleSetOpen({ ...open, [id]: !open[id] });
+
       setAddResource('');
     },
-    [open, toggleSetOpen, resourceAdding],
+    [open, toggleSetOpen, resourceAdding, selectedParent, selectedChild],
   );
 
   const handleToggleAddChild = React.useCallback(
@@ -62,35 +76,31 @@ function TreeView({ resource = 'ContentMaker' }) {
     },
     [resourceAdding, setAddResource, toggleSetOpen],
   );
-
-  const handleClickParent = React.useCallback(
+  const handleToggleParent = React.useCallback(
     (e, id) => {
       e.stopPropagation();
-      handleToggleParent(id);
-      if (selectedParent) {
-        setViewState({});
-      }
+      toggleParentById(id);
     },
-    [selectedParent, handleToggleParent, setViewState],
-  );
-
-  const handleToggleAddParent = React.useCallback(
-    (e, id) => {
-      if (e) {
-        e.stopPropagation();
-      }
-      handleToggleParent(id);
-    },
-    [handleToggleParent],
+    [selectedParent, toggleParentById, setViewState],
   );
 
   const resetViewState = React.useCallback(
     id => {
-      setViewState({});
-      handleToggleParent(id);
-      setAddResource('');
+      if (selectedChild === id) {
+        setViewState({ selectedParent, selectedChild: null });
+      } else {
+        setViewState({});
+        toggleParentById(id);
+        setAddResource('');
+      }
     },
-    [setViewState, handleToggleParent, setAddResource],
+    [
+      setViewState,
+      toggleParentById,
+      setAddResource,
+      selectedChild,
+      selectedParent,
+    ],
   );
 
   const setSelectedViewState = React.useCallback(
@@ -118,94 +128,107 @@ function TreeView({ resource = 'ContentMaker' }) {
   const showButton = id => open[id] || resourceAdding === id;
 
   const handlers = {
-    makeToggleAddParent: id => e => handleToggleAddParent(e, id),
     makeToggleAddChild: id => e => handleToggleAddChild(e, id),
     makeToggleChild: nodeData => e => handleToggleChild(e, nodeData),
+    makeHandleClickParent: id => e => handleToggleParent(e, id),
     resetViewState,
     setSelectedViewState,
     showButton,
   };
 
-  const dataPath =
-    resource === 'ContentMaker' ? 'allContentMakers' : 'allSourceContents';
-
-  if (loading) return <h3>Loading</h3>;
+  const rowData = _.get(data, dataPath, []).filter(
+    ({ contentCategory, contentMedium, fullName }) =>
+      contentCategory === 'PODCAST' || contentMedium === 'AUDIO' || fullName,
+  );
 
   return (
-    <div style={{ paddingTop: '42px' }}>
-      {resourceAdding ? (
-        <ViewHeader header="Adding new source" />
-      ) : (
-        <ContentMediumHeader />
-      )}
-
-      <TreeRoot
-        data={data[dataPath]}
-        handlers={handlers}
-        resourceAdding={resourceAdding}
-        selectedViewState={selectedViewState}
-        open={open}
-      />
-    </div>
+    <FlexContainer style={{ paddingTop: '42px' }}>
+      <TreeHeader {...selectedViewState} resourceAdding={resourceAdding} />
+      <div style={{ padding: '1%' }}>
+        {loading && rowData.length === 0 ? (
+          <FlexContainer center style={{ paddingBottom: '42px' }}>
+            <h3>Loading</h3>
+          </FlexContainer>
+        ) : (
+          <>
+            {rowData.map(i => (
+              <TreeRow
+                childDataPath={childDataPath}
+                displayText={i.fullName || i.title}
+                handlers={handlers}
+                key={i.id}
+                open={open}
+                parentNode={i}
+                parentType={resourceType}
+                resourceAdding={resourceAdding}
+                resourceType={childResourceType}
+                {...selectedViewState}
+                {...i}
+              />
+            ))}
+          </>
+        )}
+      </div>
+    </FlexContainer>
   );
 }
 
-const TreeRoot = ({
-  data,
-  resourceAdding,
-  selectedViewState,
-  open,
-  handlers,
-}) => {
-  return (
-    <div style={{ padding: '1%' }}>
-      {data.map(i => (
-        <TreeRow
-          key={i.id}
-          resourceAdding={resourceAdding}
-          open={open}
-          displayText={i.fullName || i.title}
-          handlers={handlers}
-          {...selectedViewState}
-          {...i}
-        />
-      ))}
-    </div>
-  );
+const TreeHeader = ({ resourceAdding, selectedChild, selectedParent }) => {
+  if (resourceAdding) {
+    return <ViewHeader header="Adding new source" />;
+  }
+
+  return !selectedChild || !selectedParent ? <SimonHeader /> : null;
 };
 
 const TreeRow = ({
   handlers,
   displayText,
+  contentCategory,
   id,
   open,
-  parentId,
+  selectedParent,
   resourceAdding,
+  resourceType,
   selectedChild,
+  childDataPath,
+  parentType,
+  parentNode,
 }) => {
   if (
-    id === parentId ||
+    id === selectedParent ||
     id === resourceAdding ||
-    (!parentId && !resourceAdding)
+    (!selectedParent && !resourceAdding)
   ) {
     return (
       <div key={id}>
         <TreeRowHeader
+          displayText={displayText}
+          contentCategory={contentCategory}
+          handleToggleAddChild={handlers.makeToggleAddChild(id)}
+          handleToggleParent={handlers.makeHandleClickParent(id)}
           id={id}
           open={open}
-          showButton={handlers.showButton}
-          displayText={displayText}
+          parentId={selectedParent}
+          parentType={parentType}
           resourceAdding={resourceAdding}
-          handleToggleParent={handlers.makeToggleAddParent(id)}
-          handleToggleAddChild={handlers.makeToggleAddChild(id)}
+          showButton={handlers.showButton}
         />
-        {resourceAdding === id && <SourceContentForm parentId={id} />}
+        {resourceAdding === id &&
+          parentType === 'contentMaker' && (
+            <SourceContentForm parentId={id} resourceType={resourceType} />
+          )}
 
         {open[id] && (
           <SourceContentWorks
-            contentMakerId={id}
+            childDataPath={childDataPath}
             open={open}
+            parentId={id}
+            parentNode={parentNode}
+            parentType={parentType}
+            resourceType={resourceType}
             selectedChild={selectedChild}
+            selectedParent={selectedParent}
             {...handlers}
           />
         )}
@@ -216,14 +239,20 @@ const TreeRow = ({
 };
 
 const TreeRowHeader = ({
+  contentCategory,
   displayText,
-  handleToggleParent,
   handleToggleAddChild,
+  handleToggleParent,
+  handleToggleShowMedia,
   id,
   open,
+  parentId,
+  parentType,
   resourceAdding,
   showButton,
 }) => {
+  if (open[parentId] && parentId !== id) return null;
+
   return (
     <Row
       style={{
@@ -234,7 +263,58 @@ const TreeRowHeader = ({
     >
       <div style={{ flex: 2 }}>
         <h4 style={{ padding: '1%' }}>{displayText}</h4>
+        <h5 style={{ padding: '1%' }}>{contentCategory}</h5>
       </div>
+      <HeaderAction
+        id={id}
+        handleToggleAddChild={handleToggleAddChild}
+        handleToggleShowMedia={handleToggleShowMedia}
+        showButton={showButton}
+        resourceAdding={resourceAdding}
+        parentId={parentId}
+        parentType={parentType}
+      />
+    </Row>
+  );
+};
+
+const HeaderAction = ({
+  id,
+  handleToggleAddChild,
+  showButton,
+  resourceAdding,
+  parentType,
+  parentId,
+}) => {
+  let text = resourceAdding ? 'Clear' : 'Add Source';
+  const dispatch = useDispatch();
+  const showMedia = useSelector(state =>
+    state.getIn(['skillMode', 'activeDrawer']),
+  );
+
+  const handleClick = React.useCallback(
+    e => {
+      e.stopPropagation();
+      if (parentType === 'sourceContent') {
+        dispatch({
+          type: 'mode/SET_MEDIA_DRAWER',
+          payload: {
+            drawer: id,
+          },
+        });
+      } else {
+        handleToggleAddChild(e, id);
+      }
+    },
+    [id, dispatch, showMedia, resourceAdding, parentType, parentId],
+  );
+
+  if (parentType === 'sourceContent') {
+    text = 'Show';
+  }
+
+  if (showButton(id) || id === parentId) {
+    return (
       <div
         style={{
           display: 'flex',
@@ -243,17 +323,18 @@ const TreeRowHeader = ({
           flex: 1,
         }}
       >
-        {showButton(id) && (
-          <FlexOne>
-            <Button
-              handleClick={handleToggleAddChild}
-              text={resourceAdding ? 'Clear' : 'Add Source'}
-            />
-          </FlexOne>
-        )}
+        <FlexOne>
+          <Button
+            handleClick={handleClick}
+            text={text}
+            style={{ zIndex: 10 }}
+          />
+        </FlexOne>
       </div>
-    </Row>
-  );
+    );
+  }
+
+  return null;
 };
 
 export default TreeView;

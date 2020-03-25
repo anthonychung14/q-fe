@@ -44,9 +44,3 @@ export default compose(
   }),
   withOnSubmit,
 )(ExecuteForm);
-/* 
-.header("X-Mashape-Host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
-.end(function (result) {
-  console.log(result.status, result.headers, result.body);
-});
-*/

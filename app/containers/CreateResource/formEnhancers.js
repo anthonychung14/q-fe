@@ -129,7 +129,6 @@ const withSubmitResources = withHandlers({
         .ref()
         .update(allUpdates)
         .then(() => {
-          // console.log('DONE DONE DONE');
           setLoading(false);
           reset();
         });

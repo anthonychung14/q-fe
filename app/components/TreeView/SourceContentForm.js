@@ -1,14 +1,12 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import _ from 'lodash';
 
 import CreateResource from 'containers/CreateResource';
 import MediaUpload from 'containers/MediaUpload';
 import Checkbox from 'components/Checkbox';
 import Container from 'components/Container';
-import Button from 'components/Button';
 
-const MEDIUMS = ['LINK', 'VISUAL'];
-const CATEGORIES = ['VIDEO', 'AUDIO', 'TEXT', 'IMAGE'];
+const INPUT_TYPES = ['LINK', 'VISUAL'];
 
 const ContentMediumCheckbox = ({ setActiveInput }) => {
   const onChange = React.useCallback(s => {
@@ -18,7 +16,7 @@ const ContentMediumCheckbox = ({ setActiveInput }) => {
   return (
     <div>
       <Checkbox
-        values={MEDIUMS}
+        values={INPUT_TYPES}
         input={{ onChange }}
         name="medium"
         horizontal
@@ -27,39 +25,9 @@ const ContentMediumCheckbox = ({ setActiveInput }) => {
   );
 };
 
-export const ContentMediumHeader = () => {
-  const dispatch = useDispatch();
-
-  const handleClick = React.useCallback(
-    e => {
-      dispatch({
-        type: 'stuff',
-        payload: e.target.value,
-      });
-    },
-    [dispatch],
-  );
-
-  return (
-    <Container
-      style={{
-        display: 'inline-flex',
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        width: '100%',
-      }}
-    >
-      {CATEGORIES.map(i => (
-        <div style={{ flex: '0 50%' }} key={i}>
-          <Button text={i} handleClick={handleClick} />
-        </div>
-      ))}
-    </Container>
-  );
-};
-
-const SourceContentForm = ({ parentId }) => {
-  const [activeInput, setActiveInput] = React.useState(MEDIUMS[0]);
+const SourceContentForm = ({ parentId, resourceType }) => {
+  const resource = _.camelCase(resourceType);
+  const [activeInput, setActiveInput] = React.useState(INPUT_TYPES[0]);
 
   return (
     <div
@@ -73,15 +41,19 @@ const SourceContentForm = ({ parentId }) => {
     >
       <div>
         <ContentMediumCheckbox
-          values={MEDIUMS}
+          values={INPUT_TYPES}
           setActiveInput={setActiveInput}
         />
       </div>
       <Container padded>
         {activeInput === 'LINK' ? (
-          <CreateResource resourceType="sourceContent" parentId={parentId} />
+          <CreateResource resourceType={resource} parentId={parentId} />
         ) : (
-          <MediaUpload />
+          <MediaUpload
+            contentMakerId={parentId}
+            parentId={parentId}
+            resourceType={resource}
+          />
         )}
       </Container>
     </div>

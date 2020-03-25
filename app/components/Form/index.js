@@ -183,12 +183,11 @@ class Form extends React.Component<Props> {
     //   return acc.set(key, val);
     // }, Map());
 
-    // console.log('updatedValues.toJS() is', updatedValues.toJS());
-
-    submitCallback(
-      values.set('content_maker_id', parseInt(parentId, 10)),
-      resourceType,
+    const sourceContentValues = values.set(
+      'content_maker_id',
+      parseInt(parentId, 10),
     );
+    submitCallback(sourceContentValues, resourceType);
   };
 
   Form = null;

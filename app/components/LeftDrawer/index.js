@@ -5,7 +5,7 @@ import { Drawer, List } from 'antd-mobile';
 
 import { getActiveMode } from 'selectors/skill_mode';
 
-const ROUTES = ['view', 'excerpts', 'about'];
+const ROUTES = ['directory', 'about'];
 
 const sidebar = ({ makeHandlePress }) => {
   const activeMode = useSelector(getActiveMode);
@@ -48,7 +48,12 @@ const LeftDrawer = ({ drawerOpen, handleDrawerToggle, children }) => {
       sidebarStyle={{
         border: '1px solid #ddd',
         background: 'white',
-        width: '80%',
+        width: '50%',
+      }}
+      bodyStyle={{
+        display: 'flex',
+        flexFlow: 'column',
+        alignItems: 'stretch',
       }}
       open={drawerOpen}
       onOpenChange={() => handleDrawerToggle(!drawerOpen)}

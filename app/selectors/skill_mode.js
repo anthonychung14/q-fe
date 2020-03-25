@@ -17,6 +17,8 @@ export const withCardValuesForMode = withProps(({ activeMode }) => ({
   tintColor: _.get(COLORS, ['modes', activeMode, 'secondary']),
 }));
 
+export const getRootLevel = state => state.getIn(['skillMode', 'activeLevel']);
+
 export const connectActiveMode = connect(state => ({
   activeMode: getActiveMode(state),
   cartConfirming: getConfirmingCart(state),

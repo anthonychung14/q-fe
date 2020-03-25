@@ -32,9 +32,20 @@ const AudioPlayer = ({
   handleSeek,
   handlePause,
   handleProgress,
+  startPosition,
+  type,
 }) => {
+  React.useEffect(
+    () => {
+      if (type === 'excerpt' && playerRef.current && startPosition) {
+        playerRef.current.audioEl.currentTime = startPosition;
+      }
+    },
+    [playerRef, startPosition, type],
+  );
+
   return (
-    <div style={{ textAlign: 'center' }}>
+    <div style={{ textAlign: 'center', padding: '8%' }}>
       <ReactAudioPlayer
         src={url}
         ref={playerRef}
@@ -48,11 +59,27 @@ const AudioPlayer = ({
   );
 };
 
-const MediaPlayer = ({ contentCategory, handlers, playerRef, url }) => {
-  if (contentCategory === 'PODCAST') {
-    return <AudioPlayer {...handlers} playerRef={playerRef} url={url} />;
+const MediaPlayer = ({
+  contentCategory,
+  contentMedium,
+  handlers,
+  ...props
+}) => {
+  if (contentCategory === 'PODCAST' || contentMedium === 'AUDIO') {
+    return <AudioPlayer {...handlers} {...props} />;
   }
-  return <YouTubePlayer {...handlers} playerRef={playerRef} url={url} />;
+  return <YouTubePlayer {...handlers} {...props} />;
 };
 
 export default MediaPlayer;
+/**
+       <Slider
+        style={{ marginLeft: 30, marginRight: 30 }}
+        defaultValue={26}
+        min={0}
+        max={30}
+        onChange={}
+        onAfterChange={}
+      /> 
+  
+ */
