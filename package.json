@@ -67,7 +67,7 @@
     "apollo-cache-inmemory": "^1.6.5",
     "apollo-link-http": "^1.5.16",
     "async": "^3.1.0",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "body-parser": "^1.19.0",
     "chalk": "^2.4.2",
     "compression": "1.7.3",
