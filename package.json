@@ -90,7 +90,7 @@
     "lodash": "4.17.11",
     "lodash.get": "^4.4.2",
     "minimist": "1.2.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "multer": "^1.4.2",
     "nodemon": "^1.19.4",
     "nuka-carousel": "^4.6.6",
